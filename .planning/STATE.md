@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 ## Current Position
 
 Phase: 1 of 7 (Scaffolding)
-Plan: 1 of 1 in current phase
+Plan: 2 of 2 in current phase
 Status: In progress
-Last activity: 2026-03-22 — Completed 01-01: index.html scaffold + OG image
+Last activity: 2026-03-22 — 01-02 in progress: font committed, awaiting Vercel auth to complete deployment
 
 Progress: [█░░░░░░░░░] 5%
 
@@ -63,5 +63,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Completed 01-01-PLAN.md (index.html scaffold + og-image.jpg)
+Stopped at: 01-02 Task 2 — font validated + committed (f5b3a4a); blocked at Vercel auth gate awaiting `vercel login`
 Resume file: None
