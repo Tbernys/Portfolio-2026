@@ -135,9 +135,122 @@
       align-items: center;
       justify-content: center;
     }
+
+    /* ─── Loading overlay ──────────────────────────────────────────────────── */
+    #loader {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      transition: opacity 0.3s ease-out;
+    }
+
+    /* Scanline sweep (enabled via .has-scanline class on #loader) */
+    #loader.has-scanline::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(
+        to bottom,
+        transparent 45%,
+        rgba(255,255,255,0.03) 49%,
+        rgba(255,255,255,0.08) 50%,
+        rgba(255,255,255,0.03) 51%,
+        transparent 55%
+      );
+      animation: scanline 2s linear infinite;
+    }
+
+    /* Film grain (enabled via .has-grain class on #loader) */
+    #loader.has-grain::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      animation: grain 0.3s steps(4) infinite;
+    }
+
+    @keyframes scanline {
+      from { transform: translateY(-100%); }
+      to   { transform: translateY(200%); }
+    }
+
+    @keyframes grain {
+      0%   { transform: translate(0, 0); }
+      25%  { transform: translate(-2%, 4%); }
+      50%  { transform: translate(4%, -2%); }
+      75%  { transform: translate(-4%, 1%); }
+      100% { transform: translate(0, 0); }
+    }
+
+    .loader-text {
+      display: flex;
+      gap: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(2rem, 6vw, 4.5rem);
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+    }
+
+    .loader-char {
+      display: inline-block;
+      min-width: 0.7em;
+      text-align: center;
+    }
+
+    .loader-space {
+      min-width: 0.4em;
+    }
+
+    /* Progress bar */
+    .loader-progress {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 2px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 1px;
+    }
+
+    .loader-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--color-accent);
+      border-radius: 1px;
+      transition: width 0.3s ease-out;
+    }
   </style>
 </head>
 <body>
+  <div id="loader" aria-live="polite" aria-label="Chargement">
+    <div class="loader-text" aria-hidden="true">
+      <!-- One span per character of "Tom Bernys" (including space) -->
+      <span class="loader-char" data-char="T">&nbsp;</span>
+      <span class="loader-char" data-char="o">&nbsp;</span>
+      <span class="loader-char" data-char="m">&nbsp;</span>
+      <span class="loader-char loader-space" data-char=" ">&nbsp;</span>
+      <span class="loader-char" data-char="B">&nbsp;</span>
+      <span class="loader-char" data-char="e">&nbsp;</span>
+      <span class="loader-char" data-char="r">&nbsp;</span>
+      <span class="loader-char" data-char="n">&nbsp;</span>
+      <span class="loader-char" data-char="y">&nbsp;</span>
+      <span class="loader-char" data-char="s">&nbsp;</span>
+    </div>
+    <p class="sr-only">Chargement du portfolio de Tom Bernys</p>
+    <div class="loader-progress"><div class="loader-progress-bar"></div></div>
+  </div>
+
   <canvas id="canvas"></canvas>
 
   <main lang="fr">
