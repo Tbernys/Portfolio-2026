@@ -155,15 +155,22 @@
       position: absolute;
       inset: 0;
       pointer-events: none;
-      background: linear-gradient(
+      background: repeating-linear-gradient(
         to bottom,
-        transparent 42%,
-        rgba(255,255,255,0.04) 47%,
-        rgba(255,255,255,0.12) 50%,
-        rgba(255,255,255,0.04) 53%,
-        transparent 58%
+        transparent 0px,
+        rgba(255,255,255,0.03) 2px,
+        transparent 4px
+      ),
+      linear-gradient(
+        to bottom,
+        transparent 25%,
+        rgba(255,255,255,0.04) 35%,
+        rgba(255,255,255,0.08) 45%,
+        rgba(255,255,255,0.06) 55%,
+        rgba(255,255,255,0.03) 65%,
+        transparent 75%
       );
-      animation: scanline 2s linear infinite;
+      animation: scanline 4s ease-in-out infinite;
     }
 
     /* Film grain (enabled via .has-grain class on #loader) */
