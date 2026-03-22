@@ -10,7 +10,10 @@
   {
     "imports": {
       "three": "https://cdn.jsdelivr.net/npm/three@0.175.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.175.0/examples/jsm/"
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.175.0/examples/jsm/",
+      "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.14.2/index.js",
+      "gsap/": "https://cdn.jsdelivr.net/npm/gsap@3.14.2/",
+      "detect-gpu": "https://cdn.jsdelivr.net/npm/detect-gpu@5.0.70/dist/detect-gpu.esm.js"
     }
   }
   </script>
@@ -158,45 +161,155 @@
 
   <script type="module">
     import * as THREE from 'three';
+    import { getGPUTier } from 'detect-gpu';
 
-    console.log('[Phase 1] Three.js r' + THREE.REVISION + ' loaded via import map');
+    // ─── Module-level state ───────────────────────────────────────────────────
+    let gpuTier = 1;
+    let renderer = null;
+    let scene = null;
+    let camera = null;
+    let rafId = null;
+    let contextLossFallbackTimer = null;
 
-    const canvas = document.getElementById('canvas');
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.z = 5;
-
-    // Phase 1 test geometry — rotating cube proves import map resolves correctly
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshStandardMaterial({ color: 0xF5F0EB });
-    const cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
-
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    directionalLight.position.set(5, 5, 5);
-    scene.add(directionalLight);
-
-    function animate() {
-      requestAnimationFrame(animate);
-      cube.rotation.x += 0.005;
-      cube.rotation.y += 0.005;
-      renderer.render(scene, camera);
+    // ─── detectTier() ─────────────────────────────────────────────────────────
+    async function detectTier() {
+      try {
+        const result = await getGPUTier();
+        return result.tier ?? 1;
+      } catch {
+        return 1;
+      }
     }
 
-    animate();
-
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
+    // ─── initRenderer() ───────────────────────────────────────────────────────
+    function initRenderer() {
+      const canvas = document.getElementById('canvas');
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: gpuTier >= 2,
+        alpha: false,
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    // ─── initScene() ──────────────────────────────────────────────────────────
+    // Designed to be re-callable on context restore.
+    function initScene() {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(
+        40,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        100
+      );
+      camera.position.z = 5;
+
+      // Placeholder ambient light — Phase 3 hero scene will add full lighting rig
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+      scene.add(ambientLight);
+
+      // Expose on window for debugging (remove in Phase 7)
+      window.scene = scene;
+      window.camera = camera;
+    }
+
+    // ─── RAF loop ─────────────────────────────────────────────────────────────
+    function startRAFLoop() {
+      if (rafId !== null) return;
+      function loop() {
+        rafId = requestAnimationFrame(loop);
+        renderer.render(scene, camera);
+      }
+      rafId = requestAnimationFrame(loop);
+    }
+
+    function stopRAFLoop() {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+
+    // ─── Visibility guard ─────────────────────────────────────────────────────
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopRAFLoop();
+      } else {
+        startRAFLoop();
+      }
     });
+
+    // ─── Context loss / restore handlers ──────────────────────────────────────
+    // NOTE: Do NOT call preventDefault on contextlost — Three.js r175 handles it internally.
+    // iOS Safari edge case: webglcontextrestored may never fire when backgrounded.
+    // A 3-second reload fallback covers that scenario.
+
+    function registerContextHandlers() {
+      const canvas = document.getElementById('canvas');
+
+      canvas.addEventListener('webglcontextlost', () => {
+        stopRAFLoop();
+        // 3-second reload fallback for iOS Safari context loss edge case
+        contextLossFallbackTimer = setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      });
+
+      canvas.addEventListener('webglcontextrestored', () => {
+        clearTimeout(contextLossFallbackTimer);
+        initScene();
+        startRAFLoop();
+      });
+    }
+
+    // ─── Resize handler ───────────────────────────────────────────────────────
+    // Does NOT create new render targets — Phase 3 will add renderTarget.setSize() calls here.
+    window.addEventListener('resize', () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(w, h);
+    });
+
+    // ─── Debug helpers (uncomment for Phase 7 testing) ────────────────────────
+
+    // Simulates a WebGL context loss/restore cycle.
+    // function simulateContextLoss() {
+    //   const ext = renderer.getContext().getExtension('WEBGL_lose_context');
+    //   ext.loseContext();
+    //   setTimeout(() => ext.restoreContext(), 1000);
+    // }
+    // Uncomment to test: simulateContextLoss()
+
+    // Verifies that 5 resize events do not increase GPU texture count.
+    // function checkResizeLeaks() {
+    //   const before = renderer.info.memory.textures;
+    //   for (let i = 0; i < 5; i++) {
+    //     window.dispatchEvent(new Event('resize'));
+    //   }
+    //   const after = renderer.info.memory.textures;
+    //   console.assert(after === before, `Resize texture leak: ${before} → ${after}`);
+    //   console.log('[checkResizeLeaks] textures before:', before, '| after:', after);
+    // }
+    // Uncomment to test: checkResizeLeaks()
+
+    // ─── Bootstrap ────────────────────────────────────────────────────────────
+    async function main() {
+      gpuTier = await detectTier();
+      initRenderer();
+      registerContextHandlers(); // Must be registered BEFORE startRAFLoop()
+      initScene();
+      startRAFLoop();
+
+      // Expose on window for debugging (remove in Phase 7)
+      window.renderer = renderer;
+      window.gpuTier = gpuTier;
+
+      console.log('[Phase 2] GPU tier:', gpuTier, '| Three.js r' + THREE.REVISION);
+    }
+
+    main();
   </script>
 </body>
 </html>
