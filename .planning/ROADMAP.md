@@ -12,7 +12,7 @@ Seven phases build from static scaffolding upward through increasingly GPU-inten
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Scaffolding** - Static HTML skeleton, CDN import map, deployment validation, font conversion
+- [x] **Phase 1: Scaffolding** - Static HTML skeleton, CDN import map, deployment validation, font conversion
 - [ ] **Phase 2: WebGL Foundation** - Renderer, device tier detection, loading screen, RAF loop, context recovery
 - [ ] **Phase 3: Hero Scene** - Glass text, instanced tile background, mouse/touch interaction, post-processing pipeline
 - [ ] **Phase 4: Scroll Integration** - GSAP ScrollTrigger hero fade, section controller, navigation indicator
@@ -31,11 +31,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Three.js can be imported via the import map and a test scene renders (cube or sphere) on the production host
   3. A search engine crawler (or validator) sees semantic HTML landmarks (h1 "Tom Bernys", section elements, visually-hidden descriptive text) — not a blank canvas
   4. Open Graph meta tags render a correct link preview when the URL is pasted into Slack or iMessage
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 01-01-PLAN.md — Build complete index.html scaffold with import map, semantic HTML, meta tags, and Three.js test cube
-- [ ] 01-02-PLAN.md — Convert display font to typeface.json, deploy to static host, verify production
+- [x] 01-01-PLAN.md — Build complete index.html scaffold with import map, semantic HTML, meta tags, and Three.js test cube
+- [x] 01-02-PLAN.md — Convert display font to typeface.json, deploy to static host, verify production
 
 ### Phase 2: WebGL Foundation
 **Goal**: Users see a glitch-style loading screen while all GPU infrastructure initializes cleanly — on any device tier
