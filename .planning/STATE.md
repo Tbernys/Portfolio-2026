@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 ## Current Position
 
 Phase: 1 of 7 (Scaffolding)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-03-22 — Roadmap created, ready for Phase 1 planning
+Plan: 1 of 1 in current phase
+Status: In progress
+Last activity: 2026-03-22 — Completed 01-01: index.html scaffold + OG image
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 5%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: 0 hours
+- Total plans completed: 1
+- Average duration: 2 min
+- Total execution time: 0.03 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01-scaffolding | 1 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: —
-- Trend: —
+- Last 5 plans: 01-01 (2 min)
+- Trend: Baseline established
 
 *Updated after each plan completion*
 
@@ -45,7 +45,10 @@ Recent decisions affecting current work:
 - Three.js r175 preferred over project-spec r170 (research finding: r175 = WebGL 2 baseline, avoids r182/r183 rename breakage)
 - GSAP 3.14.2 + ScrollTrigger for scroll-to-WebGL bridge (ScrollTrigger now free)
 - @vimeo/player 2.30.3 for lazy-loaded embeds
-- Font must be converted to typeface.json via facetype.js before Phase 3 — Phase 1 blocker; font choice not yet resolved
+- Comfortaa 700 chosen as display font — rounded organic terminals match brand vibe; TTF available on Google Fonts for facetype.js conversion
+- JetBrains Mono chosen for loader monospace font — refined terminal aesthetic
+- og:image uses relative path (og-image.jpg) — no domain hardcoded
+- Subtitle "Monteur Vidéo & Motion Designer" rendered as visible hero text (not sr-only) in accent color #D4C5B2
 
 ### Pending Todos
 
@@ -53,12 +56,12 @@ None yet.
 
 ### Blockers/Concerns
 
-- Font choice unresolved: TextGeometry requires typeface.json format. Must be decided and converted in Phase 1 before glass text can be built in Phase 3.
+- Font choice RESOLVED: Comfortaa 700 selected as display font. typeface.json conversion via facetype.js required before Phase 3 — must be done manually in browser at https://gero3.github.io/facetype.js/
 - Contact form backend not chosen: Netlify Forms vs Formspree. Low stakes — decide before Phase 6 planning.
 - Fluid sim resolution numbers conflict between ARCHITECTURE.md (256/128/64) and STACK.md (1024/512/256) — resolve in Phase 3 via profiling.
 
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Roadmap created, STATE.md initialized
+Stopped at: Completed 01-01-PLAN.md (index.html scaffold + og-image.jpg)
 Resume file: None

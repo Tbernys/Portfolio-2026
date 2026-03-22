@@ -31,7 +31,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Three.js can be imported via the import map and a test scene renders (cube or sphere) on the production host
   3. A search engine crawler (or validator) sees semantic HTML landmarks (h1 "Tom Bernys", section elements, visually-hidden descriptive text) — not a blank canvas
   4. Open Graph meta tags render a correct link preview when the URL is pasted into Slack or iMessage
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 - [ ] 01-01-PLAN.md — Build complete index.html scaffold with import map, semantic HTML, meta tags, and Three.js test cube
@@ -111,7 +111,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Scaffolding | 0/2 | Planning complete | - |
+| 1. Scaffolding | 1/2 | In Progress|  |
 | 2. WebGL Foundation | 0/TBD | Not started | - |
 | 3. Hero Scene | 0/TBD | Not started | - |
 | 4. Scroll Integration | 0/TBD | Not started | - |
