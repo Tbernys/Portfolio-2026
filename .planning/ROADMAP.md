@@ -64,7 +64,11 @@ Plans:
   3. The background displays instanced cylindrical tiles with procedural animated patterns (noise, gradient) wrapping around the viewer, with crosshairs at grid intersections
   4. The WebGL canvas sits fixed behind scrollable DOM content and does not scroll with the page
   5. Bloom and vignette post-processing visibly enhance the scene — bright text/tiles glow; edges darken
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Glass text mesh with env map, post-processing pipeline (bloom + vignette)
+- [ ] 03-02-PLAN.md — Instanced tile background, crosshairs, mouse/touch interaction, idle float
 
 ### Phase 4: Scroll Integration
 **Goal**: Scrolling down from the hero feels cinematic — the WebGL world fades away and content sections emerge naturally, with orientation cues present throughout
