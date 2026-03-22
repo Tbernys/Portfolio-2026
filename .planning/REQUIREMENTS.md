@@ -7,9 +7,9 @@
 
 ### Loading
 
-- [ ] **LOAD-01**: Visitor sees a glitch-style loading screen with "Tom Bernys" revealed character by character while WebGL initializes
+- [x] **LOAD-01**: Visitor sees a glitch-style loading screen with "Tom Bernys" revealed character by character while WebGL initializes
 - [ ] **LOAD-02**: Loading screen transitions smoothly to the hero scene once 3D assets are ready (or fallback after 5s)
-- [ ] **LOAD-03**: Scanline overlay animates during loading and fades out on transition
+- [x] **LOAD-03**: Scanline overlay animates during loading and fades out on transition
 
 ### Hero WebGL
 
@@ -98,9 +98,9 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LOAD-01 | Phase 2 | Pending |
+| LOAD-01 | Phase 2 | Complete |
 | LOAD-02 | Phase 2 | Pending |
-| LOAD-03 | Phase 2 | Pending |
+| LOAD-03 | Phase 2 | Complete |
 | HERO-01 | Phase 3 | Pending |
 | HERO-02 | Phase 3 | Pending |
 | HERO-03 | Phase 3 | Pending |

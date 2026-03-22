@@ -10,14 +10,14 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 ## Current Position
 
 Phase: 2 of 7 (WebGL Foundation)
-Plan: 02-01 complete — next: 02-02 (Loading Screen)
-Status: Phase 2 in progress — WebGL lifecycle foundation complete
-Last activity: 2026-03-22 — 02-01 complete: production WebGLRenderer with detect-gpu tier detection, visibility-aware RAF loop, iOS context loss fallback, and leak-free resize
+Plan: 02-02 complete — next: 02-03 (Loading Screen Transition / Hero Scene Reveal)
+Status: Phase 2 in progress — Loading screen overlay with ScrambleText reveal complete
+Last activity: 2026-03-22 — 02-02 complete: GSAP ScrambleText decryption reveal, tier-aware scanline/film grain CSS animations, progress bar tween, window._loaderTimeline exposed for Plan 03
 
 **Deployed URL:** https://portfolio-2026-three-pi.vercel.app
 **Vercel project:** toms-projects-56bd8057/portfolio-2026
 
-Progress: [███░░░░░░░] 15%
+Progress: [████░░░░░░] 20%
 
 ## Performance Metrics
 
@@ -31,7 +31,7 @@ Progress: [███░░░░░░░] 15%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-scaffolding | 2 | 62 min | 31 min |
-| 02-webgl-foundation | 1 | 2 min | 2 min |
+| 02-webgl-foundation | 2 | 8 min | 4 min |
 
 **Recent Trend:**
 - Last 5 plans: 01-01 (2 min), 01-02 (60 min), 02-01 (2 min)
@@ -60,6 +60,10 @@ Recent decisions affecting current work:
 - iOS context loss fallback: 3-second window.location.reload() if webglcontextrestored never fires — covers iOS 17/18 backgrounding bug
 - preventDefault NOT called on webglcontextlost — Three.js r175 handles internally
 - GSAP added to import map at Plan 02-01 even though first used in Plan 02-02 — avoid separate commit later
+- ScrambleText stagger 0.2s per char * 10 chars + 0.6s = ~2.6s total — within ~2.5s target
+- Space character in ScrambleText reveal uses gsap.set() not scramble — avoids whitespace animation artifact
+- Loading progress tween stops at 90% deliberately — Plan 03 completes to 100% at transition trigger moment
+- window._loaderTimeline exposed for Plan 03 tl.kill() before overlay dissolve — prevents GSAP errors on removed DOM
 
 ### Pending Todos
 
@@ -74,5 +78,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: 02-01 complete. WebGL lifecycle foundation done. Next: 02-02 (Loading Screen — GLSL shader warmup, progress bar, GSAP fade-out).
+Stopped at: 02-02 complete. Loading screen overlay done. Next: 02-03 (Loading Screen Transition — dissolve overlay, reveal hero scene after WebGL ready).
 Resume file: None
