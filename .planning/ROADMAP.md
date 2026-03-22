@@ -2,7 +2,7 @@
 
 ## Overview
 
-Seven phases build from static scaffolding upward through increasingly GPU-intensive WebGL systems, then close with DOM content and a responsive polish pass. Phase 1 validates the CDN import map before any GPU code is written. Phases 2–4 construct the immersive hero. Phases 5–6 add the evidence of skill (projects, logos, contact). Phase 7 hardens everything for mobile and real-device production.
+Seven phases build from static scaffolding upward through increasingly GPU-intensive WebGL systems, then close with DOM content and a responsive polish pass. Phase 1 validates the CDN import map before any GPU code is written. Phases 2-4 construct the immersive hero. Phases 5-6 add the evidence of skill (projects, logos, contact). Phase 7 hardens everything for mobile and real-device production.
 
 ## Phases
 
@@ -31,7 +31,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Three.js can be imported via the import map and a test scene renders (cube or sphere) on the production host
   3. A search engine crawler (or validator) sees semantic HTML landmarks (h1 "Tom Bernys", section elements, visually-hidden descriptive text) — not a blank canvas
   4. Open Graph meta tags render a correct link preview when the URL is pasted into Slack or iMessage
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Build complete index.html scaffold with import map, semantic HTML, meta tags, and Three.js test cube
+- [ ] 01-02-PLAN.md — Convert display font to typeface.json, deploy to static host, verify production
 
 ### Phase 2: WebGL Foundation
 **Goal**: Users see a glitch-style loading screen while all GPU infrastructure initializes cleanly — on any device tier
@@ -72,7 +76,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Depends on**: Phase 4
 **Requirements**: PROJ-01, PROJ-02, PROJ-03, PROJ-04
 **Success Criteria** (what must be TRUE):
-  1. A section shows 6–10 project cards, each with a title and role/credits metadata (direction, motion, editing, etc.)
+  1. A section shows 6-10 project cards, each with a title and role/credits metadata (direction, motion, editing, etc.)
   2. Vimeo players load only when a project card scrolls near the viewport — the initial page load does not initiate Vimeo network requests for off-screen videos
   3. Hovering over a project card triggers a visible animation (title reveal, scale, or color shift)
   4. Vimeo videos play correctly on desktop; on mobile the player is present (autoplay is not expected)
@@ -103,11 +107,11 @@ Decimal phases appear between their surrounding integers in numeric order.
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Scaffolding | 0/TBD | Not started | - |
+| 1. Scaffolding | 0/2 | Planning complete | - |
 | 2. WebGL Foundation | 0/TBD | Not started | - |
 | 3. Hero Scene | 0/TBD | Not started | - |
 | 4. Scroll Integration | 0/TBD | Not started | - |
