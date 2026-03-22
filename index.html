@@ -275,6 +275,9 @@
   <script type="module">
     import * as THREE from 'three';
     import { getGPUTier } from 'detect-gpu';
+    import { gsap } from 'gsap';
+    import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
+    gsap.registerPlugin(ScrambleTextPlugin);
 
     // ─── Module-level state ───────────────────────────────────────────────────
     let gpuTier = 1;
@@ -283,6 +286,8 @@
     let camera = null;
     let rafId = null;
     let contextLossFallbackTimer = null;
+    let loaderTimeline = null; // Exposed for Plan 03 safe cleanup
+    let progressTween = null;
 
     // ─── detectTier() ─────────────────────────────────────────────────────────
     async function detectTier() {
@@ -385,6 +390,65 @@
       renderer.setSize(w, h);
     });
 
+    // ─── Loading screen ───────────────────────────────────────────────────────
+
+    // runGlitchReveal() — GSAP ScrambleText left-to-right character reveal.
+    // Returns the timeline so Plan 03 can tl.kill() before removing the overlay.
+    function runGlitchReveal() {
+      const tl = gsap.timeline();
+      const chars = document.querySelectorAll('.loader-char');
+
+      chars.forEach((el, i) => {
+        const char = el.dataset.char;
+
+        if (char === ' ') {
+          // Space — no scramble, just set immediately with stagger offset
+          tl.set(el, { innerHTML: '&nbsp;' }, i * 0.2);
+          return;
+        }
+
+        tl.to(
+          el,
+          {
+            duration: 0.6,
+            scrambleText: {
+              text: char,
+              chars: '!@#$%^&*<>{}[]|\\/?~_+=',
+              revealDelay: 0.3,
+              speed: 0.4,
+            },
+          },
+          i * 0.2
+        );
+      });
+
+      return tl;
+    }
+
+    // initLoadingScreen(tier) — enables tier-appropriate effects and starts animations.
+    function initLoadingScreen(tier) {
+      const loader = document.getElementById('loader');
+
+      // Enable scanline and film grain only on capable devices
+      if (tier >= 2) {
+        loader.classList.add('has-scanline', 'has-grain');
+      }
+
+      // Start the character scramble reveal
+      loaderTimeline = runGlitchReveal();
+
+      // Progress bar: animate from 0% → 90% over 4.5s (last 10% happens in Plan 03 on transition)
+      progressTween = gsap.to('.loader-progress-bar', {
+        width: '90%',
+        duration: 4.5,
+        ease: 'power1.out',
+      });
+
+      // Expose for Plan 03 transition (tl.kill() before dissolving overlay)
+      window._loaderTimeline = loaderTimeline;
+      window._progressTween = progressTween;
+    }
+
     // ─── Debug helpers (uncomment for Phase 7 testing) ────────────────────────
 
     // Simulates a WebGL context loss/restore cycle.
@@ -413,6 +477,12 @@
       initRenderer();
       registerContextHandlers(); // Must be registered BEFORE startRAFLoop()
       initScene();
+
+      // Start loading screen animations (tier-aware scanline/grain + ScrambleText reveal)
+      // Must be called AFTER detectTier() so gpuTier is set.
+      initLoadingScreen(gpuTier);
+
+      // RAF loop must run so compileAsync works in Plan 03 (overlay visually covers the canvas)
       startRAFLoop();
 
       // Expose on window for debugging (remove in Phase 7)
