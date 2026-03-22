@@ -11,8 +11,11 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 
 Phase: 1 of 7 (Scaffolding)
 Plan: 2 of 2 in current phase
-Status: In progress
-Last activity: 2026-03-22 — 01-02 in progress: font committed, awaiting Vercel auth to complete deployment
+Status: In progress — awaiting human verification (Task 3 checkpoint)
+Last activity: 2026-03-22 — 01-02 deployed to Vercel, awaiting browser verification
+
+**Deployed URL:** https://portfolio-2026-three-pi.vercel.app
+**Vercel project:** toms-projects-56bd8057/portfolio-2026
 
 Progress: [█░░░░░░░░░] 5%
 
@@ -63,5 +66,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: 01-02 Task 2 — font validated + committed (f5b3a4a); blocked at Vercel auth gate awaiting `vercel login`
+Stopped at: 01-02 Task 3 — checkpoint:human-verify. Site deployed at https://portfolio-2026-three-pi.vercel.app. All curl checks pass (200, importmap, three@0.175.0, og-image). Awaiting user browser verification.
 Resume file: None
