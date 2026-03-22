@@ -8,7 +8,7 @@
 ### Loading
 
 - [x] **LOAD-01**: Visitor sees a glitch-style loading screen with "Tom Bernys" revealed character by character while WebGL initializes
-- [ ] **LOAD-02**: Loading screen transitions smoothly to the hero scene once 3D assets are ready (or fallback after 5s)
+- [x] **LOAD-02**: Loading screen transitions smoothly to the hero scene once 3D assets are ready (or fallback after 5s)
 - [x] **LOAD-03**: Scanline overlay animates during loading and fades out on transition
 
 ### Hero WebGL
@@ -58,7 +58,7 @@
 - [x] **TECH-03**: Site deploys on any static host (GitHub Pages, Vercel, Netlify)
 - [x] **TECH-04**: WebGL context loss is handled gracefully (re-initialization on `webglcontextrestored`)
 - [x] **TECH-05**: All render targets are properly disposed on resize to prevent GPU memory leaks
-- [ ] **TECH-06**: Shaders compile during loading screen, not on first visible frame
+- [x] **TECH-06**: Shaders compile during loading screen, not on first visible frame
 
 ## v2 Requirements
 
@@ -99,7 +99,7 @@
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | LOAD-01 | Phase 2 | Complete |
-| LOAD-02 | Phase 2 | Pending |
+| LOAD-02 | Phase 2 | Complete |
 | LOAD-03 | Phase 2 | Complete |
 | HERO-01 | Phase 3 | Pending |
 | HERO-02 | Phase 3 | Pending |
@@ -128,7 +128,7 @@
 | TECH-03 | Phase 1 | Complete |
 | TECH-04 | Phase 2 | Complete |
 | TECH-05 | Phase 2 | Complete |
-| TECH-06 | Phase 2 | Pending |
+| TECH-06 | Phase 2 | Complete |
 
 **Coverage:**
 - v1 requirements: 31 total

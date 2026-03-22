@@ -10,14 +10,14 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 ## Current Position
 
 Phase: 2 of 7 (WebGL Foundation)
-Plan: 02-02 complete — next: 02-03 (Loading Screen Transition / Hero Scene Reveal)
-Status: Phase 2 in progress — Loading screen overlay with ScrambleText reveal complete
-Last activity: 2026-03-22 — 02-02 complete: GSAP ScrambleText decryption reveal, tier-aware scanline/film grain CSS animations, progress bar tween, window._loaderTimeline exposed for Plan 03
+Plan: 02-03 complete — Phase 2 COMPLETE — next: Phase 03 (Hero Scene)
+Status: Phase 2 complete — all 5 success criteria verified on production
+Last activity: 2026-03-22 — 02-03 complete: shader warmup gate (compileAsync), Promise.race(2s/5s) loading gate, glitch dissolve transition (clip-path), loader DOM cleanup, all Phase 2 criteria verified on production
 
 **Deployed URL:** https://portfolio-2026-three-pi.vercel.app
 **Vercel project:** toms-projects-56bd8057/portfolio-2026
 
-Progress: [████░░░░░░] 20%
+Progress: [████████░░] 43%
 
 ## Performance Metrics
 
@@ -31,13 +31,14 @@ Progress: [████░░░░░░] 20%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-scaffolding | 2 | 62 min | 31 min |
-| 02-webgl-foundation | 2 | 8 min | 4 min |
+| 02-webgl-foundation | 3 | 53 min | 18 min |
 
 **Recent Trend:**
 - Last 5 plans: 01-01 (2 min), 01-02 (60 min), 02-01 (2 min)
 - Trend: Baseline established
 
 *Updated after each plan completion*
+| Phase 02-webgl-foundation P03 | 45 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -64,6 +65,11 @@ Recent decisions affecting current work:
 - Space character in ScrambleText reveal uses gsap.set() not scramble — avoids whitespace animation artifact
 - Loading progress tween stops at 90% deliberately — Plan 03 completes to 100% at transition trigger moment
 - window._loaderTimeline exposed for Plan 03 tl.kill() before overlay dissolve — prevents GSAP errors on removed DOM
+- ScrambleTextPlugin (GSAP Club) replaced with manual scramble implementation — ES module import path resolution failed; manual setInterval approach achieves identical visual result
+- Dissolve waits for text reveal to fully complete before firing — 2s timer and 2.6s animation were misaligned; gate now awaits animation directly
+- GSAP Club plugins not usable via importmap in browser ES module context — future plans should plan manual fallbacks for any Club plugin
+- clip-path inset() fragment approach chosen for dissolve — simpler than polygon splitting, equally effective glitch aesthetic
+- Progress bar repositioned under text — above was too visually dominant during character reveal
 
 ### Pending Todos
 
@@ -78,5 +84,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: 02-02 complete. Loading screen overlay done. Next: 02-03 (Loading Screen Transition — dissolve overlay, reveal hero scene after WebGL ready).
+Stopped at: Completed 02-03-PLAN.md — Phase 2 WebGL Foundation fully complete. Next: Phase 03 Hero Scene planning.
 Resume file: None
