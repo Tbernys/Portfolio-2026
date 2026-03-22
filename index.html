@@ -451,6 +451,9 @@
       // Start the character scramble reveal
       loaderTimeline = runGlitchReveal();
 
+      // Promise that resolves when the text reveal timeline completes
+      const revealDone = new Promise(r => loaderTimeline.eventCallback('onComplete', r));
+
       // Progress bar: animate from 0% → 90% over 4.5s (last 10% happens in Plan 03 on transition)
       progressTween = gsap.to('.loader-progress-bar', {
         width: '90%',
@@ -461,6 +464,8 @@
       // Expose for Plan 03 transition (tl.kill() before dissolving overlay)
       window._loaderTimeline = loaderTimeline;
       window._progressTween = progressTween;
+
+      return revealDone;
     }
 
     // ─── warmupShaders() ──────────────────────────────────────────────────────
@@ -584,10 +589,6 @@
       registerContextHandlers(); // Must be registered BEFORE startRAFLoop()
       initScene();
 
-      // Start loading screen animations (tier-aware scanline/grain + ScrambleText reveal)
-      // Must be called AFTER detectTier() so gpuTier is set.
-      initLoadingScreen(gpuTier);
-
       // RAF loop must run so compileAsync has a valid GL context while loading screen is visible
       startRAFLoop();
 
@@ -598,15 +599,15 @@
       console.log('[Phase 2] GPU tier:', gpuTier, '| Three.js r' + THREE.REVISION);
 
       // ─── Promise-based readiness gate ───────────────────────────────────────
-      // A: 2s minimum display guarantee — visitors always see the loading animation
+      // A: Text reveal must complete before transition (~2.6s)
       // B: compileAsync pre-compiles shaders before hero is revealed (no stutter on frame 1)
       // C: 5s fallback maximum — never block indefinitely on slow compile or GPU detection
-      const minDisplay = new Promise(r => setTimeout(r, 2000));
+      const revealDone = initLoadingScreen(gpuTier);
       const shadersReady = warmupShaders();
       const fallback = new Promise(r => setTimeout(r, 5000));
 
       Promise.race([
-        Promise.all([minDisplay, shadersReady]),
+        Promise.all([revealDone, shadersReady]),
         fallback
       ]).then(() => transition());
     }
