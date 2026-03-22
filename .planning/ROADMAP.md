@@ -47,7 +47,7 @@ Plans:
   3. The loading screen transitions smoothly to the hero scene once GPU assets are ready, or after the 5-second fallback
   4. On an iOS device, backgrounding and returning to the tab does not produce a black canvas — the WebGL context recovers
   5. Resizing the browser window five times in a row does not increase `renderer.info.memory.textures` (render targets are disposed correctly)
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 
 Plans:
 - [ ] 02-01-PLAN.md — WebGL renderer, device tier detection, RAF loop, context recovery, resize handling
@@ -117,7 +117,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Scaffolding | 1/2 | Complete    | 2026-03-22 |
-| 2. WebGL Foundation | 0/3 | Not started | - |
+| 2. WebGL Foundation | 1/3 | In Progress|  |
 | 3. Hero Scene | 0/TBD | Not started | - |
 | 4. Scroll Integration | 0/TBD | Not started | - |
 | 5. Project Showcase | 0/TBD | Not started | - |

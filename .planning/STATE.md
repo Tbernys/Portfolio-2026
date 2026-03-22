@@ -10,30 +10,31 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 ## Current Position
 
 Phase: 2 of 7 (WebGL Foundation)
-Plan: Phase 1 complete — Phase 2 planning not yet started
-Status: Phase 1 complete — ready for Phase 2 (WebGL Foundation)
-Last activity: 2026-03-22 — 01-02 complete: Comfortaa Bold typeface.json converted (850 glyphs), deployed to Vercel, production browser-verified
+Plan: 02-01 complete — next: 02-02 (Loading Screen)
+Status: Phase 2 in progress — WebGL lifecycle foundation complete
+Last activity: 2026-03-22 — 02-01 complete: production WebGLRenderer with detect-gpu tier detection, visibility-aware RAF loop, iOS context loss fallback, and leak-free resize
 
 **Deployed URL:** https://portfolio-2026-three-pi.vercel.app
 **Vercel project:** toms-projects-56bd8057/portfolio-2026
 
-Progress: [██░░░░░░░░] 10%
+Progress: [███░░░░░░░] 15%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 31 min
-- Total execution time: 1.03 hours
+- Total plans completed: 3
+- Average duration: 22 min
+- Total execution time: 1.07 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-scaffolding | 2 | 62 min | 31 min |
+| 02-webgl-foundation | 1 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min), 01-02 (60 min)
+- Last 5 plans: 01-01 (2 min), 01-02 (60 min), 02-01 (2 min)
 - Trend: Baseline established
 
 *Updated after each plan completion*
@@ -55,6 +56,10 @@ Recent decisions affecting current work:
 - Comfortaa typeface.json uses 850 glyphs (full set, not Latin Basic subset) — user chose not to restrict in facetype.js
 - Deployed to Vercel via npx vercel --yes — zero-config static deploy; Netlify/GitHub Pages remain for Phase 7 second-host requirement
 - Meta description simplified to more sober/professional tone (user feedback on "Réalisations pour des marques exigeantes")
+- antialias disabled on GPU tier 0/1 — reduces fill-rate pressure on low-end devices; tier >= 2 enables antialias
+- iOS context loss fallback: 3-second window.location.reload() if webglcontextrestored never fires — covers iOS 17/18 backgrounding bug
+- preventDefault NOT called on webglcontextlost — Three.js r175 handles internally
+- GSAP added to import map at Plan 02-01 even though first used in Plan 02-02 — avoid separate commit later
 
 ### Pending Todos
 
@@ -69,5 +74,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: 01-02 complete. Phase 1 done. Next: begin Phase 2 planning (WebGL Foundation — renderer, device tier detection, loading screen, RAF loop, context recovery).
+Stopped at: 02-01 complete. WebGL lifecycle foundation done. Next: 02-02 (Loading Screen — GLSL shader warmup, progress bar, GSAP fade-out).
 Resume file: None

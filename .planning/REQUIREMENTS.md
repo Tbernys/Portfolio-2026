@@ -56,8 +56,8 @@
 - [x] **TECH-01**: Entire site is a single index.html file with inline CSS and JS (no build tools, no framework)
 - [x] **TECH-02**: Three.js loaded via CDN import maps (jsDelivr)
 - [x] **TECH-03**: Site deploys on any static host (GitHub Pages, Vercel, Netlify)
-- [ ] **TECH-04**: WebGL context loss is handled gracefully (re-initialization on `webglcontextrestored`)
-- [ ] **TECH-05**: All render targets are properly disposed on resize to prevent GPU memory leaks
+- [x] **TECH-04**: WebGL context loss is handled gracefully (re-initialization on `webglcontextrestored`)
+- [x] **TECH-05**: All render targets are properly disposed on resize to prevent GPU memory leaks
 - [ ] **TECH-06**: Shaders compile during loading screen, not on first visible frame
 
 ## v2 Requirements
@@ -126,8 +126,8 @@
 | TECH-01 | Phase 1 | Complete |
 | TECH-02 | Phase 1 | Complete |
 | TECH-03 | Phase 1 | Complete |
-| TECH-04 | Phase 2 | Pending |
-| TECH-05 | Phase 2 | Pending |
+| TECH-04 | Phase 2 | Complete |
+| TECH-05 | Phase 2 | Complete |
 | TECH-06 | Phase 2 | Pending |
 
 **Coverage:**
