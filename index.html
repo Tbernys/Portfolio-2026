@@ -237,13 +237,6 @@
       pointer-events: none;
     }
 
-    /* Each fragment block (absolutely positioned, full-cover, clipped to slice) */
-    .loader-fragment {
-      position: absolute;
-      inset: 0;
-      background: #000;
-      will-change: transform, opacity;
-    }
   </style>
 </head>
 <body>
@@ -290,8 +283,6 @@
     import * as THREE from 'three';
     import { getGPUTier } from 'detect-gpu';
     import { gsap } from 'gsap';
-    import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin.js';
-    gsap.registerPlugin(ScrambleTextPlugin);
 
     // ─── Module-level state ───────────────────────────────────────────────────
     let gpuTier = 1;
@@ -300,7 +291,6 @@
     let camera = null;
     let rafId = null;
     let contextLossFallbackTimer = null;
-    let loaderTimeline = null; // Exposed for Plan 03 safe cleanup
     let progressTween = null;
 
     // ─── detectTier() ─────────────────────────────────────────────────────────
@@ -408,35 +398,44 @@
 
     // runGlitchReveal() — GSAP ScrambleText left-to-right character reveal.
     // Returns the timeline so Plan 03 can tl.kill() before removing the overlay.
+    // Manual scramble: each character cycles through glyphs before snapping to the real letter.
+    // Returns a Promise that resolves when the full reveal is done.
+    const GLYPHS = '01!@#$%^&*<>{}[]|\\/?~_+=░▒▓█▀▄■□▪▫';
+
     function runGlitchReveal() {
-      const tl = gsap.timeline();
       const chars = document.querySelectorAll('.loader-char');
+      const stagger = 150;   // ms between each character starting
+      const cycleDuration = 800; // ms of random cycling per character
+      const cycleInterval = 50;  // ms between glyph swaps
 
-      chars.forEach((el, i) => {
-        const char = el.dataset.char;
+      return new Promise(resolve => {
+        let completed = 0;
 
-        if (char === ' ') {
-          // Space — no scramble, just set immediately with stagger offset
-          tl.set(el, { innerHTML: '&nbsp;' }, i * 0.2);
-          return;
-        }
+        chars.forEach((el, i) => {
+          const target = el.dataset.char;
+          if (target === ' ') {
+            el.innerHTML = '&nbsp;';
+            completed++;
+            if (completed === chars.length) resolve();
+            return;
+          }
 
-        tl.to(
-          el,
-          {
-            duration: 1.0,
-            scrambleText: {
-              text: char,
-              chars: '01!@#$%^&*<>{}[]|\\/?~_+=░▒▓█▀▄■□▪▫',
-              revealDelay: 0.6,
-              speed: 0.8,
-            },
-          },
-          i * 0.15
-        );
+          setTimeout(() => {
+            // Cycle through random glyphs
+            const interval = setInterval(() => {
+              el.textContent = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+            }, cycleInterval);
+
+            // After cycleDuration, snap to real character
+            setTimeout(() => {
+              clearInterval(interval);
+              el.textContent = target;
+              completed++;
+              if (completed === chars.length) resolve();
+            }, cycleDuration);
+          }, i * stagger);
+        });
       });
-
-      return tl;
     }
 
     // initLoadingScreen(tier) — enables tier-appropriate effects and starts animations.
@@ -448,21 +447,17 @@
         loader.classList.add('has-scanline', 'has-grain');
       }
 
-      // Start the character scramble reveal
-      loaderTimeline = runGlitchReveal();
+      // Start the character scramble reveal (returns a Promise)
+      const revealDone = runGlitchReveal();
 
-      // Promise that resolves when the text reveal timeline completes
-      const revealDone = new Promise(r => loaderTimeline.eventCallback('onComplete', r));
-
-      // Progress bar: animate from 0% → 90% over 4.5s (last 10% happens in Plan 03 on transition)
+      // Progress bar: animate from 0% → 90% over 4.5s (last 10% happens on transition)
       progressTween = gsap.to('.loader-progress-bar', {
         width: '90%',
         duration: 4.5,
         ease: 'power1.out',
       });
 
-      // Expose for Plan 03 transition (tl.kill() before dissolving overlay)
-      window._loaderTimeline = loaderTimeline;
+      // Expose for transition cleanup
       window._progressTween = progressTween;
 
       return revealDone;
@@ -477,87 +472,66 @@
     }
 
     // ─── transition() ─────────────────────────────────────────────────────────
-    // Glitch dissolve — fragments the #loader overlay into 4 vertical slices
-    // that translate and fade away independently, revealing the canvas beneath.
-    // Total duration: ~1s. Loader DOM removed after animation completes.
+    // Glitch dissolve — rapid glitch shakes on the loader text, then the overlay
+    // tears apart via clip-path inset animation revealing the canvas beneath.
+    // Total duration: ~2s. Loader DOM removed after animation completes.
     function transition() {
       const loader = document.getElementById('loader');
       if (!loader) return;
 
-      // Step A: Kill GSAP tweens safely (Pitfall 5 — avoids errors on removed DOM)
-      gsap.killTweensOf('.loader-char');
-      if (window._loaderTimeline) {
-        window._loaderTimeline.kill();
-        window._loaderTimeline = null;
-      }
+      // Kill progress tween
       if (window._progressTween) {
         window._progressTween.kill();
         window._progressTween = null;
       }
 
-      // Step B: Snap progress bar to 100%
+      // Snap progress bar to 100%
       const bar = document.querySelector('.loader-progress-bar');
       if (bar) bar.style.width = '100%';
 
-      // Step D: Remove pointer events immediately so hero is interactive during dissolve
+      // Remove pointer events immediately
       loader.classList.add('dissolving');
 
-      // Step C: Glitch dissolve — 4 vertical fragment slices
-      // Each fragment is a full-cover black div clipped to a 25%-wide vertical strip.
-      // Slices translate Y in alternating directions and fade out in stagger over ~1s.
-      const sliceCount = 4;
-      const fragments = [];
-
-      for (let i = 0; i < sliceCount; i++) {
-        const frag = document.createElement('div');
-        frag.className = 'loader-fragment';
-        const xStart = i * 25;
-        const xEnd = xStart + 25;
-        frag.style.clipPath = `inset(0 ${100 - xEnd}% 0 ${xStart}%)`;
-        loader.appendChild(frag);
-        fragments.push(frag);
-      }
-
-      // Copy the existing loader content into each fragment as a background layer
-      // so slices look like pieces of the original screen breaking apart.
-      // (The original loader content remains; fragments stack on top temporarily.)
-
+      const loaderText = loader.querySelector('.loader-text');
       const tl = gsap.timeline({
         onComplete: () => {
-          // Step E: Remove #loader from DOM after dissolve completes
-          if (loader.parentNode) {
-            loader.parentNode.removeChild(loader);
-          }
+          if (loader.parentNode) loader.parentNode.removeChild(loader);
         }
       });
 
-      // Stagger each slice: translate up/down alternately + fade, with slight x drift
-      fragments.forEach((frag, i) => {
-        const direction = i % 2 === 0 ? -1 : 1;
-        const xDrift = (i - 1.5) * 16; // -24, -8, +8, +24 px horizontal drift
-        tl.to(
-          frag,
-          {
-            y: direction * (80 + i * 25), // 80–155px vertical travel
-            x: xDrift,
-            opacity: 0,
-            duration: 1.2,
-            ease: 'power2.in',
-          },
-          i * 0.15 // stagger start times: 0, 0.15, 0.30, 0.45s
-        );
-      });
+      // Phase 1: Glitch shakes on the text (0.6s) — rapid x/y jitter + scale pulses
+      for (let i = 0; i < 6; i++) {
+        const dx = (Math.random() - 0.5) * 30;
+        const dy = (Math.random() - 0.5) * 10;
+        const s = 1 + (Math.random() - 0.5) * 0.08;
+        tl.to(loaderText, {
+          x: dx, y: dy, scaleX: s,
+          duration: 0.08,
+          ease: 'power4.out',
+        });
+      }
+      // Reset text position
+      tl.to(loaderText, { x: 0, y: 0, scaleX: 1, duration: 0.05 });
 
-      // Simultaneously fade the original loader content (text, scanlines, etc.)
-      tl.to(
-        loader,
-        {
-          opacity: 0,
-          duration: 0.8,
-          ease: 'power1.in',
-        },
-        0.2 // slight delay — fragments start first
-      );
+      // Phase 2: Tear apart — animate clip-path to progressively reveal canvas (1.2s)
+      // Start fully covered, then cut horizontal bands away from center
+      const steps = [
+        { clip: 'inset(0 0 0 0)', opacity: 1 },
+        { clip: 'inset(5% 0 3% 0)', opacity: 0.9 },
+        { clip: 'inset(12% 2% 8% 1%)', opacity: 0.75 },
+        { clip: 'inset(25% 5% 20% 3%)', opacity: 0.55 },
+        { clip: 'inset(40% 10% 35% 8%)', opacity: 0.3 },
+        { clip: 'inset(50% 50% 50% 50%)', opacity: 0 },
+      ];
+
+      steps.forEach((step, i) => {
+        tl.to(loader, {
+          clipPath: step.clip,
+          opacity: step.opacity,
+          duration: i === 0 ? 0.05 : 0.2,
+          ease: 'power2.in',
+        });
+      });
     }
 
     // ─── Debug helpers (uncomment for Phase 7 testing) ────────────────────────
