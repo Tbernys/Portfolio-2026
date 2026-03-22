@@ -230,6 +230,23 @@
       border-radius: 1px;
       transition: width 0.3s ease-out;
     }
+
+    /* ─── Glitch dissolve transition ──────────────────────────────────────────
+       Applied by JS transition(). The overlay is split into 4 vertical slices
+       via clip-path; each slice is animated independently via inline CSS vars
+       set by GSAP, then the whole element fades out. Pointer events are
+       removed immediately on transition start so the hero is interactive. */
+    #loader.dissolving {
+      pointer-events: none;
+    }
+
+    /* Each fragment block (absolutely positioned, full-cover, clipped to slice) */
+    .loader-fragment {
+      position: absolute;
+      inset: 0;
+      background: #000;
+      will-change: transform, opacity;
+    }
   </style>
 </head>
 <body>
@@ -449,6 +466,98 @@
       window._progressTween = progressTween;
     }
 
+    // ─── warmupShaders() ──────────────────────────────────────────────────────
+    // Pre-compiles all shaders in the current scene during the loading screen.
+    // Returns a Promise that resolves when compilation is complete.
+    // Phase 3 will add hero geometry BEFORE calling this so all hero materials compile.
+    async function warmupShaders() {
+      return renderer.compileAsync(scene, camera);
+    }
+
+    // ─── transition() ─────────────────────────────────────────────────────────
+    // Glitch dissolve — fragments the #loader overlay into 4 vertical slices
+    // that translate and fade away independently, revealing the canvas beneath.
+    // Total duration: ~1s. Loader DOM removed after animation completes.
+    function transition() {
+      const loader = document.getElementById('loader');
+      if (!loader) return;
+
+      // Step A: Kill GSAP tweens safely (Pitfall 5 — avoids errors on removed DOM)
+      gsap.killTweensOf('.loader-char');
+      if (window._loaderTimeline) {
+        window._loaderTimeline.kill();
+        window._loaderTimeline = null;
+      }
+      if (window._progressTween) {
+        window._progressTween.kill();
+        window._progressTween = null;
+      }
+
+      // Step B: Snap progress bar to 100%
+      const bar = document.querySelector('.loader-progress-bar');
+      if (bar) bar.style.width = '100%';
+
+      // Step D: Remove pointer events immediately so hero is interactive during dissolve
+      loader.classList.add('dissolving');
+
+      // Step C: Glitch dissolve — 4 vertical fragment slices
+      // Each fragment is a full-cover black div clipped to a 25%-wide vertical strip.
+      // Slices translate Y in alternating directions and fade out in stagger over ~1s.
+      const sliceCount = 4;
+      const fragments = [];
+
+      for (let i = 0; i < sliceCount; i++) {
+        const frag = document.createElement('div');
+        frag.className = 'loader-fragment';
+        const xStart = i * 25;
+        const xEnd = xStart + 25;
+        frag.style.clipPath = `inset(0 ${100 - xEnd}% 0 ${xStart}%)`;
+        loader.appendChild(frag);
+        fragments.push(frag);
+      }
+
+      // Copy the existing loader content into each fragment as a background layer
+      // so slices look like pieces of the original screen breaking apart.
+      // (The original loader content remains; fragments stack on top temporarily.)
+
+      const tl = gsap.timeline({
+        onComplete: () => {
+          // Step E: Remove #loader from DOM after dissolve completes
+          if (loader.parentNode) {
+            loader.parentNode.removeChild(loader);
+          }
+        }
+      });
+
+      // Stagger each slice: translate up/down alternately + fade, with slight x drift
+      fragments.forEach((frag, i) => {
+        const direction = i % 2 === 0 ? -1 : 1;
+        const xDrift = (i - 1.5) * 12; // -18, -6, +6, +18 px horizontal drift
+        tl.to(
+          frag,
+          {
+            y: direction * (60 + i * 20), // 60–120px vertical travel
+            x: xDrift,
+            opacity: 0,
+            duration: 0.55,
+            ease: 'power2.in',
+          },
+          i * 0.07 // stagger start times: 0, 0.07, 0.14, 0.21s
+        );
+      });
+
+      // Simultaneously fade the original loader content (text, scanlines, etc.)
+      tl.to(
+        loader,
+        {
+          opacity: 0,
+          duration: 0.4,
+          ease: 'power1.in',
+        },
+        0.1 // slight delay — fragments start first
+      );
+    }
+
     // ─── Debug helpers (uncomment for Phase 7 testing) ────────────────────────
 
     // Simulates a WebGL context loss/restore cycle.
@@ -482,7 +591,7 @@
       // Must be called AFTER detectTier() so gpuTier is set.
       initLoadingScreen(gpuTier);
 
-      // RAF loop must run so compileAsync works in Plan 03 (overlay visually covers the canvas)
+      // RAF loop must run so compileAsync has a valid GL context while loading screen is visible
       startRAFLoop();
 
       // Expose on window for debugging (remove in Phase 7)
@@ -490,6 +599,19 @@
       window.gpuTier = gpuTier;
 
       console.log('[Phase 2] GPU tier:', gpuTier, '| Three.js r' + THREE.REVISION);
+
+      // ─── Promise-based readiness gate ───────────────────────────────────────
+      // A: 2s minimum display guarantee — visitors always see the loading animation
+      // B: compileAsync pre-compiles shaders before hero is revealed (no stutter on frame 1)
+      // C: 5s fallback maximum — never block indefinitely on slow compile or GPU detection
+      const minDisplay = new Promise(r => setTimeout(r, 2000));
+      const shadersReady = warmupShaders();
+      const fallback = new Promise(r => setTimeout(r, 5000));
+
+      Promise.race([
+        Promise.all([minDisplay, shadersReady]),
+        fallback
+      ]).then(() => transition());
     }
 
     main();
