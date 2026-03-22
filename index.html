@@ -290,6 +290,15 @@
     import * as THREE from 'three';
     import { getGPUTier } from 'detect-gpu';
     import { gsap } from 'gsap';
+    import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+    import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+    import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+    import { VignetteShader } from 'three/addons/shaders/VignetteShader.js';
 
     // ─── Module-level state ───────────────────────────────────────────────────
     let gpuTier = 1;
@@ -299,6 +308,12 @@
     let rafId = null;
     let contextLossFallbackTimer = null;
     let progressTween = null;
+
+    // ─── Phase 3 state ────────────────────────────────────────────────────────
+    let composer = null;
+    let bloomPass = null;
+    let textMesh = null;
+    let loadedFont = null;  // stored for context loss rebuild
 
     // ─── detectTier() ─────────────────────────────────────────────────────────
     async function detectTier() {
@@ -334,13 +349,127 @@
       );
       camera.position.z = 5;
 
-      // Placeholder ambient light — Phase 3 hero scene will add full lighting rig
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-      scene.add(ambientLight);
-
       // Expose on window for debugging (remove in Phase 7)
       window.scene = scene;
       window.camera = camera;
+    }
+
+    // ─── setupEnvMap() ────────────────────────────────────────────────────────
+    // Generates a procedural room environment for glass refraction.
+    // Must be called BEFORE building any MeshPhysicalMaterial meshes.
+    function setupEnvMap() {
+      const pmremGenerator = new THREE.PMREMGenerator(renderer);
+      const envTexture = pmremGenerator.fromScene(new RoomEnvironment()).texture;
+      scene.environment = envTexture;
+      pmremGenerator.dispose();
+    }
+
+    // ─── setupLighting() ──────────────────────────────────────────────────────
+    // Lighting rig designed to catch the sharp bevel edges of the glass text.
+    function setupLighting() {
+      // Low-intensity ambient fill — prevents completely black shadow regions
+      const ambient = new THREE.AmbientLight(0xffffff, 0.15);
+      scene.add(ambient);
+
+      // Key light — warm white, upper-left, creates primary bevel highlights
+      const keyLight = new THREE.DirectionalLight(0xfff5e0, 2.5);
+      keyLight.position.set(-3, 4, 3);
+      scene.add(keyLight);
+
+      // Fill light — cool blue, right side, balances warmth and adds depth
+      const fillLight = new THREE.DirectionalLight(0xd0e8ff, 1.2);
+      fillLight.position.set(4, -1, 2);
+      scene.add(fillLight);
+
+      // Rim light — neutral white, behind/above, catches top bevel edge
+      const rimLight = new THREE.PointLight(0xffffff, 1.8, 12);
+      rimLight.position.set(0, 3, -4);
+      scene.add(rimLight);
+    }
+
+    // ─── loadFont() ───────────────────────────────────────────────────────────
+    // Fetches the pre-converted Comfortaa Bold typeface.json from disk.
+    // Returns a Promise<Font>. Cached by browser after first load.
+    async function loadFont() {
+      const font = await new FontLoader().loadAsync('fonts/comfortaa_bold.typeface.json');
+      loadedFont = font;
+      return font;
+    }
+
+    // ─── buildTextMesh() ──────────────────────────────────────────────────────
+    // Creates the extruded glass text mesh and adds it to the scene.
+    function buildTextMesh(font) {
+      // Remove existing text mesh if rebuilding (context restore)
+      if (textMesh) {
+        textMesh.geometry.dispose();
+        scene.remove(textMesh);
+        textMesh = null;
+      }
+
+      const geometry = new TextGeometry('Tom Bernys', {
+        font,
+        size: 1.0,
+        depth: 0.4,
+        curveSegments: 6,
+        bevelEnabled: true,
+        bevelThickness: 0.03,
+        bevelSize: 0.02,
+        bevelSegments: 4,
+      });
+
+      // Center before computing scale — critical for correct rotation pivot
+      geometry.computeBoundingBox();
+      geometry.center();
+
+      // Scale text to ~60% of visible viewport width
+      // Visible width at z=0 for PerspectiveCamera: 2 * cameraZ * tan(fov/2 * π/180)
+      const fov = camera.fov;
+      const cameraZ = camera.position.z;
+      const visibleWidth = 2 * cameraZ * Math.tan((fov / 2) * (Math.PI / 180));
+      const targetWidth = visibleWidth * 0.6;
+      const bboxWidth = geometry.boundingBox.max.x - geometry.boundingBox.min.x;
+      const scale = targetWidth / bboxWidth;
+
+      const material = new THREE.MeshPhysicalMaterial({
+        transmission: 1.0,
+        ior: 1.5,
+        thickness: 0.5,
+        roughness: 0.0,
+        metalness: 0.0,
+        transparent: true,
+        envMapIntensity: 1.0,
+      });
+
+      textMesh = new THREE.Mesh(geometry, material);
+      textMesh.scale.setScalar(scale);
+      scene.add(textMesh);
+    }
+
+    // ─── setupPostProcessing() ────────────────────────────────────────────────
+    // Creates the EffectComposer pipeline: RenderPass → Bloom → Vignette → Output.
+    function setupPostProcessing() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      composer = new EffectComposer(renderer);
+      composer.addPass(new RenderPass(scene, camera));
+
+      // Subtle haze bloom — light glow around bright areas
+      bloomPass = new UnrealBloomPass(
+        new THREE.Vector2(w, h),
+        0.4,   // strength  — subtle haze
+        0.3,   // radius
+        0.75   // threshold — only bright areas bloom
+      );
+      composer.addPass(bloomPass);
+
+      // Medium vignette — clearly visible edge darkening, spotlight on center
+      const vignettePass = new ShaderPass(VignetteShader);
+      vignettePass.uniforms['darkness'].value = 1.5;
+      composer.addPass(vignettePass);
+
+      // OutputPass MUST be last — handles correct color management in r175
+      composer.addPass(new OutputPass());
     }
 
     // ─── RAF loop ─────────────────────────────────────────────────────────────
@@ -348,7 +477,12 @@
       if (rafId !== null) return;
       function loop() {
         rafId = requestAnimationFrame(loop);
-        renderer.render(scene, camera);
+        // Use composer when ready; fall back to direct render during init
+        if (composer) {
+          composer.render();
+        } else {
+          renderer.render(scene, camera);
+        }
       }
       rafId = requestAnimationFrame(loop);
     }
@@ -386,12 +520,15 @@
       canvas.addEventListener('webglcontextrestored', () => {
         clearTimeout(contextLossFallbackTimer);
         initScene();
+        setupEnvMap();
+        setupLighting();
+        if (loadedFont) buildTextMesh(loadedFont);
+        setupPostProcessing();
         startRAFLoop();
       });
     }
 
     // ─── Resize handler ───────────────────────────────────────────────────────
-    // Does NOT create new render targets — Phase 3 will add renderTarget.setSize() calls here.
     window.addEventListener('resize', () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
@@ -399,6 +536,7 @@
       camera.updateProjectionMatrix();
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setSize(w, h);
+      if (composer) composer.setSize(w, h);
     });
 
     // ─── Loading screen ───────────────────────────────────────────────────────
@@ -555,6 +693,8 @@
       initRenderer();
       registerContextHandlers(); // Must be registered BEFORE startRAFLoop()
       initScene();
+      setupEnvMap();
+      setupLighting();
 
       // RAF loop must run so compileAsync has a valid GL context while loading screen is visible
       startRAFLoop();
@@ -563,14 +703,25 @@
       window.renderer = renderer;
       window.gpuTier = gpuTier;
 
-      console.log('[Phase 2] GPU tier:', gpuTier, '| Three.js r' + THREE.REVISION);
+      console.log('[Phase 3] GPU tier:', gpuTier, '| Three.js r' + THREE.REVISION);
 
       // ─── Promise-based readiness gate ───────────────────────────────────────
       // A: Text reveal must complete before transition (~2.6s)
-      // B: compileAsync pre-compiles shaders before hero is revealed (no stutter on frame 1)
-      // C: 5s fallback maximum — never block indefinitely on slow compile or GPU detection
+      // B: Font loaded + hero geometry added to scene BEFORE compileAsync (Pitfall 5)
+      // C: compileAsync pre-compiles shaders — no stutter on frame 1
+      // D: 5s fallback maximum — never block indefinitely
       const revealDone = initLoadingScreen(gpuTier);
-      const shadersReady = warmupShaders();
+
+      // Load font in parallel with the loading screen animation
+      const fontReady = loadFont().then(font => {
+        buildTextMesh(font);
+        // Post-processing must be set up after scene has content (avoids empty RenderPass)
+        setupPostProcessing();
+      });
+
+      // warmupShaders MUST run after buildTextMesh so compileAsync sees the glass material
+      const shadersReady = fontReady.then(() => warmupShaders());
+
       const fallback = new Promise(r => setTimeout(r, 5000));
 
       Promise.race([
