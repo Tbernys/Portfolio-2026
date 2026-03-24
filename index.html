@@ -137,6 +137,39 @@
       border-color: rgba(255, 255, 255, 0.25);
     }
 
+    /* Back-to-top button — glassmorphism matching CTA */
+    .back-to-top {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 3rem;
+      height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      color: var(--color-text);
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, background 0.2s, border-color 0.2s;
+      z-index: 1000;
+    }
+
+    .back-to-top.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .back-to-top:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
     .cta-btn .arrow {
       display: inline-block;
       animation: bob 1.5s ease-in-out infinite;
@@ -354,6 +387,12 @@
       <h2>Contact</h2>
     </section>
   </main>
+
+  <button class="back-to-top" id="back-to-top" aria-label="Retour en haut">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10 16V4M10 4l-5 5M10 4l5 5"/>
+    </svg>
+  </button>
 
   <script type="module">
     import * as THREE from 'three';
@@ -2123,6 +2162,8 @@
 
     // ─── Scroll Integration ──────────────────────────────────────────────────
     function initScrollIntegration() {
+      const backToTopBtn = document.getElementById('back-to-top');
+
       // Track A: CSS-driven (canvas parallax + fade, CTA fade)
       const heroTl = gsap.timeline({
         scrollTrigger: {
@@ -2170,6 +2211,13 @@
           } else if (progress <= 0.95 && rafId === null && !document.hidden) {
             startRAFLoop();
           }
+
+          // Back-to-top button visibility — appears after hero scroll-out
+          if (progress > 0.95) {
+            backToTopBtn.classList.add('is-visible');
+          } else {
+            backToTopBtn.classList.remove('is-visible');
+          }
         }
       });
 
@@ -2179,6 +2227,11 @@
       document.getElementById('cta-btn').addEventListener('click', () => {
         const firstSection = document.querySelector('.content-section');
         if (firstSection) firstSection.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      // Back-to-top button click — smooth scroll to page top
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
 
       // Content section entrance animations (IntersectionObserver, play once)
