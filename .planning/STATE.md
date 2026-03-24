@@ -1,3 +1,17 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: Ready to execute
+stopped_at: Completed 04-01-PLAN.md — ScrollTrigger hero scroll-out, CTA, touch fix, tile spread
+last_updated: "2026-03-24T22:44:33.873Z"
+progress:
+  total_phases: 7
+  completed_phases: 3
+  total_plans: 9
+  completed_plans: 7
+---
+
 # Project State
 
 ## Project Reference
@@ -5,23 +19,17 @@
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Visitors instantly see the quality of Tom's work through an immersive visual experience and embedded video reels
-**Current focus:** Phase 2 — WebGL Foundation
+**Current focus:** Phase 04 — scroll-integration
 
 ## Current Position
 
-Phase: 2 of 7 (WebGL Foundation)
-Plan: 02-03 complete — Phase 2 COMPLETE — next: Phase 03 (Hero Scene)
-Status: Phase 2 complete — all 5 success criteria verified on production
-Last activity: 2026-03-22 — 02-03 complete: shader warmup gate (compileAsync), Promise.race(2s/5s) loading gate, glitch dissolve transition (clip-path), loader DOM cleanup, all Phase 2 criteria verified on production
-
-**Deployed URL:** https://portfolio-2026-three-pi.vercel.app
-**Vercel project:** toms-projects-56bd8057/portfolio-2026
-
-Progress: [████████░░] 43%
+Phase: 04 (scroll-integration) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
 **Velocity:**
+
 - Total plans completed: 3
 - Average duration: 22 min
 - Total execution time: 1.07 hours
@@ -34,11 +42,13 @@ Progress: [████████░░] 43%
 | 02-webgl-foundation | 3 | 53 min | 18 min |
 
 **Recent Trend:**
+
 - Last 5 plans: 01-01 (2 min), 01-02 (60 min), 02-01 (2 min)
 - Trend: Baseline established
 
 *Updated after each plan completion*
 | Phase 02-webgl-foundation P03 | 45 | 2 tasks | 1 files |
+| Phase 04-scroll-integration P01 | 18 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -70,6 +80,9 @@ Recent decisions affecting current work:
 - GSAP Club plugins not usable via importmap in browser ES module context — future plans should plan manual fallbacks for any Club plugin
 - clip-path inset() fragment approach chosen for dissolve — simpler than polygon splitting, equally effective glitch aesthetic
 - Progress bar repositioned under text — above was too visually dominant during character reveal
+- [Phase 04-scroll-integration]: Two-track ScrollTrigger: GSAP timeline for CSS canvas parallax/fade, ScrollTrigger.create onUpdate for Three.js mutations (glassGroup Z, tile spread)
+- [Phase 04-scroll-integration]: entranceComplete flag gates scroll-driven glassGroup.position.z writes to prevent conflict with 2.4s entry animation
+- [Phase 04-scroll-integration]: Canvas-scoped passive touch listeners replace window-level passive:false handlers — mobile scroll unblocked while glass rotation preserved
 
 ### Pending Todos
 
@@ -83,6 +96,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22
-Stopped at: Completed 02-03-PLAN.md — Phase 2 WebGL Foundation fully complete. Next: Phase 03 Hero Scene planning.
+Last session: 2026-03-24T22:44:33.869Z
+Stopped at: Completed 04-01-PLAN.md — ScrollTrigger hero scroll-out, CTA, touch fix, tile spread
 Resume file: None

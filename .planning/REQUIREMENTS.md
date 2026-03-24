@@ -29,9 +29,9 @@
 
 ### Scroll & Navigation
 
-- [ ] **SCRL-01**: Visitor scrolls vertically from hero into content sections
-- [ ] **SCRL-02**: Hero WebGL canvas fades/scales as visitor scrolls down, revealing content beneath
-- [ ] **SCRL-03**: Fixed navigation or scroll indicator helps visitor orient on the page
+- [x] **SCRL-01**: Visitor scrolls vertically from hero into content sections
+- [x] **SCRL-02**: Hero WebGL canvas fades/scales as visitor scrolls down, revealing content beneath
+- [x] **SCRL-03**: Fixed navigation or scroll indicator helps visitor orient on the page
 
 ### Projects
 
@@ -111,9 +111,9 @@
 | RESP-03 | Phase 7 | Pending |
 | RESP-04 | Phase 7 | Pending |
 | RESP-05 | Phase 7 | Pending |
-| SCRL-01 | Phase 4 | Pending |
-| SCRL-02 | Phase 4 | Pending |
-| SCRL-03 | Phase 4 | Pending |
+| SCRL-01 | Phase 4 | Complete |
+| SCRL-02 | Phase 4 | Complete |
+| SCRL-03 | Phase 4 | Complete |
 | PROJ-01 | Phase 5 | Pending |
 | PROJ-02 | Phase 5 | Pending |
 | PROJ-03 | Phase 5 | Pending |
