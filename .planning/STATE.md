@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Ready to execute
-stopped_at: Completed 04-01-PLAN.md — ScrollTrigger hero scroll-out, CTA, touch fix, tile spread
-last_updated: "2026-03-24T22:44:33.873Z"
+stopped_at: Completed 04-03-PLAN.md
+last_updated: "2026-03-24T23:50:41.201Z"
 progress:
   total_phases: 7
-  completed_phases: 3
-  total_plans: 9
-  completed_plans: 7
+  completed_phases: 4
+  total_plans: 10
+  completed_plans: 10
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 ## Current Position
 
 Phase: 04 (scroll-integration) — EXECUTING
-Plan: 2 of 2
+Plan: 2 of 3
 
 ## Performance Metrics
 
@@ -49,6 +49,7 @@ Plan: 2 of 2
 *Updated after each plan completion*
 | Phase 02-webgl-foundation P03 | 45 | 2 tasks | 1 files |
 | Phase 04-scroll-integration P01 | 18 | 1 tasks | 1 files |
+| Phase 04-scroll-integration P03 | 1 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,8 @@ Recent decisions affecting current work:
 - [Phase 04-scroll-integration]: Two-track ScrollTrigger: GSAP timeline for CSS canvas parallax/fade, ScrollTrigger.create onUpdate for Three.js mutations (glassGroup Z, tile spread)
 - [Phase 04-scroll-integration]: entranceComplete flag gates scroll-driven glassGroup.position.z writes to prevent conflict with 2.4s entry animation
 - [Phase 04-scroll-integration]: Canvas-scoped passive touch listeners replace window-level passive:false handlers — mobile scroll unblocked while glass rotation preserved
+- [Phase 04-scroll-integration]: Film grain applied to main via .content-bg::before at opacity 0.04 (subtler than loader's 0.07), position:fixed so grain doesn't scroll
+- [Phase 04-scroll-integration]: Back-to-top toggle added inside existing Track B onUpdate — zero new ScrollTrigger instances
 
 ### Pending Todos
 
@@ -96,6 +99,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T22:44:33.869Z
-Stopped at: Completed 04-01-PLAN.md — ScrollTrigger hero scroll-out, CTA, touch fix, tile spread
+Last session: 2026-03-24T23:50:41.196Z
+Stopped at: Completed 04-03-PLAN.md
 Resume file: None

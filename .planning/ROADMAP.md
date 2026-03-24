@@ -83,7 +83,7 @@ Plans:
 Plans:
 - [x] 04-01-PLAN.md — ScrollTrigger hero transition (parallax + fade), touch event fix, CTA button, tile spread, RAF optimization
 - [x] 04-02-PLAN.md — Content section entrance animations, film grain background, visual verification
-- [ ] 04-03-PLAN.md — Gap closure: fixed back-to-top button for persistent page orientation (SCRL-03)
+- [x] 04-03-PLAN.md — Gap closure: fixed back-to-top button for persistent page orientation (SCRL-03)
 
 ### Phase 5: Project Showcase
 **Goal**: Visitors can browse Tom's work — each project displays a title, role metadata, and a Vimeo player that loads only when the card approaches the viewport
