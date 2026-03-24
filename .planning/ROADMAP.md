@@ -78,10 +78,11 @@ Plans:
   1. Visitor can scroll vertically from the hero into content sections without the page feeling "stuck" or hijacked
   2. As the visitor scrolls down, the hero WebGL canvas visibly fades or scales away, revealing content beneath — the transition feels intentional, not abrupt
   3. A fixed navigation element or scroll indicator is visible throughout the page, helping the visitor understand their position
-**Plans:** 1 plan
+**Plans:** 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — ScrollTrigger canvas fade, touch event fix, nav dot indicator, RAF optimization
+- [ ] 04-01-PLAN.md — ScrollTrigger hero transition (parallax + fade), touch event fix, CTA button, tile spread, RAF optimization
+- [ ] 04-02-PLAN.md — Content section entrance animations, film grain background, visual verification
 
 ### Phase 5: Project Showcase
 **Goal**: Visitors can browse Tom's work — each project displays a title, role metadata, and a Vimeo player that loads only when the card approaches the viewport
@@ -126,7 +127,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | 1. Scaffolding | 1/2 | Complete    | 2026-03-22 |
 | 2. WebGL Foundation | 3/3 | Complete    | 2026-03-22 |
 | 3. Hero Scene | 0/TBD | Not started | - |
-| 4. Scroll Integration | 0/1 | Not started | - |
+| 4. Scroll Integration | 0/2 | Not started | - |
 | 5. Project Showcase | 0/TBD | Not started | - |
 | 6. Content Sections | 0/TBD | Not started | - |
 | 7. Responsive and Launch | 0/TBD | Not started | - |
