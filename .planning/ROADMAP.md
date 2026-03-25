@@ -108,11 +108,11 @@ Plans:
   1. A client/brand logos section displays recognizable logos (SVG or high-quality images) in a grid or horizontal row
   2. Visitor can submit the contact form (name, email, message) and receives a clear success or error message after submission
   3. A direct email link is visible as an alternative to the form — clicking it opens the visitor's mail client
-**Plans:** 2 plans
+**Plans:** 0/2 plans executed
 
 Plans:
-- [ ] 06-01-PLAN.md — Clients logo row (placeholders), contact form HTML/CSS/JS, Formspree fetch submission, mailto link
-- [ ] 06-02-PLAN.md — Formspree FORM_ID setup (user action), visual verification of both sections
+- [x] 06-01-PLAN.md — Clients logo row (placeholders), contact form HTML/CSS/JS, Formspree fetch submission, mailto link
+- [x] 06-02-PLAN.md — Formspree FORM_ID setup (user action), visual verification of both sections
 
 ### Phase 7: Responsive and Launch
 **Goal**: The site works correctly and performs at target frame rate on real mobile devices — every v1 requirement is met on both desktop and mobile before the URL goes live
@@ -138,5 +138,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | 3. Hero Scene | 0/TBD | Not started | - |
 | 4. Scroll Integration | 2/3 | In Progress|  |
 | 5. Project Showcase | 1/2 | In Progress|  |
-| 6. Content Sections | 0/2 | Not started | - |
+| 6. Content Sections | 0/2 | Planned    |  |
 | 7. Responsive and Launch | 0/TBD | Not started | - |
