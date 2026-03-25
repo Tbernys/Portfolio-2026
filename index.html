@@ -627,6 +627,7 @@
     import { FontLoader } from 'three/addons/loaders/FontLoader.js';
     import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
     import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+    import Player from '@vimeo/player';
 
     // ─── Module-level state ───────────────────────────────────────────────────
     let gpuTier = 1;
@@ -2419,6 +2420,8 @@
 
       // Set up IntersectionObserver for lazy-load readiness
       setupCardObserver();
+      setupCardInteractions();   // Hover preview, click, keyboard, mobile double-tap
+      setupLightboxListeners();  // X button, backdrop click, Escape key
     }
 
     async function fetchThumbnails() {
@@ -2449,6 +2452,208 @@
       }, { rootMargin: '200px' });
 
       document.querySelectorAll('.project-card').forEach(card => cardObserver.observe(card));
+    }
+
+    // ─── Projects Interaction ───────────────────────────────────────────────────
+    let activePlayer = null;
+    let hoverTimeouts = new Map(); // debounce per card
+
+    function buildPreviewSrc(vimeoId) {
+      const base = `https://player.vimeo.com/video/${vimeoId}`;
+      if (VIMEO_PAID) return `${base}?background=1`;
+      return `${base}?autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0`;
+    }
+
+    function setupCardInteractions() {
+      const cards = document.querySelectorAll('.project-card');
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      cards.forEach(card => {
+        // ── Desktop hover: inject muted preview iframe after 150ms debounce ──
+        card.addEventListener('mouseenter', () => {
+          if (isTouchDevice) return; // skip on touch devices
+          if (!card.dataset.nearViewport) return;
+          if (prefersReducedMotion) return; // no preview on reduced motion
+
+          const timeout = setTimeout(() => {
+            // Don't inject if already has preview
+            if (card.querySelector('.project-preview')) return;
+            const iframe = document.createElement('iframe');
+            iframe.src = buildPreviewSrc(card.dataset.vimeoId);
+            iframe.className = 'project-preview';
+            iframe.allow = 'autoplay; fullscreen; picture-in-picture; playsinline';
+            iframe.setAttribute('frameborder', '0');
+            iframe.loading = 'lazy';
+            card.appendChild(iframe);
+          }, 150);
+          hoverTimeouts.set(card, timeout);
+        });
+
+        card.addEventListener('mouseleave', () => {
+          // Clear debounce timer
+          const timeout = hoverTimeouts.get(card);
+          if (timeout) {
+            clearTimeout(timeout);
+            hoverTimeouts.delete(card);
+          }
+          // Remove preview iframe
+          const iframe = card.querySelector('.project-preview');
+          if (iframe) iframe.remove();
+        });
+
+        // ── Desktop click: open lightbox ──
+        card.addEventListener('click', (e) => {
+          if (isTouchDevice) return; // handled by touchstart
+          openLightbox(card.dataset.vimeoId, parseInt(card.dataset.index));
+        });
+
+        // ── Keyboard: Enter/Space opens lightbox ──
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openLightbox(card.dataset.vimeoId, parseInt(card.dataset.index));
+          }
+        });
+
+        // ── Mobile double-tap: first tap reveals overlay, second tap opens lightbox (D-15) ──
+        card.addEventListener('touchstart', (e) => {
+          if (!isTouchDevice) return;
+          if (!card.classList.contains('touch-revealed')) {
+            e.preventDefault();
+            // Close any other revealed cards
+            document.querySelectorAll('.project-card.touch-revealed')
+              .forEach(c => c.classList.remove('touch-revealed'));
+            card.classList.add('touch-revealed');
+
+            // Inject preview iframe on touch-reveal too (if near viewport)
+            if (card.dataset.nearViewport && !prefersReducedMotion) {
+              if (!card.querySelector('.project-preview')) {
+                const iframe = document.createElement('iframe');
+                iframe.src = buildPreviewSrc(card.dataset.vimeoId);
+                iframe.className = 'project-preview';
+                iframe.allow = 'autoplay; fullscreen; picture-in-picture; playsinline';
+                iframe.setAttribute('frameborder', '0');
+                iframe.loading = 'lazy';
+                card.appendChild(iframe);
+              }
+            }
+          } else {
+            // Second tap — open lightbox
+            openLightbox(card.dataset.vimeoId, parseInt(card.dataset.index));
+          }
+        }, { passive: false });
+      });
+
+      // Tap outside any card removes touch-revealed state
+      document.addEventListener('touchstart', (e) => {
+        if (!e.target.closest('.project-card')) {
+          document.querySelectorAll('.project-card.touch-revealed').forEach(c => {
+            c.classList.remove('touch-revealed');
+            const iframe = c.querySelector('.project-preview');
+            if (iframe) iframe.remove();
+          });
+        }
+      }, { passive: true });
+    }
+
+    async function openLightbox(vimeoId, projectIndex) {
+      const proj = PROJECTS[projectIndex];
+      if (!proj) return;
+
+      // Remove any hover preview iframe from the clicked card (prevents audio bleed — anti-pattern #1)
+      const clickedCard = document.querySelector(`[data-index="${projectIndex}"]`);
+      if (clickedCard) {
+        const previewIframe = clickedCard.querySelector('.project-preview');
+        if (previewIframe) previewIframe.remove();
+      }
+
+      const wrap = document.getElementById('lightbox-player-wrap');
+      wrap.innerHTML = ''; // Clear any previous player
+
+      // Create Vimeo player via SDK
+      activePlayer = new Player(wrap, {
+        id: parseInt(vimeoId),
+        responsive: true,
+        playsinline: true,
+      });
+
+      // Populate metadata (D-11: title + role + client below player, D-18: client only in lightbox)
+      document.getElementById('lightbox-meta').innerHTML = `
+        <p class="lightbox-title">${proj.title}</p>
+        <p class="lightbox-role">${proj.role}</p>
+        <p class="lightbox-client">${proj.client}</p>
+      `;
+
+      // Show lightbox (remove hidden first, then add is-open on next frame for CSS transition)
+      const lightbox = document.getElementById('lightbox');
+      lightbox.removeAttribute('hidden');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          lightbox.classList.add('is-open');
+        });
+      });
+
+      // Lock body scroll
+      document.body.style.overflow = 'hidden';
+
+      // Move focus to close button for a11y
+      document.getElementById('lightbox-close').focus();
+
+      // Store which card opened the lightbox for focus return
+      lightbox._triggerCard = clickedCard;
+    }
+
+    async function closeLightbox() {
+      // Pause and destroy player (always before removing DOM — anti-pattern #3)
+      if (activePlayer) {
+        try {
+          await activePlayer.pause();
+        } catch (_) { /* iframe may already be gone */ }
+        try {
+          activePlayer.destroy();
+        } catch (_) { /* safe cleanup */ }
+        activePlayer = null;
+      }
+
+      // Clear player wrap
+      document.getElementById('lightbox-player-wrap').innerHTML = '';
+      document.getElementById('lightbox-meta').innerHTML = '';
+
+      const lightbox = document.getElementById('lightbox');
+      lightbox.classList.remove('is-open');
+
+      // Wait for fade-out transition, then hide
+      setTimeout(() => {
+        lightbox.setAttribute('hidden', '');
+      }, 350);
+
+      // Restore body scroll (anti-pattern #4: always restore)
+      document.body.style.overflow = '';
+
+      // Return focus to triggering card
+      if (lightbox._triggerCard) {
+        lightbox._triggerCard.focus();
+        lightbox._triggerCard = null;
+      }
+    }
+
+    function setupLightboxListeners() {
+      // Close button (D-12)
+      document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+
+      // Backdrop click (D-12)
+      document.getElementById('lightbox-backdrop').addEventListener('click', closeLightbox);
+
+      // Escape key (a11y — Claude's discretion, per UI-SPEC accessibility contract)
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          const lightbox = document.getElementById('lightbox');
+          if (lightbox && lightbox.classList.contains('is-open')) {
+            closeLightbox();
+          }
+        }
+      });
     }
 
     // ─── Scroll Integration ──────────────────────────────────────────────────
