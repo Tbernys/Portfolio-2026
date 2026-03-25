@@ -417,14 +417,137 @@
       display: none;
     }
 
-    /* Placeholder scroll space for future phases */
+    /* ─── Clients Section ──────────────────────────────────────────── */
     #clients,
     #contact {
-      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       background: #050508;
+      padding: 6rem 2rem;
+    }
+
+    .section-inner {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .logo-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 3rem;
+      padding: 2rem 0;
+    }
+
+    .logo-placeholder {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      opacity: 0.6;
+      border: 1px solid rgba(212, 197, 178, 0.2);
+      padding: 0.5rem 1.2rem;
+      border-radius: 2px;
+    }
+
+    /* ─── Contact Section ──────────────────────────────────────────── */
+    .contact-form {
+      max-width: 500px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-field {
+      width: 100%;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0.375rem;
+      color: var(--color-text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      padding: 0.75rem 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      border-color: rgba(212, 197, 178, 0.4);
+    }
+
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder {
+      color: rgba(245, 240, 235, 0.35);
+    }
+
+    .contact-form textarea {
+      resize: vertical;
+    }
+
+    .contact-submit {
+      align-self: flex-start;
+      padding: 0.75rem 1.5rem;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 2rem;
+      color: var(--color-text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .contact-submit:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .form-feedback {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      min-height: 1.25rem;
+    }
+
+    .form-feedback--success {
+      color: #7ed6a0;
+    }
+
+    .form-feedback--error {
+      color: #e67272;
+    }
+
+    .contact-mailto {
+      text-align: center;
+      margin-top: 2rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: rgba(245, 240, 235, 0.5);
+    }
+
+    .contact-mailto a {
+      color: var(--color-accent);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(212, 197, 178, 0.3);
+      transition: border-color 0.2s;
+    }
+
+    .contact-mailto a:hover {
+      border-color: var(--color-accent);
     }
 
     /* Content background — near-black with CRT-cohesive film grain (only below hero) */
@@ -600,13 +723,42 @@
     </div>
 
     <section id="clients" class="content-section" data-lang="fr" aria-label="Clients">
-      <!-- Phase 5/6 content replaces this -->
-      <h2>Clients</h2>
+      <div class="section-inner">
+        <h2 class="section-title">Ils m'ont fait confiance</h2>
+        <div class="logo-row">
+          <span class="logo-placeholder">Nike</span>
+          <span class="logo-placeholder">Canal+</span>
+          <span class="logo-placeholder">Dior</span>
+          <span class="logo-placeholder">Red Bull</span>
+          <span class="logo-placeholder">Ubisoft</span>
+          <span class="logo-placeholder">Netflix</span>
+        </div>
+      </div>
     </section>
 
     <section id="contact" class="content-section" data-lang="fr" aria-label="Contact">
-      <!-- Phase 5/6 content replaces this -->
-      <h2>Contact</h2>
+      <div class="section-inner">
+        <h2 class="section-title">Contact</h2>
+        <form id="contact-form" class="contact-form" action="https://formspree.io/f/REPLACE_WITH_FORM_ID" method="POST">
+          <div class="form-field">
+            <label for="contact-name" class="sr-only">Nom</label>
+            <input type="text" id="contact-name" name="name" placeholder="Nom" required>
+          </div>
+          <div class="form-field">
+            <label for="contact-email" class="sr-only">Email</label>
+            <input type="email" id="contact-email" name="email" placeholder="Email" required>
+          </div>
+          <div class="form-field">
+            <label for="contact-message" class="sr-only">Message</label>
+            <textarea id="contact-message" name="message" placeholder="Message" rows="5" required></textarea>
+          </div>
+          <div id="form-feedback" class="form-feedback" aria-live="polite"></div>
+          <button type="submit" class="contact-submit">Envoyer</button>
+        </form>
+        <p class="contact-mailto">
+          Ou directement : <a href="mailto:contact@tombernys.com">contact@tombernys.com</a>
+        </p>
+      </div>
     </section>
   </main>
 
