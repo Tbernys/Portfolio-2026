@@ -2805,6 +2805,51 @@
       });
     }
 
+    // ─── Contact Form ─────────────────────────────────────────────────────────
+    function initContactForm() {
+      const form = document.getElementById('contact-form');
+      if (!form) return;
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const feedback = document.getElementById('form-feedback');
+        const submitBtn = form.querySelector('.contact-submit');
+
+        // Clear previous feedback (Pitfall 4)
+        feedback.textContent = '';
+        feedback.className = 'form-feedback';
+
+        // Disable button during submission
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Envoi...';
+
+        try {
+          const response = await fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'Accept': 'application/json' }
+          });
+
+          if (response.ok) {
+            feedback.textContent = 'Message envoy\u00e9 ! Je vous r\u00e9ponds rapidement.';
+            feedback.className = 'form-feedback form-feedback--success';
+            form.reset();
+          } else {
+            const json = await response.json().catch(() => ({}));
+            const msg = json.errors?.map(err => err.message).join(', ') || 'Une erreur est survenue.';
+            feedback.textContent = msg;
+            feedback.className = 'form-feedback form-feedback--error';
+          }
+        } catch {
+          feedback.textContent = 'Erreur r\u00e9seau. Veuillez r\u00e9essayer.';
+          feedback.className = 'form-feedback form-feedback--error';
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Envoyer';
+        }
+      });
+    }
+
     // ─── Scroll Integration ──────────────────────────────────────────────────
     function initScrollIntegration() {
       const backToTopBtn = document.getElementById('back-to-top');
@@ -2881,6 +2926,7 @@
 
       // Initialize projects grid (must happen before section observer)
       initProjectsShowcase();
+      initContactForm();
 
       // Content section entrance animations (IntersectionObserver, play once)
       const sectionObserver = new IntersectionObserver((entries) => {
