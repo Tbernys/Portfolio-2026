@@ -12,22 +12,21 @@ Visitors instantly see the quality of Tom's work through an immersive visual exp
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Immersive WebGL hero section with "Tom Bernys" in 3D glass text — Validated in Phase 2: Hero Scene
+- [x] GPU fluid simulation interactive with mouse/touch — Validated in Phase 2: Hero Scene
+- [x] Animated background (cylindrical tiles, bloom, procedural patterns) — Validated in Phase 2: Hero Scene
+- [x] Glitch-style loading screen with character-by-character text reveal — Validated in Phase 3: Loading & Entrance
+- [x] Post-processing pipeline (bloom, vignette) — Validated in Phase 2: Hero Scene
+- [x] Vertical scroll from hero into content sections — Validated in Phase 4: Scroll Integration
+- [x] WebGL effects degrade on mobile (reduced DPR, fewer bloom passes, simplified fluid) — Validated in Phase 2: Hero Scene
 
 ### Active
 
-- [ ] Immersive WebGL hero section with "Tom Bernys" in 3D glass text (TextGeometry + glass shader)
-- [ ] GPU fluid simulation interactive with mouse/touch (style PromptHQ)
-- [ ] Animated background (cylindrical tiles, bloom, procedural patterns)
-- [ ] Glitch-style loading screen with character-by-character text reveal
-- [ ] Vertical scroll from hero into content sections
 - [ ] Project showcase section with 6-10 embedded Vimeo players
 - [ ] Client/brand logos section
 - [ ] Contact CTA section (email, social links)
 - [ ] Fully responsive — desktop and mobile optimized
-- [ ] WebGL effects allege on mobile (reduced DPR, fewer bloom passes, simplified fluid)
 - [ ] Static site — single HTML file, no framework, vanilla JS + Three.js via CDN
-- [ ] Post-processing pipeline (bloom, vignette)
 
 ### Out of Scope
 
@@ -65,4 +64,4 @@ Visitors instantly see the quality of Tom's work through an immersive visual exp
 | Dark theme throughout | Matches video/motion design aesthetic, makes content pop | — Pending |
 
 ---
-*Last updated: 2026-03-22 after initialization*
+*Last updated: 2026-03-25 after Phase 4 (Scroll Integration) complete — cinematic hero-to-content scroll transition with parallax, entrance animations, and back-to-top orientation*
