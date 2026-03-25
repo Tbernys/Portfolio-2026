@@ -32,15 +32,14 @@ Declared values (must be multiples of 4):
 | Token | Value | Usage |
 |-------|-------|-------|
 | xs | 4px | Overlay text gap between title and role |
-| sm | 8px | Minimum grid gap (D-04 lower bound) |
-| md | 16px | Overlay horizontal padding, lightbox meta internal spacing |
+| sm | 8px | Grid gap between cards (D-04 lower bound) |
+| md | 16px | Overlay padding (horizontal and vertical), lightbox meta internal spacing |
 | lg | 24px | Lightbox meta padding below player |
 | xl | 32px | Section title bottom margin, lightbox close button offset |
 | 2xl | 48px | Section top padding |
 | 3xl | 64px | Section bottom padding |
 
 Exceptions:
-- Grid gap: 10px (within D-04 range 8-12px, not a strict token multiple but closest even value)
 - Lightbox close button: 40px diameter (touch target minimum 44px met by including padding)
 
 ---
@@ -49,18 +48,18 @@ Exceptions:
 
 | Role | Size | Weight | Line Height | Font |
 |------|------|--------|-------------|------|
-| Section title | clamp(1.25rem, 3vw, 2rem) | 300 | 1.2 | Inter |
-| Overlay title | clamp(0.625rem, 2.2vw, 0.9375rem) | 600 | 1.3 | Inter |
-| Overlay role | clamp(0.5625rem, 1.8vw, 0.8125rem) | 400 | 1.3 | Inter |
+| Section title | clamp(1.25rem, 3vw, 2rem) | 400 | 1.2 | Inter |
 | Lightbox title | clamp(1rem, 2.5vw, 1.5rem) | 600 | 1.2 | Inter |
-| Lightbox role | 0.875rem (14px) | 400 | 1.5 | Inter |
-| Lightbox client | 0.875rem (14px) | 400 | 1.5 | Inter |
+| Body/label | 0.875rem (14px) | 400 | 1.5 | Inter |
+| Overlay title | clamp(0.625rem, 2.2vw, 0.875rem) | 600 | 1.3 | Inter |
 
 Notes:
-- Section title uses uppercase + letter-spacing 0.2em (matches existing section heading pattern)
-- Overlay text uses `clamp()` to remain legible at 3-column mobile (each card ~119px wide on 375px viewport)
+- Section title differentiates via uppercase, letter-spacing 0.2em, and accent color — weight 400 is sufficient
+- "Body/label" covers: overlay role text, lightbox role, lightbox client. All render at 0.875rem (14px). Differentiation is by color (accent for client, white for role) not by size
+- Overlay title uses `clamp()` to remain legible at 3-column mobile (each card ~119px wide on 375px viewport)
 - Overlay title is single-line with `text-overflow: ellipsis` and `white-space: nowrap`
-- Lightbox client uses accent color to differentiate from role text
+- Overlay role uses the same 0.875rem base as body/label, clamped down for mobile: `clamp(0.625rem, 1.8vw, 0.875rem)`
+- Two weights only: 400 (regular) for body text and section title, 600 (semibold) for emphasis titles
 
 ---
 
@@ -87,6 +86,12 @@ Accent reserved for: section title text, lightbox client name, overlay role meta
 
 ---
 
+## Visuals
+
+Primary focal point: the 3x3 projects grid. Section title is secondary; lightbox is tertiary (triggered on demand).
+
+---
+
 ## Component Inventory
 
 ### 1. Section Container (`#projects`)
@@ -101,13 +106,13 @@ Accent reserved for: section title text, lightbox client name, overlay role meta
 - Text: "Projets" (D-07)
 - Padding: 0 32px 32px
 - Color: var(--color-accent) / #D4C5B2
-- Font: Inter, 300 weight, uppercase, letter-spacing 0.2em
+- Font: Inter, 400 weight, uppercase, letter-spacing 0.2em
 - Size: clamp(1.25rem, 3vw, 2rem)
 
 ### 3. Projects Grid (`.projects-grid`)
 
 - CSS Grid: `grid-template-columns: repeat(3, 1fr)`
-- Gap: 10px (D-04)
+- Gap: 8px (D-04 lower bound, valid spacing token)
 - Padding: 0 (D-05: edge-to-edge)
 - Full width, no max-width constraint
 
@@ -138,13 +143,13 @@ Accent reserved for: section title text, lightbox client name, overlay role meta
 ### 7. Card Overlay (`.project-overlay`)
 
 - Position: absolute bottom of card
-- Height: auto (content-driven), padding 12px 16px 10px
+- Height: auto (content-driven), padding: 16px 16px 8px
 - Glassmorphism: see color table above
 - Border-top only: 1px solid rgba(255, 255, 255, 0.08)
 - Default state: `transform: translateY(100%); opacity: 0`
 - Active state: `transform: translateY(0); opacity: 1`
 - Transition: `transform 0.25s ease-out, opacity 0.25s ease-out`
-- Contains: project title (white, semibold) + role (accent, regular)
+- Contains: project title (white, semibold 600) + role (accent, regular 400)
 - Triggered by: `:hover` (desktop) or `.touch-revealed` class (mobile)
 
 ### 8. Lightbox (`.lightbox`)
@@ -182,8 +187,8 @@ Accent reserved for: section title text, lightbox client name, overlay role meta
 - Below player, padding: 24px 0 16px
 - Flex column, gap: 4px
 - Title: white (#F5F0EB), semibold (600), clamp(1rem, 2.5vw, 1.5rem)
-- Role: white (#F5F0EB), regular (400), 14px
-- Client: accent (#D4C5B2), regular (400), 14px
+- Role: white (#F5F0EB), regular (400), 0.875rem (14px)
+- Client: accent (#D4C5B2), regular (400), 0.875rem (14px)
 
 ### 13. Lightbox Close Button (`.lightbox-close`)
 
@@ -293,10 +298,10 @@ No component registries. All components are hand-written inline CSS/JS in index.
 
 | Breakpoint | Grid | Card size (approx) | Overlay text |
 |------------|------|--------------------|----|
-| >= 1440px | 3 col, 10px gap, edge-to-edge | ~477px wide | 15px title, 13px role |
-| 768-1439px | 3 col, 10px gap, edge-to-edge | ~249px wide | clamp mid-range |
-| 375-767px | 3 col, 10px gap, edge-to-edge (D-01) | ~118px wide | 10px title, 9px role (clamp floor) |
-| < 375px | 3 col, 10px gap | ~108px wide | clamp floor values |
+| >= 1440px | 3 col, 8px gap, edge-to-edge | ~479px wide | 14px title (600), 14px role (400) |
+| 768-1439px | 3 col, 8px gap, edge-to-edge | ~251px wide | clamp mid-range |
+| 375-767px | 3 col, 8px gap, edge-to-edge (D-01) | ~120px wide | clamp floor values |
+| < 375px | 3 col, 8px gap | ~110px wide | clamp floor values |
 
 Per D-01: grid stays 3 columns on ALL viewports. No reflow to 1 or 2 columns. The dense/brute aesthetic is intentional.
 
