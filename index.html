@@ -2384,6 +2384,73 @@
 
     }
 
+    // ─── Projects Showcase ──────────────────────────────────────────────────
+    const VIMEO_PAID = false; // Tom: set to true if Vimeo Starter+ plan
+
+    const PROJECTS = [
+      { id: '76979871', title: 'Projet 1', role: 'Direction \u00b7 Montage', client: 'Client A' },
+      { id: '76979871', title: 'Projet 2', role: 'Motion Design', client: 'Client B' },
+      { id: '76979871', title: 'Projet 3', role: 'Montage \u00b7 Etalonnage', client: 'Client C' },
+      { id: '76979871', title: 'Projet 4', role: 'Direction Artistique', client: 'Client D' },
+      { id: '76979871', title: 'Projet 5', role: 'Motion Design \u00b7 Compositing', client: 'Client E' },
+      { id: '76979871', title: 'Projet 6', role: 'Montage', client: 'Client F' },
+      { id: '76979871', title: 'Projet 7', role: 'Direction \u00b7 Motion Design', client: 'Client G' },
+      { id: '76979871', title: 'Projet 8', role: 'Etalonnage \u00b7 Montage', client: 'Client H' },
+      { id: '76979871', title: 'Projet 9', role: 'Direction Artistique \u00b7 Montage', client: 'Client I' },
+    ];
+
+    function initProjectsShowcase() {
+      const grid = document.getElementById('projects-grid');
+      if (!grid) return;
+
+      // Generate card HTML for all 9 projects (synchronous — DOM first, thumbnails async)
+      grid.innerHTML = PROJECTS.map((proj, i) => `
+        <div class="project-card" data-vimeo-id="${proj.id}" data-index="${i}" tabindex="0" role="button" aria-label="${proj.title}">
+          <img class="project-thumb" src="" alt="${proj.title}" loading="lazy">
+          <div class="project-overlay">
+            <div class="project-overlay-title">${proj.title}</div>
+            <div class="project-overlay-role">${proj.role}</div>
+          </div>
+        </div>
+      `).join('');
+
+      // Fetch thumbnails via oEmbed in parallel (non-blocking, graceful fallback)
+      fetchThumbnails();
+
+      // Set up IntersectionObserver for lazy-load readiness
+      setupCardObserver();
+    }
+
+    async function fetchThumbnails() {
+      const requests = PROJECTS.map(p =>
+        fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${p.id}&width=640`)
+          .then(r => r.json())
+          .then(data => ({ id: p.id, url: data.thumbnail_url }))
+          .catch(() => ({ id: p.id, url: null }))
+      );
+      const results = await Promise.all(requests);
+      results.forEach(({ id, url }) => {
+        if (!url) return;
+        // Set src on ALL cards with this vimeo ID (handles duplicates in placeholder data)
+        document.querySelectorAll(`[data-vimeo-id="${id}"] .project-thumb`).forEach(img => {
+          img.src = url;
+        });
+      });
+    }
+
+    function setupCardObserver() {
+      const cardObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.dataset.nearViewport = 'true';
+            cardObserver.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '200px' });
+
+      document.querySelectorAll('.project-card').forEach(card => cardObserver.observe(card));
+    }
+
     // ─── Scroll Integration ──────────────────────────────────────────────────
     function initScrollIntegration() {
       const backToTopBtn = document.getElementById('back-to-top');
@@ -2458,6 +2525,9 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
 
+      // Initialize projects grid (must happen before section observer)
+      initProjectsShowcase();
+
       // Content section entrance animations (IntersectionObserver, play once)
       const sectionObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -2471,7 +2541,11 @@
       document.querySelectorAll('.content-section').forEach(el => {
         sectionObserver.observe(el);
       });
-      // ScrollTrigger.refresh() required here after content added (Phase 5/6)
+
+      // Recalculate ScrollTrigger positions after projects content is injected
+      if (typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.refresh();
+      }
     }
 
     // ─── Bootstrap ────────────────────────────────────────────────────────────
