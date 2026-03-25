@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Ready to execute
-stopped_at: Completed 05-project-showcase 05-01-PLAN.md
-last_updated: "2026-03-25T16:08:00.102Z"
+stopped_at: "Checkpoint: Task 2 human-verify in 05-02-PLAN.md"
+last_updated: "2026-03-25T16:12:32.648Z"
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 12
-  completed_plans: 10
+  completed_plans: 11
 ---
 
 # Project State
@@ -89,6 +89,7 @@ Recent decisions affecting current work:
 - [Phase 04-scroll-integration]: Back-to-top toggle added inside existing Track B onUpdate — zero new ScrollTrigger instances
 - [Phase 05-project-showcase]: VIMEO_PAID = false constant added — Tom sets to true if Vimeo Starter+ plan for background=1 hover preview
 - [Phase 05-project-showcase]: initProjectsShowcase() called before sectionObserver — card DOM exists before entrance animation observer fires
+- [Phase 05]: Raw iframe for hover preview (not SDK) — avoids 9 concurrent Player instances; SDK only for lightbox where pause() is required
 
 ### Pending Todos
 
@@ -102,6 +103,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-25T16:08:00.095Z
-Stopped at: Completed 05-project-showcase 05-01-PLAN.md
+Last session: 2026-03-25T16:12:29.358Z
+Stopped at: Checkpoint: Task 2 human-verify in 05-02-PLAN.md
 Resume file: None
