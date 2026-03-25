@@ -2473,7 +2473,6 @@
         // ── Desktop hover: inject muted preview iframe after 150ms debounce ──
         card.addEventListener('mouseenter', () => {
           if (isTouchDevice) return; // skip on touch devices
-          if (!card.dataset.nearViewport) return;
           if (prefersReducedMotion) return; // no preview on reduced motion
 
           const timeout = setTimeout(() => {
@@ -2526,8 +2525,8 @@
               .forEach(c => c.classList.remove('touch-revealed'));
             card.classList.add('touch-revealed');
 
-            // Inject preview iframe on touch-reveal too (if near viewport)
-            if (card.dataset.nearViewport && !prefersReducedMotion) {
+            // Inject preview iframe on touch-reveal too
+            if (!prefersReducedMotion) {
               if (!card.querySelector('.project-preview')) {
                 const iframe = document.createElement('iframe');
                 iframe.src = buildPreviewSrc(card.dataset.vimeoId);
