@@ -94,7 +94,7 @@ Plans:
   2. Vimeo players load only when a project card scrolls near the viewport — the initial page load does not initiate Vimeo network requests for off-screen videos
   3. Hovering over a project card triggers a visible animation (title reveal, scale, or color shift)
   4. Vimeo videos play correctly on desktop; on mobile the player is present (autoplay is not expected)
-**Plans:** 2 plans
+**Plans:** 0/2 plans executed
 
 Plans:
 - [ ] 05-01-PLAN.md — Grid CSS/HTML, import map, PROJECTS data array, card DOM generation, oEmbed thumbnails, IntersectionObserver
@@ -133,6 +133,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | 2. WebGL Foundation | 3/3 | Complete    | 2026-03-22 |
 | 3. Hero Scene | 0/TBD | Not started | - |
 | 4. Scroll Integration | 2/3 | In Progress|  |
-| 5. Project Showcase | 0/2 | Not started | - |
+| 5. Project Showcase | 0/2 | Planned    |  |
 | 6. Content Sections | 0/TBD | Not started | - |
 | 7. Responsive and Launch | 0/TBD | Not started | - |

@@ -35,10 +35,10 @@
 
 ### Projects
 
-- [ ] **PROJ-01**: Visitor sees a showcase section displaying 6-10 projects with titles and thumbnails
+- [x] **PROJ-01**: Visitor sees a showcase section displaying 6-10 projects with titles and thumbnails
 - [ ] **PROJ-02**: Each project embeds a Vimeo player that loads lazily (IntersectionObserver)
 - [ ] **PROJ-03**: Project thumbnails/cards have hover animation (title reveal, scale, or color shift)
-- [ ] **PROJ-04**: Each project displays role/credits metadata (direction, motion, editing, etc.)
+- [x] **PROJ-04**: Each project displays role/credits metadata (direction, motion, editing, etc.)
 
 ### Clients
 
@@ -114,10 +114,10 @@
 | SCRL-01 | Phase 4 | Complete |
 | SCRL-02 | Phase 4 | Complete |
 | SCRL-03 | Phase 4 | Complete |
-| PROJ-01 | Phase 5 | Pending |
+| PROJ-01 | Phase 5 | Complete |
 | PROJ-02 | Phase 5 | Pending |
 | PROJ-03 | Phase 5 | Pending |
-| PROJ-04 | Phase 5 | Pending |
+| PROJ-04 | Phase 5 | Complete |
 | CLNT-01 | Phase 6 | Pending |
 | CLNT-02 | Phase 6 | Pending |
 | CTCT-01 | Phase 6 | Pending |

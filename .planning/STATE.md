@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to plan
-stopped_at: Phase 5 context gathered
-last_updated: "2026-03-25T12:40:58.544Z"
+status: Ready to execute
+stopped_at: Completed 05-project-showcase 05-01-PLAN.md
+last_updated: "2026-03-25T16:08:00.102Z"
 progress:
   total_phases: 7
   completed_phases: 4
-  total_plans: 10
+  total_plans: 12
   completed_plans: 10
 ---
 
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Visitors instantly see the quality of Tom's work through an immersive visual experience and embedded video reels
-**Current focus:** Phase 04 — scroll-integration
+**Current focus:** Phase 05 — project-showcase
 
 ## Current Position
 
-Phase: 5
-Plan: Not started
+Phase: 05 (project-showcase) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -50,6 +50,7 @@ Plan: Not started
 | Phase 02-webgl-foundation P03 | 45 | 2 tasks | 1 files |
 | Phase 04-scroll-integration P01 | 18 | 1 tasks | 1 files |
 | Phase 04-scroll-integration P03 | 1 | 1 tasks | 1 files |
+| Phase 05-project-showcase P01 | 3 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -86,6 +87,8 @@ Recent decisions affecting current work:
 - [Phase 04-scroll-integration]: Canvas-scoped passive touch listeners replace window-level passive:false handlers — mobile scroll unblocked while glass rotation preserved
 - [Phase 04-scroll-integration]: Film grain applied to main via .content-bg::before at opacity 0.04 (subtler than loader's 0.07), position:fixed so grain doesn't scroll
 - [Phase 04-scroll-integration]: Back-to-top toggle added inside existing Track B onUpdate — zero new ScrollTrigger instances
+- [Phase 05-project-showcase]: VIMEO_PAID = false constant added — Tom sets to true if Vimeo Starter+ plan for background=1 hover preview
+- [Phase 05-project-showcase]: initProjectsShowcase() called before sectionObserver — card DOM exists before entrance animation observer fires
 
 ### Pending Todos
 
@@ -99,6 +102,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-25T12:40:58.534Z
-Stopped at: Phase 5 context gathered
-Resume file: .planning/phases/05-project-showcase/05-CONTEXT.md
+Last session: 2026-03-25T16:08:00.095Z
+Stopped at: Completed 05-project-showcase 05-01-PLAN.md
+Resume file: None
