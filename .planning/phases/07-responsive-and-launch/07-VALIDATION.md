@@ -2,7 +2,7 @@
 phase: 7
 slug: responsive-and-launch
 status: draft
-nyquist_compliant: false
+nyquist_compliant: true
 wave_0_complete: false
 created: 2026-03-26
 ---
@@ -38,12 +38,10 @@ created: 2026-03-26
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 07-01-01 | 01 | 1 | RESP-01 | visual | `preview_resize(375,812)` + `preview_snapshot` | ✅ | ⬜ pending |
-| 07-01-02 | 01 | 1 | RESP-04 | visual | `preview_resize(375,812)` + `preview_snapshot` | ✅ | ⬜ pending |
-| 07-01-03 | 01 | 1 | RESP-05 | visual | `preview_resize(375,812)` + `preview_snapshot` | ✅ | ⬜ pending |
-| 07-02-01 | 02 | 1 | RESP-02 | visual+perf | `preview_resize(375,812)` + `preview_console_logs` | ✅ | ⬜ pending |
-| 07-02-02 | 02 | 1 | RESP-03 | visual+perf | `preview_resize(375,812)` + `preview_console_logs` | ✅ | ⬜ pending |
-| 07-03-01 | 03 | 2 | RESP-05 | deploy | `preview_network` + console check | ✅ | ⬜ pending |
+| 07-01-01 | 01 | 1 | RESP-01, RESP-05 | visual | `grep -c "@media (max-width: 767px)" index.html` + `preview_resize(375,812)` + `preview_inspect --selector "body" --property "overflow-x"` | ✅ | ⬜ pending |
+| 07-01-02 | 01 | 1 | RESP-02, RESP-03, RESP-04 | structural | `grep -c "isMobile ? 65" index.html` + `grep -c "antialias: !isMobile" index.html` + `grep -c "generateQuadTree(isMobile)" index.html` | ✅ | ⬜ pending |
+| 07-02-01 | 02 | 2 | RESP-05 | deploy | `git remote get-url origin` + `git branch -r \| grep -c gh-pages` | ✅ | ⬜ pending |
+| 07-02-02 | 02 | 2 | RESP-01, RESP-02, RESP-03, RESP-04, RESP-05 | visual+perf | `preview_resize(375,812)` + `preview_snapshot` + `preview_console_logs` | ✅ | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -59,20 +57,20 @@ created: 2026-03-26
 
 | Behavior | Requirement | Why Manual | Test Instructions |
 |----------|-------------|------------|-------------------|
-| 30fps on real mid-range Android | RESP-03 | Requires physical device | Open site on Android, Chrome DevTools > Performance > record 5s scroll, verify avg fps ≥ 30 |
+| 30fps on real mid-range Android | RESP-03 | Requires physical device | Open site on Android, Chrome DevTools > Performance > record 5s scroll, verify avg fps >= 30 |
 | 30fps on real iPhone | RESP-02 | Requires physical device | Open site on iPhone Safari, Web Inspector > Timeline > verify no dropped frames |
-| DPR 1.5 cap on iPhone | RESP-02 | Requires Safari Web Inspector | Check `renderer.getPixelRatio()` returns ≤ 1.5 |
+| DPR 1.5 cap on iPhone | RESP-02 | Requires Safari Web Inspector | Check `renderer.getPixelRatio()` returns <= 1.5 |
 | Deploy on GitHub Pages | RESP-05 | Requires GitHub repo URL | Push to gh-pages branch, verify site loads at pages URL |
 
 ---
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 10s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 10s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** approved
