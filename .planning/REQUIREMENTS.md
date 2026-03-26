@@ -21,11 +21,11 @@
 
 ### Responsive / Mobile
 
-- [ ] **RESP-01**: Site layout adapts gracefully to desktop (1024px+) and mobile (<768px) viewports
-- [ ] **RESP-02**: WebGL renders at reduced DPR (max 1.5) on mobile devices
-- [ ] **RESP-03**: Instanced tile count and shader complexity are reduced on mobile for 30fps+ target
-- [ ] **RESP-04**: 3D text scales appropriately for mobile viewport (smaller size, adjusted FOV)
-- [ ] **RESP-05**: All content sections reflow to single-column layout on mobile
+- [x] **RESP-01**: Site layout adapts gracefully to desktop (1024px+) and mobile (<768px) viewports
+- [x] **RESP-02**: WebGL renders at reduced DPR (max 1.5) on mobile devices
+- [x] **RESP-03**: Instanced tile count and shader complexity are reduced on mobile for 30fps+ target
+- [x] **RESP-04**: 3D text scales appropriately for mobile viewport (smaller size, adjusted FOV)
+- [x] **RESP-05**: All content sections reflow to single-column layout on mobile
 
 ### Scroll & Navigation
 
@@ -106,11 +106,11 @@
 | HERO-03 | Phase 3 | Pending |
 | HERO-04 | Phase 3 | Pending |
 | HERO-05 | Phase 3 | Pending |
-| RESP-01 | Phase 7 | Pending |
-| RESP-02 | Phase 7 | Pending |
-| RESP-03 | Phase 7 | Pending |
-| RESP-04 | Phase 7 | Pending |
-| RESP-05 | Phase 7 | Pending |
+| RESP-01 | Phase 7 | Complete |
+| RESP-02 | Phase 7 | Complete |
+| RESP-03 | Phase 7 | Complete |
+| RESP-04 | Phase 7 | Complete |
+| RESP-05 | Phase 7 | Complete |
 | SCRL-01 | Phase 4 | Complete |
 | SCRL-02 | Phase 4 | Complete |
 | SCRL-03 | Phase 4 | Complete |
