@@ -1,0 +1,3099 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tom Bernys | Portfolio</title>
+
+  <!-- Import map MUST appear before any module scripts -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.175.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.175.0/examples/jsm/",
+      "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.14.2/index.js",
+      "gsap/": "https://cdn.jsdelivr.net/npm/gsap@3.14.2/",
+      "detect-gpu": "https://cdn.jsdelivr.net/npm/detect-gpu@5.0.70/dist/detect-gpu.esm.js",
+      "@vimeo/player": "https://cdn.jsdelivr.net/npm/@vimeo/player@2.30.3/dist/player.es.js"
+    }
+  }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Inter:ital,wght@0,100..900;1,100..900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Favicon: inline SVG with TB initials -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23F5F0EB'/><text x='50' y='72' font-family='sans-serif' font-size='52' font-weight='700' text-anchor='middle' fill='%23000000'>TB</text></svg>">
+
+  <!-- SEO -->
+  <meta name="description" content="Tom Bernys — Monteur Vidéo &amp; Motion Designer freelance. Direction artistique, post-production et motion design.">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Tom Bernys | Portfolio">
+  <meta property="og:description" content="Tom Bernys — Monteur Vidéo &amp; Motion Designer freelance. Direction artistique, post-production et motion design.">
+  <meta property="og:image" content="https://portfolio-2026-three-pi.vercel.app/og-image.jpg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Tom Bernys | Portfolio">
+  <meta name="twitter:description" content="Tom Bernys — Monteur Vidéo &amp; Motion Designer freelance. Direction artistique, post-production et motion design.">
+  <meta name="twitter:image" content="https://portfolio-2026-three-pi.vercel.app/og-image.jpg">
+
+  <style>
+    :root {
+      --color-bg: #000000;
+      --color-text: #F5F0EB;
+      --color-accent: #D4C5B2;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    #canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    main a,
+    main button,
+    main form,
+    main input,
+    main textarea,
+    .project-card {
+      pointer-events: auto;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Hero: fill the viewport, center the visible content */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    /* CTA button — glassmorphism style */
+    .cta-btn {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 2rem;
+      padding: 0.75rem 1.5rem;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 2rem;
+      color: var(--color-text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      pointer-events: auto;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .cta-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Back-to-top button — glassmorphism matching CTA */
+    .back-to-top {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 3rem;
+      height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      color: var(--color-text);
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, background 0.2s, border-color 0.2s;
+      z-index: 1000;
+    }
+
+    .back-to-top.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .back-to-top:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .cta-btn .arrow {
+      display: inline-block;
+      animation: bob 1.5s ease-in-out infinite;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(4px); }
+    }
+
+    /* Content sections — fade in + slide up on first appearance */
+    .content-section {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+      transition-delay: 0.1s;
+    }
+
+    .content-section.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* First section (video grid) — more pronounced spring entrance */
+    #projects {
+      transform: translateY(80px);
+      transition: opacity 1.0s ease-out, transform 1.0s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ─── Projects Section ─────────────────────────────────────────── */
+    #projects {
+      display: block;
+      min-height: unset;
+      padding: 48px 0 64px;
+      background: #050508;
+    }
+
+    .section-title {
+      padding: 0 32px 32px;
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(1.25rem, 3vw, 2rem);
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      line-height: 1.2;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 0;
+    }
+
+    .project-card {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 0;
+      cursor: pointer;
+      background: #0a0a0d;
+    }
+
+    .project-thumb {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.3s ease;
+    }
+
+    .project-preview {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      pointer-events: none;
+    }
+
+    /* Glassmorphism overlay — extends .cta-btn pattern per D-13 */
+    .project-overlay {
+      position: absolute;
+      inset: 0;
+      padding: 16px;
+      background: rgba(5, 5, 8, 0.72);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transform: translateY(100%);
+      transition: transform 0.25s ease-out, opacity 0.25s ease-out;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .project-card:hover .project-overlay,
+    .project-card.touch-revealed .project-overlay {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .project-overlay-title {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(1rem, 3.5vw, 1.75rem);
+      font-weight: 700;
+      color: var(--color-text);
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      width: 100%;
+    }
+
+    .project-overlay-role {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(0.6rem, 1.4vw, 0.75rem);
+      font-weight: 400;
+      color: var(--color-accent);
+      line-height: 1.4;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ─── Lightbox ─────────────────────────────────────────────────── */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .lightbox.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .lightbox-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(5, 5, 8, 0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 0;
+    }
+
+    .lightbox-inner {
+      position: relative;
+      z-index: 1;
+      width: min(90vw, 1200px);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .lightbox-player-wrap {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+    }
+
+    .lightbox-player-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .lightbox-meta {
+      padding: 24px 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .lightbox-title {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(1rem, 2.5vw, 1.5rem);
+      font-weight: 600;
+      color: var(--color-text);
+      line-height: 1.2;
+    }
+
+    .lightbox-role {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--color-text);
+      line-height: 1.5;
+    }
+
+    .lightbox-client {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--color-accent);
+      line-height: 1.5;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      color: var(--color-text);
+      font-size: 1.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .lightbox-close:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Reduced motion — disable overlay slide, preview iframe, lightbox transitions */
+    @media (prefers-reduced-motion: reduce) {
+      .project-overlay {
+        transition: none;
+      }
+      .lightbox {
+        transition: none;
+      }
+    }
+
+    #hero h1,
+    #hero .subtitle {
+      /* Hidden — replaced by WebGL 3D glass text + behind-text */
+      display: none;
+    }
+
+    /* ─── Clients Section ──────────────────────────────────────────── */
+    #clients,
+    #contact {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #050508;
+      padding: 6rem 2rem;
+    }
+
+    .section-inner {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .logo-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 3rem;
+      padding: 2rem 0;
+    }
+
+    .logo-placeholder {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      opacity: 0.6;
+      border: 1px solid rgba(212, 197, 178, 0.2);
+      padding: 0.5rem 1.2rem;
+      border-radius: 2px;
+    }
+
+    /* ─── Contact Section ──────────────────────────────────────────── */
+    .contact-form {
+      max-width: 500px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-field {
+      width: 100%;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0.375rem;
+      color: var(--color-text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      padding: 0.75rem 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      border-color: rgba(212, 197, 178, 0.4);
+    }
+
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder {
+      color: rgba(245, 240, 235, 0.35);
+    }
+
+    .contact-form textarea {
+      resize: vertical;
+    }
+
+    .contact-submit {
+      align-self: flex-start;
+      padding: 0.75rem 1.5rem;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 2rem;
+      color: var(--color-text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .contact-submit:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .form-feedback {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      min-height: 1.25rem;
+    }
+
+    .form-feedback--success {
+      color: #7ed6a0;
+    }
+
+    .form-feedback--error {
+      color: #e67272;
+    }
+
+    .contact-mailto {
+      text-align: center;
+      margin-top: 2rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: rgba(245, 240, 235, 0.5);
+    }
+
+    .contact-mailto a {
+      color: var(--color-accent);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(212, 197, 178, 0.3);
+      transition: border-color 0.2s;
+    }
+
+    .contact-mailto a:hover {
+      border-color: var(--color-accent);
+    }
+
+    /* Content background — near-black with CRT-cohesive film grain (only below hero) */
+    .content-bg {
+      position: relative;
+    }
+
+    .content-bg::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      animation: grain 0.3s steps(4) infinite;
+    }
+
+    /* ─── Loading overlay ──────────────────────────────────────────────────── */
+    #loader {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    /* Scanline sweep (enabled via .has-scanline class on #loader) */
+    #loader.has-scanline::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        rgba(255,255,255,0.03) 2px,
+        transparent 4px
+      ),
+      linear-gradient(
+        to bottom,
+        transparent 25%,
+        rgba(255,255,255,0.04) 35%,
+        rgba(255,255,255,0.08) 45%,
+        rgba(255,255,255,0.06) 55%,
+        rgba(255,255,255,0.03) 65%,
+        transparent 75%
+      );
+      animation: scanline 4s ease-in-out infinite;
+    }
+
+    /* Film grain (enabled via .has-grain class on #loader) */
+    #loader.has-grain::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.07;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      animation: grain 0.3s steps(4) infinite;
+    }
+
+    @keyframes scanline {
+      from { transform: translateY(-100%); }
+      to   { transform: translateY(200%); }
+    }
+
+    @keyframes grain {
+      0%   { transform: translate(0, 0); }
+      25%  { transform: translate(-2%, 4%); }
+      50%  { transform: translate(4%, -2%); }
+      75%  { transform: translate(-4%, 1%); }
+      100% { transform: translate(0, 0); }
+    }
+
+    .loader-text {
+      display: flex;
+      gap: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(2rem, 6vw, 4.5rem);
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+    }
+
+    .loader-char {
+      display: inline-block;
+      min-width: 0.7em;
+      text-align: center;
+    }
+
+    .loader-space {
+      min-width: 0.4em;
+    }
+
+    /* Progress bar */
+    .loader-progress {
+      margin-top: 1.5rem;
+      width: 200px;
+      height: 2px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 1px;
+    }
+
+    .loader-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--color-accent);
+      border-radius: 1px;
+      transition: width 0.3s ease-out;
+    }
+
+    /* ─── Glitch dissolve transition ──────────────────────────────────────────
+       Applied by JS transition(). The overlay is split into 4 vertical slices
+       via clip-path; each slice is animated independently via inline CSS vars
+       set by GSAP, then the whole element fades out. Pointer events are
+       removed immediately on transition start so the hero is interactive. */
+    #loader.dissolving {
+      pointer-events: none;
+    }
+
+  /* --- Responsive: mobile (<768px) --- */
+  @media (max-width: 767px) {
+
+    /* Projects grid: 1 column, full-width 16:9 cards (D-01, D-02, D-03) */
+    .projects-grid {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+
+    /* Section titles: tighter horizontal padding */
+    .section-title {
+      padding: 0 1.25rem 1.5rem;
+    }
+
+    /* Content sections: reduced padding (D-13, D-16) */
+    #projects {
+      padding: 2rem 0 3rem;
+    }
+
+    #clients,
+    #contact {
+      padding: 4rem 1.25rem;
+    }
+
+    /* Section inner: full width on mobile (D-16) */
+    .section-inner {
+      padding: 0;
+    }
+
+    /* Logo row: tighter gap (D-14) */
+    .logo-row {
+      gap: 1.5rem;
+    }
+
+    .logo-placeholder {
+      font-size: 0.75rem;
+      padding: 0.4rem 0.9rem;
+    }
+
+    /* Lightbox: nearly full screen on mobile */
+    .lightbox-inner {
+      width: 96vw;
+    }
+
+    .lightbox-close {
+      top: 10px;
+      right: 10px;
+    }
+
+    /* CTA button: centered full-width (per Claude discretion) */
+    .cta-btn {
+      left: 1rem;
+      right: 1rem;
+      bottom: 1.5rem;
+      justify-content: center;
+    }
+
+    /* Back-to-top: smaller on mobile */
+    .back-to-top {
+      width: 2.5rem;
+      height: 2.5rem;
+      bottom: 1.25rem;
+      right: 1rem;
+    }
+
+    /* Project overlay: remove backdrop-blur to save GPU (per research pitfall 3) */
+    .project-overlay {
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
+    /* Contact form: full width submit on small screens */
+    .contact-submit {
+      align-self: stretch;
+      text-align: center;
+    }
+
+    /* Contact mailto: tighter spacing */
+    .contact-mailto {
+      margin-top: 1rem;
+    }
+  }
+
+  </style>
+</head>
+<body>
+  <div id="loader" aria-live="polite" aria-label="Chargement">
+    <div class="loader-text" aria-hidden="true">
+      <!-- One span per character of "Tom Bernys" (including space) -->
+      <span class="loader-char" data-char="T">&nbsp;</span>
+      <span class="loader-char" data-char="o">&nbsp;</span>
+      <span class="loader-char" data-char="m">&nbsp;</span>
+      <span class="loader-char loader-space" data-char=" ">&nbsp;</span>
+      <span class="loader-char" data-char="B">&nbsp;</span>
+      <span class="loader-char" data-char="e">&nbsp;</span>
+      <span class="loader-char" data-char="r">&nbsp;</span>
+      <span class="loader-char" data-char="n">&nbsp;</span>
+      <span class="loader-char" data-char="y">&nbsp;</span>
+      <span class="loader-char" data-char="s">&nbsp;</span>
+    </div>
+    <p class="sr-only">Chargement du portfolio de Tom Bernys</p>
+    <div class="loader-progress"><div class="loader-progress-bar"></div></div>
+  </div>
+
+  <canvas id="canvas"></canvas>
+
+  <main lang="fr" class="content-bg">
+    <section id="hero" data-lang="fr" aria-label="Hero">
+      <h1>Tom Bernys</h1>
+      <p class="subtitle">Monteur Vidéo &amp; Motion Designer</p>
+      <button class="cta-btn" id="cta-btn" aria-label="Voir mon travail">
+        Voir mon travail <span class="arrow">&#8595;</span>
+      </button>
+    </section>
+
+    <section id="projects" class="content-section" data-lang="fr" aria-label="Projets">
+      <h2 class="section-title">Projets</h2>
+      <div class="projects-grid" id="projects-grid">
+        <!-- 9 .project-card elements generated by JS -->
+      </div>
+    </section>
+
+    <div class="lightbox" id="lightbox" aria-modal="true" role="dialog" hidden>
+      <button class="lightbox-close" id="lightbox-close" aria-label="Fermer">&times;</button>
+      <div class="lightbox-inner">
+        <div class="lightbox-player-wrap" id="lightbox-player-wrap"></div>
+        <div class="lightbox-meta" id="lightbox-meta"></div>
+      </div>
+      <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
+    </div>
+
+    <section id="clients" class="content-section" data-lang="fr" aria-label="Clients">
+      <div class="section-inner">
+        <h2 class="section-title sr-only">Clients</h2>
+        <div class="logo-row">
+          <span class="logo-placeholder">Nike</span>
+          <span class="logo-placeholder">Canal+</span>
+          <span class="logo-placeholder">Dior</span>
+          <span class="logo-placeholder">Red Bull</span>
+          <span class="logo-placeholder">Ubisoft</span>
+          <span class="logo-placeholder">Netflix</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="content-section" data-lang="fr" aria-label="Contact">
+      <div class="section-inner">
+        <h2 class="section-title">Contact</h2>
+        <form id="contact-form" class="contact-form" action="https://formspree.io/f/REPLACE_WITH_FORM_ID" method="POST">
+          <div class="form-field">
+            <label for="contact-name" class="sr-only">Nom</label>
+            <input type="text" id="contact-name" name="name" placeholder="Nom" required>
+          </div>
+          <div class="form-field">
+            <label for="contact-email" class="sr-only">Email</label>
+            <input type="email" id="contact-email" name="email" placeholder="Email" required>
+          </div>
+          <div class="form-field">
+            <label for="contact-message" class="sr-only">Message</label>
+            <textarea id="contact-message" name="message" placeholder="Message" rows="5" required></textarea>
+          </div>
+          <div id="form-feedback" class="form-feedback" aria-live="polite"></div>
+          <button type="submit" class="contact-submit">Envoyer</button>
+        </form>
+        <p class="contact-mailto">
+          Ou directement : <a href="mailto:contact@tombernys.com">contact@tombernys.com</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <button class="back-to-top" id="back-to-top" aria-label="Retour en haut">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10 16V4M10 4l-5 5M10 4l5 5"/>
+    </svg>
+  </button>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { getGPUTier } from 'detect-gpu';
+    import { gsap } from 'gsap';
+    import { ScrollTrigger } from 'gsap/ScrollTrigger.js';
+
+    import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+    import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+    import Player from '@vimeo/player';
+
+    // ─── Module-level state ───────────────────────────────────────────────────
+    let gpuTier = 1;
+    let renderer = null;
+    let scene = null;
+    let camera = null;
+    let rafId = null;
+    let contextLossFallbackTimer = null;
+    let progressTween = null;
+
+
+    // Mobile detection (per spec: regex userAgent + innerWidth < 768)
+    const isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+    const maxDPR = isMobile ? 1.5 : 2;
+
+    // ─── Fluid sim state ────────────────────────────────────────────────────
+    let fluidA, fluidB, curlRT;
+    let fluidScene, fluidCamera, fluidQuad;
+    let fluidMaterials = {};
+
+    // ─── Scene objects ──────────────────────────────────────────────────────
+    let glassGroup = null;
+    let glassMesh = null;
+    let glassSubMesh = null;
+    let glassMaterial = null;
+    let loadedFont = null;
+    let tilesMesh = null;
+    let crosshairsMesh = null;
+    let chainsMesh = null;
+    let behindTextMesh = null;
+    let backgroundRT, sceneRT;
+    let bloomRTs = [];
+    let bloomMaterials = {};
+    let cubeCamera = null;
+    let envCaptured = false;
+
+    // ─── Animation state ────────────────────────────────────────────────────
+    let elapsed = 0;
+    let lastTime = 0;
+    let autoSpinAngle = 0;
+    let hoverVelX = 0, hoverVelY = 0;
+    let mouseX = 0, mouseY = 0;
+    let smoothMouseX = 0, smoothMouseY = 0;
+    let mouseVelX = 0, mouseVelY = 0;
+    let prevMouseX = 0, prevMouseY = 0;
+    let entranceProgress = 0;
+    let pointerAccumX = 0, pointerAccumY = 0;
+
+    // ─── Scroll integration state ────────────────────────────────────────────
+    // entranceComplete gates scroll-driven Z writes against the entry animation
+    let entranceComplete = false;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ─── Noise texture (256x256 random RGBA) ────────────────────────────────
+    function createNoiseTexture() {
+      const size = 256;
+      const data = new Uint8Array(size * size * 4);
+      for (let i = 0; i < data.length; i++) data[i] = Math.random() * 255 | 0;
+      const tex = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.needsUpdate = true;
+      return tex;
+    }
+
+
+    // ─── detectTier() ─────────────────────────────────────────────────────────
+    async function detectTier() {
+      try {
+        const result = await getGPUTier();
+        return result.tier ?? 1;
+      } catch {
+        return 1;
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // FLUID SIMULATION — Navier-Stokes on GPU (128x128)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    const FLUID_SIZE = 128;
+
+    // Shared fullscreen triangle vertex shader for all fluid passes
+    const fluidVert = `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+
+    // Pass 1: Curl — compute vorticity from velocity field
+    const curlFrag = `
+      precision highp float;
+      uniform sampler2D uVelocity;
+      uniform vec2 uTexelSize;
+      varying vec2 vUv;
+      void main() {
+        float L = texture2D(uVelocity, vUv - vec2(uTexelSize.x, 0.0)).y;
+        float R = texture2D(uVelocity, vUv + vec2(uTexelSize.x, 0.0)).y;
+        float T = texture2D(uVelocity, vUv + vec2(0.0, uTexelSize.y)).x;
+        float B = texture2D(uVelocity, vUv - vec2(0.0, uTexelSize.y)).x;
+        float curl = R - L - T + B;
+        gl_FragColor = vec4(curl, 0.0, 0.0, 1.0);
+      }
+    `;
+
+    // Pass 2: Velocity — vorticity confinement + mouse splat
+    const velocityFrag = `
+      precision highp float;
+      uniform sampler2D uVelocity;
+      uniform sampler2D uCurl;
+      uniform vec2 uTexelSize;
+      uniform float uDt;
+      uniform vec2 uPointerPos;
+      uniform vec2 uPointerVel;
+      uniform float uPointerSpeed;
+      varying vec2 vUv;
+      void main() {
+        vec2 vel = texture2D(uVelocity, vUv).xy;
+
+        // Vorticity confinement
+        float cL = texture2D(uCurl, vUv - vec2(uTexelSize.x, 0.0)).x;
+        float cR = texture2D(uCurl, vUv + vec2(uTexelSize.x, 0.0)).x;
+        float cT = texture2D(uCurl, vUv + vec2(0.0, uTexelSize.y)).x;
+        float cB = texture2D(uCurl, vUv - vec2(0.0, uTexelSize.y)).x;
+        float cC = texture2D(uCurl, vUv).x;
+
+        vec2 grad = vec2(abs(cR) - abs(cL), abs(cT) - abs(cB));
+        float len = length(grad) + 1e-5;
+        grad /= len;
+        vec2 vortForce = vec2(grad.y, -grad.x) * cC * 0.15 * uDt;
+        vel += vortForce;
+
+        // Mouse splat
+        float radius = 0.03 + 0.15 * min(1.0, uPointerSpeed);
+        vec2 diff = vUv - uPointerPos;
+        float dist2 = dot(diff, diff);
+        float splat = exp(-dist2 / (radius * radius));
+        vel += uPointerVel * splat * 35.0 * uDt;
+
+        gl_FragColor = vec4(vel, 0.0, 1.0);
+      }
+    `;
+
+    // Pass 3: Divergence
+    const divergenceFrag = `
+      precision highp float;
+      uniform sampler2D uVelocity;
+      uniform vec2 uTexelSize;
+      varying vec2 vUv;
+      void main() {
+        float L = texture2D(uVelocity, vUv - vec2(uTexelSize.x, 0.0)).x;
+        float R = texture2D(uVelocity, vUv + vec2(uTexelSize.x, 0.0)).x;
+        float T = texture2D(uVelocity, vUv + vec2(0.0, uTexelSize.y)).y;
+        float B = texture2D(uVelocity, vUv - vec2(0.0, uTexelSize.y)).y;
+        float div = -0.5 * (R - L + T - B);
+        vec4 c = texture2D(uVelocity, vUv);
+        gl_FragColor = vec4(c.xy, c.z, div);
+      }
+    `;
+
+    // Pass 4: Pressure (Jacobi iteration)
+    const pressureFrag = `
+      precision highp float;
+      uniform sampler2D uVelocity;
+      uniform vec2 uTexelSize;
+      varying vec2 vUv;
+      void main() {
+        float pL = texture2D(uVelocity, vUv - vec2(uTexelSize.x, 0.0)).z;
+        float pR = texture2D(uVelocity, vUv + vec2(uTexelSize.x, 0.0)).z;
+        float pT = texture2D(uVelocity, vUv + vec2(0.0, uTexelSize.y)).z;
+        float pB = texture2D(uVelocity, vUv - vec2(0.0, uTexelSize.y)).z;
+        float div = texture2D(uVelocity, vUv).w;
+        float pressure = (pL + pR + pT + pB + div) * 0.25;
+        vec4 c = texture2D(uVelocity, vUv);
+        gl_FragColor = vec4(c.xy, pressure, c.w);
+      }
+    `;
+
+    // Pass 5: Gradient subtract
+    const gradientFrag = `
+      precision highp float;
+      uniform sampler2D uVelocity;
+      uniform vec2 uTexelSize;
+      varying vec2 vUv;
+      void main() {
+        float pL = texture2D(uVelocity, vUv - vec2(uTexelSize.x, 0.0)).z;
+        float pR = texture2D(uVelocity, vUv + vec2(uTexelSize.x, 0.0)).z;
+        float pT = texture2D(uVelocity, vUv + vec2(0.0, uTexelSize.y)).z;
+        float pB = texture2D(uVelocity, vUv - vec2(0.0, uTexelSize.y)).z;
+        vec4 c = texture2D(uVelocity, vUv);
+        vec2 vel = c.xy - 0.5 * vec2(pR - pL, pT - pB);
+        gl_FragColor = vec4(vel, c.z, c.w);
+      }
+    `;
+
+    // Pass 6: Advect (semi-Lagrangian)
+    const advectFrag = `
+      precision highp float;
+      uniform sampler2D uVelocity;
+      uniform vec2 uTexelSize;
+      uniform float uDt;
+      varying vec2 vUv;
+      void main() {
+        vec2 vel = texture2D(uVelocity, vUv).xy;
+        vec2 prevUv = vUv - vel * uDt;
+        vec4 c = texture2D(uVelocity, prevUv);
+        c.xy *= 0.995;
+        gl_FragColor = c;
+      }
+    `;
+
+    function createFluidRT() {
+      return new THREE.WebGLRenderTarget(FLUID_SIZE, FLUID_SIZE, {
+        type: THREE.HalfFloatType,
+        minFilter: THREE.LinearFilter,
+        magFilter: THREE.LinearFilter,
+        format: THREE.RGBAFormat,
+        wrapS: THREE.ClampToEdgeWrapping,
+        wrapT: THREE.ClampToEdgeWrapping,
+      });
+    }
+
+    function initFluidSim() {
+      fluidA = createFluidRT();
+      fluidB = createFluidRT();
+      curlRT = createFluidRT();
+
+      fluidScene = new THREE.Scene();
+      fluidCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, -1, 1);
+
+      const geom = new THREE.PlaneGeometry(2, 2);
+      fluidQuad = new THREE.Mesh(geom, null);
+      fluidScene.add(fluidQuad);
+
+      const texelSize = new THREE.Vector2(1.0 / FLUID_SIZE, 1.0 / FLUID_SIZE);
+
+      fluidMaterials.curl = new THREE.ShaderMaterial({
+        vertexShader: fluidVert,
+        fragmentShader: curlFrag,
+        uniforms: {
+          uVelocity: { value: null },
+          uTexelSize: { value: texelSize },
+        },
+        depthTest: false, depthWrite: false,
+      });
+
+      fluidMaterials.velocity = new THREE.ShaderMaterial({
+        vertexShader: fluidVert,
+        fragmentShader: velocityFrag,
+        uniforms: {
+          uVelocity: { value: null },
+          uCurl: { value: null },
+          uTexelSize: { value: texelSize },
+          uDt: { value: 0.016 },
+          uPointerPos: { value: new THREE.Vector2(0.5, 0.5) },
+          uPointerVel: { value: new THREE.Vector2(0, 0) },
+          uPointerSpeed: { value: 0 },
+        },
+        depthTest: false, depthWrite: false,
+      });
+
+      fluidMaterials.divergence = new THREE.ShaderMaterial({
+        vertexShader: fluidVert,
+        fragmentShader: divergenceFrag,
+        uniforms: {
+          uVelocity: { value: null },
+          uTexelSize: { value: texelSize },
+        },
+        depthTest: false, depthWrite: false,
+      });
+
+      fluidMaterials.pressure = new THREE.ShaderMaterial({
+        vertexShader: fluidVert,
+        fragmentShader: pressureFrag,
+        uniforms: {
+          uVelocity: { value: null },
+          uTexelSize: { value: texelSize },
+        },
+        depthTest: false, depthWrite: false,
+      });
+
+      fluidMaterials.gradient = new THREE.ShaderMaterial({
+        vertexShader: fluidVert,
+        fragmentShader: gradientFrag,
+        uniforms: {
+          uVelocity: { value: null },
+          uTexelSize: { value: texelSize },
+        },
+        depthTest: false, depthWrite: false,
+      });
+
+      fluidMaterials.advect = new THREE.ShaderMaterial({
+        vertexShader: fluidVert,
+        fragmentShader: advectFrag,
+        uniforms: {
+          uVelocity: { value: null },
+          uTexelSize: { value: texelSize },
+          uDt: { value: 0.016 },
+        },
+        depthTest: false, depthWrite: false,
+      });
+    }
+
+    function runFluidPass(material, readRT, writeRT) {
+      fluidQuad.material = material;
+      renderer.setRenderTarget(writeRT);
+      renderer.render(fluidScene, fluidCamera);
+      renderer.setRenderTarget(null);
+    }
+
+    function stepFluid(dt) {
+      const u = fluidMaterials;
+
+      // 1. Curl: read fluidA -> write curlRT
+      u.curl.uniforms.uVelocity.value = fluidA.texture;
+      runFluidPass(u.curl, fluidA, curlRT);
+
+      // 2. Velocity: read fluidA + curlRT -> write fluidB
+      u.velocity.uniforms.uVelocity.value = fluidA.texture;
+      u.velocity.uniforms.uCurl.value = curlRT.texture;
+      u.velocity.uniforms.uDt.value = dt;
+      // Pointer tracking with non-linear accumulation
+      const rawLen = Math.sqrt(pointerAccumX * pointerAccumX + pointerAccumY * pointerAccumY);
+      const mappedLen = Math.pow(rawLen + 1.0, 1.6) - 1.0;
+      const pDir = rawLen > 0.001 ? mappedLen / rawLen : 0;
+      u.velocity.uniforms.uPointerVel.value.set(pointerAccumX * pDir, pointerAccumY * pDir);
+      u.velocity.uniforms.uPointerSpeed.value = mappedLen;
+      u.velocity.uniforms.uPointerPos.value.set(
+        smoothMouseX / window.innerWidth,
+        1.0 - smoothMouseY / window.innerHeight
+      );
+      runFluidPass(u.velocity, fluidA, fluidB);
+      // Swap A <-> B
+      let tmp = fluidA; fluidA = fluidB; fluidB = tmp;
+
+      // 3. Divergence: read fluidA -> write fluidB
+      u.divergence.uniforms.uVelocity.value = fluidA.texture;
+      runFluidPass(u.divergence, fluidA, fluidB);
+      tmp = fluidA; fluidA = fluidB; fluidB = tmp;
+
+      // 4. Pressure: 4 Jacobi iterations
+      for (let i = 0; i < 4; i++) {
+        u.pressure.uniforms.uVelocity.value = fluidA.texture;
+        runFluidPass(u.pressure, fluidA, fluidB);
+        tmp = fluidA; fluidA = fluidB; fluidB = tmp;
+      }
+
+      // 5. Gradient subtract
+      u.gradient.uniforms.uVelocity.value = fluidA.texture;
+      runFluidPass(u.gradient, fluidA, fluidB);
+      tmp = fluidA; fluidA = fluidB; fluidB = tmp;
+
+      // 6. Advect
+      u.advect.uniforms.uVelocity.value = fluidA.texture;
+      u.advect.uniforms.uDt.value = dt;
+      runFluidPass(u.advect, fluidA, fluidB);
+      tmp = fluidA; fluidA = fluidB; fluidB = tmp;
+
+      // Decay pointer accumulation
+      pointerAccumX *= 0.7;
+      pointerAccumY *= 0.7;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // QUAD-TREE TILE GENERATION
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    // Seeded PRNG (mulberry32) — deterministic tile layout across reloads
+    function mulberry32(seed) {
+      return function() {
+        seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+        let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      };
+    }
+
+    function generateQuadTree(mobile = false) {
+      const rng = mulberry32(42);
+      const tiles = [];
+      const splitProb = mobile ? [0.35, 0.15] : [0.55, 0.25];
+      const cols = mobile ? 4 : 6;
+      const rows = mobile ? 3 : 5;
+      const baseW = 1 / cols, baseH = 1 / rows;
+
+      function subdivide(x, y, w, h, depth) {
+        if (depth >= 2 || rng() > splitProb[depth]) {
+          tiles.push({ x: x + w * 0.5, y: y + h * 0.5, w, h });
+          return;
+        }
+        const r = rng();
+        if (r < 0.3) {
+          // Quad split (equal)
+          const hw = w * 0.5, hh = h * 0.5;
+          subdivide(x, y, hw, hh, depth + 1);
+          subdivide(x + hw, y, hw, hh, depth + 1);
+          subdivide(x, y + hh, hw, hh, depth + 1);
+          subdivide(x + hw, y + hh, hw, hh, depth + 1);
+        } else if (r < 0.5) {
+          // Asymmetric horizontal split (1/3 + 2/3)
+          const ratio = 0.3 + rng() * 0.15;
+          const h1 = h * ratio, h2 = h - h1;
+          subdivide(x, y, w, h1, depth + 1);
+          subdivide(x, y + h1, w, h2, depth + 1);
+        } else if (r < 0.7) {
+          // Asymmetric vertical split (1/3 + 2/3)
+          const ratio = 0.3 + rng() * 0.15;
+          const w1 = w * ratio, w2 = w - w1;
+          subdivide(x, y, w1, h, depth + 1);
+          subdivide(x + w1, y, w2, h, depth + 1);
+        } else if (r < 0.85) {
+          // Horizontal split (wide tiles)
+          const hh = h * 0.5;
+          subdivide(x, y, w, hh, depth + 1);
+          subdivide(x, y + hh, w, hh, depth + 1);
+        } else {
+          // Vertical split (tall tiles)
+          const hw = w * 0.5;
+          subdivide(x, y, hw, h, depth + 1);
+          subdivide(x + hw, y, hw, h, depth + 1);
+        }
+      }
+
+      for (let gx = 0; gx < cols; gx++) {
+        for (let gy = 0; gy < rows; gy++) {
+          subdivide(gx * baseW, gy * baseH, baseW, baseH, 0);
+        }
+      }
+      return tiles;
+    }
+
+    function collectCrosshairPoints(tiles) {
+      const pointSet = new Set();
+      for (const t of tiles) {
+        const x0 = t.x - t.w * 0.5, x1 = t.x + t.w * 0.5;
+        const y0 = t.y - t.h * 0.5, y1 = t.y + t.h * 0.5;
+        pointSet.add(`${x0.toFixed(6)},${y0.toFixed(6)}`);
+        pointSet.add(`${x1.toFixed(6)},${y0.toFixed(6)}`);
+        pointSet.add(`${x0.toFixed(6)},${y1.toFixed(6)}`);
+        pointSet.add(`${x1.toFixed(6)},${y1.toFixed(6)}`);
+      }
+      return [...pointSet].map(s => {
+        const [x, y] = s.split(',').map(Number);
+        return { x, y };
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // INSTANCED TILES ON HALF-CYLINDER
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    const tileVert = `
+      precision highp float;
+      attribute vec2 aPos;
+      attribute vec2 aScale;
+      attribute vec4 aRand;
+      varying vec2 vUv;
+      varying vec2 vGlobalUv;
+      varying vec2 vFragGlobalUv;
+      varying vec3 vNormal;
+      varying float vIsSide;
+      varying vec4 vRand;
+
+      uniform float uScrollProgress;
+
+      #define PI 3.14159265359
+      #define RADIUS 7.0
+      #define GAP 0.98
+
+      void main() {
+        // Scale the box vertex by tile size with gap
+        vec3 p = position;
+        float w = aScale.x * GAP;
+        float h = aScale.y * GAP;
+        float depth = min(aScale.x, aScale.y) * 0.8;
+
+        p.x *= w;
+        p.y *= h;
+        p.z *= depth;
+
+        // Detect side faces via normal
+        vIsSide = abs(normal.z) < 0.5 ? 1.0 : 0.0;
+
+        // UV for the face
+        vUv = uv;
+
+        // Map onto concave half-cylinder
+        float uvX = aPos.x + position.x * aScale.x * GAP;
+        float uvY = aPos.y + position.y * aScale.y * GAP;
+        vGlobalUv = vec2(aPos.x, aPos.y);
+        vFragGlobalUv = vec2(uvX, uvY);
+
+        // Map each VERTEX onto the cylinder (not just tile center)
+        float spreadX = (aPos.x - 0.5) * uScrollProgress * 0.3;
+        float spreadY = (aPos.y - 0.5) * uScrollProgress * 0.18;
+        float vertUvX = aPos.x + spreadX + position.x * aScale.x * GAP;
+        float vertUvY = aPos.y + spreadY + position.y * aScale.y * GAP;
+        float theta = (vertUvX - 0.5) * PI;
+
+        // Cylinder mapping: camera inside at z=RADIUS (per PROMPT spec)
+        float cx = sin(theta) * (RADIUS - p.z);
+        float cy = (vertUvY - 0.5) * 12.0;
+        float cz = RADIUS - cos(theta) * (RADIUS - p.z) - 4.0;
+
+        // Normal transform for cylinder
+        vec3 n = normal;
+        float ct = cos(theta);
+        float st = sin(theta);
+        vec3 cylNormal = vec3(
+          n.x * ct + n.z * st,
+          n.y,
+          -n.x * st + n.z * ct
+        );
+        vNormal = normalMatrix * cylNormal;
+
+        vRand = aRand;
+
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(cx, cy, cz, 1.0);
+      }
+    `;
+
+    const tileFrag = `
+      precision highp float;
+      varying vec2 vUv;
+      varying vec2 vGlobalUv;
+      varying vec2 vFragGlobalUv;
+      varying vec3 vNormal;
+      varying float vIsSide;
+      varying vec4 vRand;
+      uniform float uTime;
+      uniform sampler2D uFluid;
+      uniform sampler2D uNoise;
+      uniform vec2 uMouseUv;
+
+      // Value noise
+      float hash(vec2 p) {
+        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+      }
+      float vnoise(vec2 p) {
+        vec2 i = floor(p);
+        vec2 f = fract(p);
+        f = f * f * (3.0 - 2.0 * f);
+        float a = hash(i);
+        float b = hash(i + vec2(1.0, 0.0));
+        float c = hash(i + vec2(0.0, 1.0));
+        float d = hash(i + vec2(1.0, 1.0));
+        return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+      }
+
+      void main() {
+        vec2 fuv = vGlobalUv;
+        vec4 fluids = texture2D(uFluid, fuv);
+        float fluidsLen = length(fluids.xy);
+
+        // Side faces: dark + fluid emission
+        if (vIsSide > 0.5) {
+          vec3 sideColor = vec3(0.04, 0.03, 0.08) + vec3(0.08, 0.04, 0.16) * fluidsLen * 0.8;
+          gl_FragColor = vec4(sideColor, 1.0);
+          return;
+        }
+
+        vec3 color;
+        float pattern = floor(vRand.x * 4.0);
+
+        if (pattern < 1.0) {
+          // Pattern 0: CRT noise — Penn Blue #272462
+          vec4 n = texture2D(uNoise, vUv * 2.0 + vRand.zw);
+          color = vec3(
+            step(0.5, n.r) * 0.2,
+            step(0.4, n.g) * 0.2,
+            step(0.3, n.b) * 0.5
+          );
+          color = mix(vec3(0.1, 0.09, 0.25), color, 0.75);
+        } else if (pattern < 2.0) {
+          // Pattern 1: binary grid — Midnight Green balanced
+          vec2 grid = step(vec2(0.5), fract(vUv * 8.0));
+          float checker = grid.x * grid.y + (1.0 - grid.x) * (1.0 - grid.y);
+          color = mix(vec3(0.05, 0.18, 0.22), vec3(0.1, 0.38, 0.38), checker);
+        } else if (pattern < 3.0) {
+          // Pattern 2: gradient — Penn Blue to balanced green
+          float grad = vUv.y + vRand.z * 0.3;
+          color = mix(vec3(0.1, 0.1, 0.26), vec3(0.1, 0.36, 0.35), grad);
+        } else {
+          // Pattern 3: subtle violet accent — Rebecca Purple muted
+          vec4 n = texture2D(uNoise, vUv * 3.0 + vRand.zw * 2.0);
+          float v = n.r * 0.5 + n.g * 0.3 + n.b * 0.2;
+          color = mix(vec3(0.14, 0.1, 0.24), vec3(0.32, 0.2, 0.45), v);
+        }
+
+        float flicker = 0.5 + 0.5 * sin(uTime * 3.0 + vRand.w * 20.0);
+
+        // ── Horizontal glow band (sweeping bright cyan/purple band like the reference) ──
+        float bandY = fract(uTime * 0.08 + vRand.z * 0.5); // slow sweep
+        float bandDist = abs(vUv.y - bandY);
+        float band = smoothstep(0.18, 0.0, bandDist);
+        vec3 bandColor = mix(vec3(0.1, 0.4, 0.48), vec3(0.2, 0.15, 0.4), sin(uTime * 0.5 + vRand.w * 6.28) * 0.5 + 0.5);
+        color += bandColor * band * 0.2;
+
+        // ── CRT scanlines (tight, subtle) ──
+        float scanline = 0.85 + 0.15 * sin(vUv.y * 200.0 + uTime * 3.0);
+        color *= scanline;
+
+        // ── Sub-pixel RGB columns (CRT phosphor look) ──
+        float subpixel = fract(vUv.x * 300.0);
+        vec3 phosphor;
+        if (subpixel < 0.333) phosphor = vec3(1.2, 0.6, 0.6);
+        else if (subpixel < 0.666) phosphor = vec3(0.6, 1.2, 0.6);
+        else phosphor = vec3(0.6, 0.6, 1.2);
+        color *= phosphor;
+
+        // ── Flicker — per-tile brightness pulsing (CRT monitor flicker) ──
+        float flickerSpeed = 2.0 + vRand.x * 4.0; // each tile flickers at its own rate
+        float tileFlicker2 = 0.92 + 0.08 * sin(uTime * flickerSpeed + vRand.y * 50.0);
+        color *= tileFlicker2;
+
+        // ── Random full-tile blink (brief blackout, subtle) ──
+        float glitchSeed = floor(uTime * 6.0);
+        float flickerSeed = hash(vec2(glitchSeed * 0.7, vRand.x * 100.0));
+        float tileBlink = step(0.97, flickerSeed); // ~3% chance per tile per beat
+        color *= 1.0 - tileBlink * 0.25;
+
+        // ── Horizontal glitch bands with chromatic aberration ──
+        float bandHash = hash(vec2(glitchSeed, floor(vUv.y * 25.0)));
+        float glitchActive = step(0.88, bandHash); // ~12% of bands
+        float glitchOffset = (bandHash - 0.5) * 0.2 * glitchActive;
+
+        vec3 glitchColor;
+        glitchColor.r = mix(color.r, hash(vec2(vUv.x + glitchOffset, vUv.y + glitchSeed)) * color.r * 2.5, glitchActive * 0.8);
+        glitchColor.g = color.g;
+        glitchColor.b = mix(color.b, hash(vec2(vUv.x - glitchOffset, vUv.y + glitchSeed * 1.3)) * color.b * 2.5, glitchActive * 0.8);
+        color = mix(color, glitchColor, 0.85);
+
+        // ── Static noise grain ──
+        float staticNoise = hash(vec2(vUv * 500.0 + uTime * 100.0)) * 0.05;
+        color += vec3(staticNoise * 0.6, staticNoise * 0.4, staticNoise);
+
+        // Per-tile vignette (screen edges, gentle)
+        float vig = smoothstep(2.2, 0.15, length((vUv - 0.5) * 2.0));
+        color *= vig;
+
+        // Halftone CRT dots
+        float halftone = step(length(fract(vGlobalUv * 414.0) - 0.5), 0.35);
+        color = mix(color, color * halftone, 0.25);
+
+        // Fluid emission — subtle glow on hover
+        color += vec3(0.08, 0.12, 0.2) * fluidsLen * 0.25;
+
+        // ── Edge glow on pointer proximity ──
+        float edgeX = min(vUv.x, 1.0 - vUv.x);
+        float edgeY = min(vUv.y, 1.0 - vUv.y);
+        float edgeDist = min(edgeX, edgeY);
+        float edgeLine = smoothstep(0.018, 0.0, edgeDist);
+        // Pointer proximity in global UV space — localized to cursor area
+        float pointerDist = distance(vFragGlobalUv, uMouseUv);
+        float pointerProx = smoothstep(0.09, 0.0, pointerDist);
+        vec3 edgeColor = mix(vec3(0.3, 0.5, 0.9), vec3(0.6, 0.3, 0.8), sin(uTime * 0.8) * 0.5 + 0.5);
+        color += edgeColor * edgeLine * pointerProx * 1.0;
+
+        // Global vignette (very subtle — keep edges visible)
+        float gVig = smoothstep(0.8, 0.1, length(vGlobalUv - 0.5));
+        color *= mix(0.4, 1.0, gVig);
+
+        // Overall brightness lift
+        color *= 1.15;
+
+        // Soft tile glow — emissive self-illumination
+        float glowPulse = 0.9 + 0.1 * sin(uTime * 1.5 + vRand.w * 6.28);
+        color += color * 0.5 * glowPulse;
+
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `;
+
+    function buildTiles(tiles, noiseTex) {
+      const box = new THREE.BoxGeometry(1, 1, 1);
+      const geom = new THREE.InstancedBufferGeometry();
+      geom.index = box.index;
+      geom.attributes.position = box.attributes.position;
+      geom.attributes.normal = box.attributes.normal;
+      geom.attributes.uv = box.attributes.uv;
+
+      const count = tiles.length;
+      const aPos = new Float32Array(count * 2);
+      const aScale = new Float32Array(count * 2);
+      const aRand = new Float32Array(count * 4);
+
+      for (let i = 0; i < count; i++) {
+        aPos[i * 2] = tiles[i].x;
+        aPos[i * 2 + 1] = tiles[i].y;
+        aScale[i * 2] = tiles[i].w;
+        aScale[i * 2 + 1] = tiles[i].h;
+        aRand[i * 4] = Math.random();
+        aRand[i * 4 + 1] = Math.random();
+        aRand[i * 4 + 2] = Math.random();
+        aRand[i * 4 + 3] = Math.random();
+      }
+
+      geom.setAttribute('aPos', new THREE.InstancedBufferAttribute(aPos, 2));
+      geom.setAttribute('aScale', new THREE.InstancedBufferAttribute(aScale, 2));
+      geom.setAttribute('aRand', new THREE.InstancedBufferAttribute(aRand, 4));
+      geom.instanceCount = count;
+
+      const mat = new THREE.ShaderMaterial({
+        vertexShader: tileVert,
+        fragmentShader: tileFrag,
+        uniforms: {
+          uTime: { value: 0 },
+          uFluid: { value: null },
+          uNoise: { value: noiseTex },
+          uMouseUv: { value: new THREE.Vector2(0.5, 0.5) },
+          uScrollProgress: { value: 0 },
+        },
+        side: THREE.DoubleSide,
+      });
+
+      tilesMesh = new THREE.Mesh(geom, mat);
+      tilesMesh.frustumCulled = false;
+      scene.add(tilesMesh);
+      return mat;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // CROSSHAIRS AT QUAD-TREE INTERSECTIONS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // CORNER LINKS — small chain links at each tile corner
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    const cornerLinkVert = `
+      precision highp float;
+      attribute vec2 aPos;
+      varying vec2 vUv;
+
+      #define PI 3.14159265359
+      #define RADIUS 7.0
+
+      void main() {
+        vUv = uv;
+        float scale = 0.035;
+        vec3 p = position * scale;
+
+        float vertUvX = aPos.x + p.x;
+        float theta = (vertUvX - 0.5) * PI;
+
+        float cx = sin(theta) * (RADIUS + 0.02);
+        float cy = (aPos.y - 0.5) * 12.0 + p.y;
+        float cz = RADIUS - cos(theta) * (RADIUS + 0.02) - 4.0;
+
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(cx, cy, cz, 1.0);
+      }
+    `;
+
+    const cornerLinkFrag = `
+      precision highp float;
+      varying vec2 vUv;
+
+      void main() {
+        vec2 c = vUv - 0.5;
+
+        // Thin solid cross — smooth antialiased lines
+        float tw = 0.02;  // line half-width in UV
+        float hLine = smoothstep(tw + 0.01, tw, abs(c.y));
+        float vLine = smoothstep(tw + 0.01, tw, abs(c.x));
+        float cross = max(hLine, vLine);
+
+        if (cross < 0.01) discard;
+
+        // Metallic steel
+        vec3 color = vec3(0.38, 0.4, 0.43);
+
+        gl_FragColor = vec4(color, cross * 0.9);
+      }
+    `;
+
+    function buildCornerLinks(tiles) {
+      // Collect all 4 corners of each tile
+      const corners = [];
+      for (const t of tiles) {
+        const x0 = t.x - t.w * 0.5;
+        const x1 = t.x + t.w * 0.5;
+        const y0 = t.y - t.h * 0.5;
+        const y1 = t.y + t.h * 0.5;
+        corners.push({ x: x0, y: y0 });
+        corners.push({ x: x1, y: y0 });
+        corners.push({ x: x0, y: y1 });
+        corners.push({ x: x1, y: y1 });
+      }
+
+      // Deduplicate corners (same position = shared by adjacent tiles)
+      const seen = new Set();
+      const unique = [];
+      for (const c of corners) {
+        const key = `${c.x.toFixed(5)},${c.y.toFixed(5)}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          unique.push(c);
+        }
+      }
+
+      const plane = new THREE.PlaneGeometry(1, 1);
+      const geom = new THREE.InstancedBufferGeometry();
+      geom.index = plane.index;
+      geom.attributes.position = plane.attributes.position;
+      geom.attributes.uv = plane.attributes.uv;
+
+      const count = unique.length;
+      const aPos = new Float32Array(count * 2);
+      for (let i = 0; i < count; i++) {
+        aPos[i * 2] = unique[i].x;
+        aPos[i * 2 + 1] = unique[i].y;
+      }
+      geom.setAttribute('aPos', new THREE.InstancedBufferAttribute(aPos, 2));
+      geom.instanceCount = count;
+
+      const mat = new THREE.ShaderMaterial({
+        vertexShader: cornerLinkVert,
+        fragmentShader: cornerLinkFrag,
+        transparent: true,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+      });
+
+      crosshairsMesh = new THREE.Mesh(geom, mat);
+      crosshairsMesh.frustumCulled = false;
+      scene.add(crosshairsMesh);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // CUSTOM GLASS SHADER (ShaderMaterial, NOT MeshPhysicalMaterial)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    const glassVert = `
+      precision highp float;
+      varying vec2 vUv;
+      varying vec3 vNormal;
+      varying vec3 vViewPos;
+      varying vec3 vWorldNormal;
+      void main() {
+        vUv = uv;
+        vNormal = normalize(normalMatrix * normal);
+        vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+        vViewPos = mvPos.xyz;
+        vWorldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
+        gl_Position = projectionMatrix * mvPos;
+      }
+    `;
+
+    const glassFrag = `
+      precision highp float;
+      varying vec2 vUv;
+      varying vec3 vNormal;
+      varying vec3 vViewPos;
+      varying vec3 vWorldNormal;
+
+      uniform sampler2D uBackground;
+      uniform sampler2D uFluid;
+      uniform sampler2D uNoise;
+      uniform samplerCube uEnvMap;
+      uniform vec2 uResolution;
+      uniform vec2 uMousePos;
+      uniform vec2 uMouseVelocity;
+      uniform float uRoughness;
+      uniform float uTime;
+
+      #define NUM_SAMPLES 8
+      #define PI 3.14159265359
+
+      // Simple 2D hash (same as PromptHQ)
+      vec2 hash2(vec2 p) {
+        p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+        return fract(sin(p) * 43758.5453);
+      }
+
+      // GGX distribution
+      float ggxD(float NdotH, float a2) {
+        float d = NdotH * NdotH * (a2 - 1.0) + 1.0;
+        return a2 / (PI * d * d);
+      }
+
+      void main() {
+        vec2 screenUv = gl_FragCoord.xy / uResolution;
+
+        // Fluid distortion (per PromptHQ: fluids.xy * 0.008)
+        vec4 fluids = texture2D(uFluid, screenUv);
+        float fluidsLength = length(fluids.xy);
+        vec2 distortion = fluids.xy * 0.008;
+
+        // Mouse proximity boost (per PromptHQ spec)
+        vec2 normMouse = uMousePos;
+        float mouseProx = smoothstep(0.4, 0.0, distance(screenUv, normMouse));
+        float mouseVelLen = length(uMouseVelocity);
+        float totalBoost = mouseProx * (0.25 + mouseVelLen * 1.0);
+
+        // Roughness — almost zero grain, very clean glass
+        float roughness = 0.0;
+
+        // Refraction power
+        float refractPower = 0.15 * (1.0 + totalBoost * 2.0);
+
+        // ── Loupe / magnification distortion ──
+        vec3 N = normalize(vNormal);
+        vec3 V = normalize(-vViewPos);
+        float loupePower = 0.06;
+        vec2 loupeOffset = N.xy * loupePower;
+        vec2 magnifiedUv = screenUv + loupeOffset;
+
+        // 8-sample refraction with chromatic aberration + loupe
+        vec3 refracted = vec3(0.0);
+        for (int i = 0; i < NUM_SAMPLES; i++) {
+          float fi = float(i);
+
+          vec2 randOff = hash2(vec2(fi, screenUv.y * 100.0));
+          vec2 roughDir = (randOff - 0.5) * roughness * 0.3;
+
+          // Chromatic aberration: very wide R/G/B prism split
+          float slideR = refractPower * (0.3 + fi * 0.05);
+          float slideG = refractPower * (1.0 + fi * 0.3);
+          float slideB = refractPower * (2.2 + fi * 0.8);
+
+          vec2 baseOff = N.xy * refractPower + distortion + roughDir;
+
+          // Sample from magnified UVs (loupe effect)
+          float r = texture2D(uBackground, magnifiedUv + baseOff * (slideR / refractPower)).r;
+          float g = texture2D(uBackground, magnifiedUv + baseOff * (slideG / refractPower)).g;
+          float b = texture2D(uBackground, magnifiedUv + baseOff * (slideB / refractPower)).b;
+
+          refracted += vec3(r, g, b);
+        }
+        refracted /= float(NUM_SAMPLES);
+
+        // GGX specular (per PromptHQ: roughness 0.003 + roughness*0.4)
+        float specRough = 0.003 + roughness * 0.4;
+        float a2 = specRough * specRough;
+        vec3 specular = vec3(0.0);
+
+        // Light 1 (per PromptHQ: position (4,4,5), force 0.6)
+        {
+          vec3 L = normalize(vec3(4.0, 4.0, 5.0) - vViewPos);
+          vec3 H = normalize(V + L);
+          float NdotH = max(dot(N, H), 0.0);
+          specular += vec3(1.0) * ggxD(NdotH, a2) * 0.25;
+        }
+        // Light 2 (per PromptHQ: position (-5,-1,4), force 0.3)
+        {
+          vec3 L = normalize(vec3(-5.0, -1.0, 4.0) - vViewPos);
+          vec3 H = normalize(V + L);
+          float NdotH = max(dot(N, H), 0.0);
+          specular += vec3(1.0) * ggxD(NdotH, a2) * 0.12;
+        }
+        specular = min(specular, vec3(0.3));
+
+        // Fresnel (per PromptHQ: f0 = 0.1)
+        float NdotV = max(dot(N, V), 0.0);
+        float F = 0.1 + 0.9 * pow(1.0 - NdotV, 5.0);
+
+        // Env reflection
+        vec3 reflDir = reflect(-V, vWorldNormal);
+        vec3 envColor = textureCube(uEnvMap, reflDir).rgb;
+
+        // ── Organic curved scratches on glass surface ──
+        vec2 uv = vUv;
+
+        // Warp field — organic curvature
+        float warpX = sin(uv.y * 4.3 + uTime * 0.04) * 0.4 + sin(uv.y * 9.7 + 1.5) * 0.15;
+        float warpY = sin(uv.x * 3.8 + uTime * 0.03) * 0.3 + cos(uv.x * 7.2 + 0.8) * 0.12;
+        vec2 warped = uv + vec2(warpX, warpY);
+
+        // Scratch 1 — deep long flowing arc (most visible)
+        float s1 = sin(warped.x * 6.0 + warped.y * 18.0 + sin(warped.y * 3.0) * 4.0);
+        float scratch1 = exp(-s1 * s1 * 60.0) * 1.0;
+
+        // Scratch 2 — medium depth, tighter curve
+        float s2 = sin(warped.x * 14.0 - warped.y * 9.0 + sin(warped.x * 5.0 + 2.0) * 3.0 + 3.7);
+        float scratch2 = exp(-s2 * s2 * 180.0) * 0.45;
+
+        // Scratch 3 — very faint ghost scratch, wide sweep
+        float s3 = sin((warped.x - warped.y) * 8.0 + sin(warped.y * 6.0) * 3.5 + uTime * 0.02);
+        float scratch3 = exp(-s3 * s3 * 40.0) * 0.2;
+
+        float streaks = scratch1 + scratch2 + scratch3;
+        streaks = min(streaks, 1.0);
+
+        // Scratches catch light — very subtle
+        refracted += vec3(0.025, 0.03, 0.04) * streaks;
+
+        // Complementary tint derived from what's behind the glass
+        // Sample the background color at this point
+        vec3 bgColor = refracted; // this IS the background seen through glass
+        float bgLum = dot(bgColor, vec3(0.299, 0.587, 0.114));
+
+        // Complementary color: invert hue (1.0 - channel), normalize
+        vec3 complementary = vec3(1.0) - bgColor;
+        complementary = normalize(complementary + 0.01) * 0.5; // soft complement
+
+        // Compose — brighter glass (lift dark refracted content)
+        vec3 color = refracted * 1.9 + vec3(0.14);
+
+        // Fresnel reflection blend
+        color = mix(color, envColor, F * 0.35);
+
+        // Specular highlights tinted with complement of background
+        color += mix(specular, specular * complementary * 1.8, 0.35);
+
+        // Edge tint: complementary to background (readable contrast)
+        float edgeFactor = 1.0 - NdotV;
+        color += complementary * edgeFactor * 0.15;
+
+        // Fresnel self-illumination — bright edges
+        color += vec3(1.0) * F * 0.3;
+
+        // Fluid boost
+        color *= 1.0 + fluidsLength * 0.8;
+
+        // Alpha: glass with Fresnel edges — more opaque for readability
+        float alpha = 0.85 + F * 0.15;
+
+        gl_FragColor = vec4(color, alpha);
+      }
+    `;
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // "TOM BERNYS" TEXT BEHIND GLASS (Canvas 2D -> PlaneGeometry)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function buildBehindText() {
+      // Behind-text REMOVED per user feedback — only the 3D glass text is visible
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // LIGHTING (per PROMPT_REPRODUCTION.md spec)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function setupLighting() {
+      // Lighting per PROMPT_REPRODUCTION.md spec
+      scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+
+      const p1 = new THREE.PointLight(0xffffff, 1.8, 20);
+      p1.position.set(4, 4, 5);
+      scene.add(p1);
+
+      const p2 = new THREE.PointLight(0xffe0cc, 1.2, 20);
+      p2.position.set(-5, -1, 4);
+      scene.add(p2);
+
+      const p3 = new THREE.PointLight(0xffffff, 1.5, 15);
+      p3.position.set(0, 2, -3);
+      scene.add(p3);
+
+      const dir = new THREE.DirectionalLight(0xffffff, 0.4);
+      dir.position.set(0, 5, 5);
+      scene.add(dir);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // CUSTOM BLOOM PIPELINE (NOT UnrealBloomPass)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    const bloomExtractFrag = `
+      precision highp float;
+      varying vec2 vUv;
+      uniform sampler2D uScene;
+      void main() {
+        vec3 c = texture2D(uScene, vUv).rgb;
+        vec3 bright = max(vec3(0.0), c - 0.35) * c;
+        gl_FragColor = vec4(bright, 1.0);
+      }
+    `;
+
+    const bloomBlurFrag = `
+      precision highp float;
+      varying vec2 vUv;
+      uniform sampler2D uTexture;
+      uniform vec2 uDirection;
+      uniform vec2 uResolution;
+      void main() {
+        vec2 texel = uDirection / uResolution;
+        vec3 result = vec3(0.0);
+        result += texture2D(uTexture, vUv - texel * 4.0).rgb * 0.016;
+        result += texture2D(uTexture, vUv - texel * 2.0).rgb * 0.054;
+        result += texture2D(uTexture, vUv - texel * 1.0).rgb * 0.122;
+        result += texture2D(uTexture, vUv).rgb * 0.227;
+        result += texture2D(uTexture, vUv + texel * 1.0).rgb * 0.122;
+        result += texture2D(uTexture, vUv + texel * 2.0).rgb * 0.054;
+        result += texture2D(uTexture, vUv + texel * 4.0).rgb * 0.016;
+        // Normalize: 0.016+0.054+0.122+0.227+0.122+0.054+0.016 = 0.611
+        // We also add the 0.195 taps:
+        result += texture2D(uTexture, vUv - texel * 1.5).rgb * 0.195;
+        result += texture2D(uTexture, vUv + texel * 1.5).rgb * 0.195;
+        gl_FragColor = vec4(result, 1.0);
+      }
+    `;
+
+    const bloomCompositeFrag = `
+      precision highp float;
+      varying vec2 vUv;
+      uniform sampler2D uScene;
+      uniform sampler2D uBloom0;
+      uniform sampler2D uBloom1;
+      uniform sampler2D uBloom2;
+      uniform float uBoost;
+      uniform int uLevels;
+      void main() {
+        vec3 c = texture2D(uScene, vUv).rgb;
+        vec3 b0 = texture2D(uBloom0, vUv).rgb;
+        vec3 b1 = texture2D(uBloom1, vUv).rgb;
+        vec3 bloom = c + b0 * 0.3 + b1 * 0.5;
+        if (uLevels > 2) {
+          vec3 b2 = texture2D(uBloom2, vUv).rgb;
+          bloom += b2 * 0.8;
+        }
+        bloom *= uBoost;
+
+        // Page border vignette — darkens edges of viewport
+        vec2 vc = vUv - 0.5;
+        float vignette = 1.0 - dot(vc, vc) * 1.8;
+        vignette = clamp(vignette, 0.0, 1.0);
+        vignette = smoothstep(0.0, 0.6, vignette);
+        bloom *= vignette;
+
+        gl_FragColor = vec4(bloom, 1.0);
+      }
+    `;
+
+    function createBloomRT(w, h) {
+      return new THREE.WebGLRenderTarget(w, h, {
+        type: THREE.HalfFloatType,
+        minFilter: THREE.LinearFilter,
+        magFilter: THREE.LinearFilter,
+      });
+    }
+
+    let bloomLevels;
+
+    function initBloom(w, h) {
+      // Dispose old bloom RTs
+      for (const rt of bloomRTs) { if (rt) rt.dispose(); }
+      bloomRTs = [];
+
+      bloomLevels = isMobile ? 2 : 3;
+      const sizes = [
+        [Math.floor(w / 4), Math.floor(h / 4)],
+        [Math.floor(w / 8), Math.floor(h / 8)],
+        [Math.floor(w / 16), Math.floor(h / 16)],
+      ];
+
+      // For each level: extract RT + 2 blur RTs (H + V)
+      for (let i = 0; i < bloomLevels; i++) {
+        const [bw, bh] = sizes[i];
+        bloomRTs.push(createBloomRT(bw, bh)); // blur ping
+        bloomRTs.push(createBloomRT(bw, bh)); // blur pong
+      }
+
+      // Extract material
+      bloomMaterials.extract = new THREE.ShaderMaterial({
+        vertexShader: fluidVert,
+        fragmentShader: bloomExtractFrag,
+        uniforms: { uScene: { value: null } },
+        depthTest: false, depthWrite: false,
+      });
+
+      // Blur material (reused with different uniforms)
+      bloomMaterials.blur = new THREE.ShaderMaterial({
+        vertexShader: fluidVert,
+        fragmentShader: bloomBlurFrag,
+        uniforms: {
+          uTexture: { value: null },
+          uDirection: { value: new THREE.Vector2(1, 0) },
+          uResolution: { value: new THREE.Vector2(w, h) },
+        },
+        depthTest: false, depthWrite: false,
+      });
+
+      // Composite material
+      bloomMaterials.composite = new THREE.ShaderMaterial({
+        vertexShader: fluidVert,
+        fragmentShader: bloomCompositeFrag,
+        uniforms: {
+          uScene: { value: null },
+          uBloom0: { value: null },
+          uBloom1: { value: null },
+          uBloom2: { value: null },
+          uBoost: { value: isMobile ? 1.5 : 1.15 },
+          uLevels: { value: bloomLevels },
+        },
+        depthTest: false, depthWrite: false,
+      });
+    }
+
+    function runBloom() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const sizes = [
+        [Math.floor(w / 4), Math.floor(h / 4)],
+        [Math.floor(w / 8), Math.floor(h / 8)],
+        [Math.floor(w / 16), Math.floor(h / 16)],
+      ];
+
+      // Extract bright pixels from sceneRT
+      bloomMaterials.extract.uniforms.uScene.value = sceneRT.texture;
+      fluidQuad.material = bloomMaterials.extract;
+      renderer.setRenderTarget(bloomRTs[0]);
+      renderer.render(fluidScene, fluidCamera);
+
+      // For each level: H-blur then V-blur
+      for (let i = 0; i < bloomLevels; i++) {
+        const [bw, bh] = sizes[i];
+        const pingIdx = i * 2;
+        const pongIdx = i * 2 + 1;
+
+        const blur = bloomMaterials.blur;
+
+        // If level > 0, downsample: render extract result into this level's RT first
+        if (i > 0) {
+          // Copy from the previous level's final V-blur (ping RT) as starting point
+          blur.uniforms.uTexture.value = bloomRTs[(i - 1) * 2].texture;
+          blur.uniforms.uDirection.value.set(0, 0);
+          blur.uniforms.uResolution.value.set(bw, bh);
+          fluidQuad.material = blur;
+          renderer.setRenderTarget(bloomRTs[pingIdx]);
+          renderer.render(fluidScene, fluidCamera);
+        }
+
+        // H-blur
+        blur.uniforms.uTexture.value = bloomRTs[pingIdx].texture;
+        blur.uniforms.uDirection.value.set(2, 0);
+        blur.uniforms.uResolution.value.set(bw, bh);
+        fluidQuad.material = blur;
+        renderer.setRenderTarget(bloomRTs[pongIdx]);
+        renderer.render(fluidScene, fluidCamera);
+
+        // V-blur
+        blur.uniforms.uTexture.value = bloomRTs[pongIdx].texture;
+        blur.uniforms.uDirection.value.set(0, 2);
+        fluidQuad.material = blur;
+        renderer.setRenderTarget(bloomRTs[pingIdx]);
+        renderer.render(fluidScene, fluidCamera);
+      }
+
+      // Composite: combine scene + bloom levels
+      const comp = bloomMaterials.composite;
+      comp.uniforms.uScene.value = sceneRT.texture;
+      comp.uniforms.uBloom0.value = bloomRTs[0].texture;
+      comp.uniforms.uBloom1.value = bloomRTs[2].texture;
+      if (bloomLevels > 2) {
+        comp.uniforms.uBloom2.value = bloomRTs[4].texture;
+      }
+      fluidQuad.material = comp;
+      renderer.setRenderTarget(null);
+      renderer.render(fluidScene, fluidCamera);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // SCENE SETUP
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function initRenderer() {
+      const canvas = document.getElementById('canvas');
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: !isMobile,
+        alpha: false,
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxDPR));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function initScene() {
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x000000);
+
+      const aspect = window.innerWidth / window.innerHeight;
+      const fov = isMobile ? 65 : (aspect < 0.8 ? 55 : 40);
+      camera = new THREE.PerspectiveCamera(fov, aspect, 0.1, 100);
+      camera.position.z = 7;
+    }
+
+    function setupEnvMap() {
+      const pmremGenerator = new THREE.PMREMGenerator(renderer);
+      const envTexture = pmremGenerator.fromScene(new RoomEnvironment()).texture;
+      scene.environment = envTexture;
+      pmremGenerator.dispose();
+    }
+
+    function initRenderTargets() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio, maxDPR);
+      const rw = Math.floor(w * dpr);
+      const rh = Math.floor(h * dpr);
+
+      backgroundRT = new THREE.WebGLRenderTarget(rw, rh, {
+        type: THREE.HalfFloatType,
+        minFilter: THREE.LinearFilter,
+        magFilter: THREE.LinearFilter,
+      });
+
+      sceneRT = new THREE.WebGLRenderTarget(rw, rh, {
+        type: THREE.HalfFloatType,
+        minFilter: THREE.LinearFilter,
+        magFilter: THREE.LinearFilter,
+      });
+    }
+
+    function buildGlassText(font) {
+      if (glassGroup) {
+        scene.remove(glassGroup);
+        if (glassMesh) glassMesh.geometry.dispose();
+        if (glassSubMesh) glassSubMesh.geometry.dispose();
+      }
+
+      // Main title — thicker depth for solid glass feel
+      const geometry = new TextGeometry('Tom Bernys', {
+        font,
+        size: 2.0,
+        depth: 0.5,
+        curveSegments: 20,
+        bevelEnabled: true,
+        bevelThickness: 0.06,
+        bevelSize: 0.04,
+        bevelSegments: 8,
+      });
+      geometry.computeBoundingBox();
+      geometry.center();
+
+      // Subtitle
+      const subGeometry = new TextGeometry('Monteur Video & Motion Designer', {
+        font,
+        size: 0.55,
+        depth: 0.3,
+        curveSegments: 20,
+        bevelEnabled: true,
+        bevelThickness: 0.04,
+        bevelSize: 0.03,
+        bevelSegments: 8,
+      });
+      subGeometry.computeBoundingBox();
+      subGeometry.center();
+
+      const noiseTex = createNoiseTexture();
+      const dpr = Math.min(window.devicePixelRatio, maxDPR);
+
+      glassMaterial = new THREE.ShaderMaterial({
+        vertexShader: glassVert,
+        fragmentShader: glassFrag,
+        uniforms: {
+          uBackground: { value: null },
+          uFluid: { value: null },
+          uNoise: { value: noiseTex },
+          uEnvMap: { value: null },
+          uResolution: { value: new THREE.Vector2(
+            window.innerWidth * dpr,
+            window.innerHeight * dpr
+          ) },
+          uMousePos: { value: new THREE.Vector2(0.5, 0.5) },
+          uMouseVelocity: { value: new THREE.Vector2(0, 0) },
+          uRoughness: { value: isMobile ? 0.0 : 0.1 },
+          uTime: { value: 0 },
+        },
+        transparent: true,
+        depthWrite: false,
+        side: THREE.FrontSide, // Only render front faces — hides internal edges
+      });
+
+      glassMesh = new THREE.Mesh(geometry, glassMaterial);
+      glassSubMesh = new THREE.Mesh(subGeometry, glassMaterial);
+
+      // Scale to ~65% viewport width
+      const fov = camera.fov;
+      const dist = camera.position.z - 3;
+      const visibleWidth = 2 * dist * Math.tan((fov / 2) * Math.PI / 180);
+      const targetWidth = visibleWidth * 0.75;
+      const bboxWidth = geometry.boundingBox.max.x - geometry.boundingBox.min.x;
+      const scale = targetWidth / bboxWidth;
+      const finalScale = isMobile ? scale * 0.62 : scale;
+
+      glassMesh.scale.setScalar(finalScale);
+      glassSubMesh.scale.setScalar(finalScale);
+
+      // Position subtitle below main title
+      const mainHeight = (geometry.boundingBox.max.y - geometry.boundingBox.min.y) * finalScale;
+      glassSubMesh.position.y = -mainHeight * 0.75;
+
+      glassGroup = new THREE.Group();
+      glassGroup.add(glassMesh);
+      glassGroup.add(glassSubMesh);
+      glassGroup.position.z = 3;
+      glassGroup.renderOrder = 10;
+      glassMesh.renderOrder = 10;
+      glassSubMesh.renderOrder = 10;
+      scene.add(glassGroup);
+
+      // CubeCamera for reflections (captured once)
+      cubeCamera = new THREE.CubeCamera(0.1, 100, new THREE.WebGLCubeRenderTarget(256, {
+        type: THREE.HalfFloatType,
+      }));
+      scene.add(cubeCamera);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // QUATERNION ROTATION (per spec)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    const autoSpinQuat = new THREE.Quaternion();
+    const hoverQuat = new THREE.Quaternion();
+    const tempEuler = new THREE.Euler();
+
+    // Tilt angles (clamped, no full rotation)
+    let tiltX = 0; // up/down
+    let tiltY = 0; // left/right
+    const MAX_TILT_X = 1.0;  // ~57 degrees max
+    const MAX_TILT_Y = 1.3;  // ~75 degrees max
+
+    function updateRotation(dt) {
+      if (!glassGroup) return;
+
+      // Mouse → tilt velocity (no spin, just inclination)
+      const dx = smoothMouseX - prevMouseX;
+      const dy = smoothMouseY - prevMouseY;
+      const sensitivity = isMobile ? 0.15 : 0.07;
+      hoverVelX -= dy * sensitivity;
+      hoverVelY += dx * sensitivity;
+
+      // Clamp velocity
+      hoverVelX = Math.max(-0.6, Math.min(0.6, hoverVelX));
+      hoverVelY = Math.max(-0.6, Math.min(0.6, hoverVelY));
+
+      // Lighter friction — keeps momentum longer
+      const friction = Math.pow(0.5, dt);
+      hoverVelX *= friction;
+      hoverVelY *= friction;
+
+      // Accumulate tilt with clamping (no full rotation)
+      tiltX += hoverVelX * dt;
+      tiltY += hoverVelY * dt;
+
+      // Gentle auto-sway so it's not static
+      const autoSwayY = Math.sin(elapsed * 0.3) * 0.06;
+      const autoSwayX = Math.sin(elapsed * 0.2 + 1.0) * 0.03;
+
+      // Clamp total tilt
+      tiltX = Math.max(-MAX_TILT_X, Math.min(MAX_TILT_X, tiltX));
+      tiltY = Math.max(-MAX_TILT_Y, Math.min(MAX_TILT_Y, tiltY));
+
+      // Spring back to center
+      tiltX *= Math.pow(0.96, dt * 60);
+      tiltY *= Math.pow(0.96, dt * 60);
+
+      // Apply as euler rotation (tilt only, never full spin)
+      glassGroup.rotation.x = tiltX + autoSwayX;
+      glassGroup.rotation.y = tiltY + autoSwayY;
+      glassGroup.rotation.z = 0;
+
+      // Vertical float
+      glassGroup.position.y = Math.sin(elapsed * 0.4) * 0.06;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // RAF LOOP + RENDER PIPELINE
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    let sceneReady = false;
+
+    function startRAFLoop() {
+      if (rafId !== null) return;
+      lastTime = performance.now() / 1000;
+
+      function loop(now) {
+        rafId = requestAnimationFrame(loop);
+
+
+
+        const t = now / 1000;
+        const dt = Math.min(t - lastTime, 0.05); // cap delta
+        lastTime = t;
+        elapsed += dt;
+
+        if (!sceneReady) {
+          renderer.render(scene, camera);
+          return;
+        }
+
+        // 1. Smooth mouse + velocity
+        const smooth = 0.1;
+        smoothMouseX += (mouseX - smoothMouseX) * smooth;
+        smoothMouseY += (mouseY - smoothMouseY) * smooth;
+        mouseVelX = smoothMouseX - prevMouseX;
+        mouseVelY = smoothMouseY - prevMouseY;
+
+        // 2. Update glass uniforms
+        if (glassMaterial) {
+          glassMaterial.uniforms.uMousePos.value.set(
+            smoothMouseX / window.innerWidth,
+            1.0 - smoothMouseY / window.innerHeight
+          );
+          glassMaterial.uniforms.uMouseVelocity.value.set(mouseVelX / window.innerWidth, mouseVelY / window.innerHeight);
+          glassMaterial.uniforms.uTime.value = elapsed;
+          glassMaterial.uniforms.uFluid.value = fluidA.texture;
+          glassMaterial.uniforms.uBackground.value = backgroundRT.texture;
+        }
+
+        // 3. Pointer tracking for fluid
+        pointerAccumX += mouseVelX * 0.001;
+        pointerAccumY += mouseVelY * 0.001;
+
+        // 4. Fluid passes
+        stepFluid(dt);
+
+        // 5. Update tile uniforms
+        if (tilesMesh) {
+          tilesMesh.material.uniforms.uTime.value = elapsed;
+          tilesMesh.material.uniforms.uFluid.value = fluidA.texture;
+          tilesMesh.material.uniforms.uMouseUv.value.set(smoothMouseX / window.innerWidth, 1.0 - smoothMouseY / window.innerHeight);
+        }
+
+        // 5b. Rotation
+        updateRotation(dt);
+
+        prevMouseX = smoothMouseX;
+        prevMouseY = smoothMouseY;
+
+        // 6. Capture cubemap ONCE (without glass visible)
+        if (!envCaptured && cubeCamera && glassGroup) {
+          glassGroup.visible = false;
+          cubeCamera.position.copy(glassGroup.position);
+          cubeCamera.update(renderer, scene);
+          glassMaterial.uniforms.uEnvMap.value = cubeCamera.renderTarget.texture;
+          glassGroup.visible = true;
+          envCaptured = true;
+        }
+
+        // 7. Render background (without glass) -> backgroundRT
+        if (glassGroup) glassGroup.visible = false;
+        renderer.setRenderTarget(backgroundRT);
+        renderer.render(scene, camera);
+        if (glassGroup) glassGroup.visible = true;
+
+        // 8. Render full scene -> sceneRT
+        renderer.setRenderTarget(sceneRT);
+        renderer.render(scene, camera);
+
+        // 9. Bloom composite -> screen
+        runBloom();
+      }
+
+      rafId = requestAnimationFrame(loop);
+    }
+
+    function stopRAFLoop() {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+
+    // ─── Visibility guard ─────────────────────────────────────────────────────
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopRAFLoop();
+      } else {
+        startRAFLoop();
+      }
+    });
+
+    // ─── Context loss / restore handlers ──────────────────────────────────────
+    function registerContextHandlers() {
+      const canvas = document.getElementById('canvas');
+
+      canvas.addEventListener('webglcontextlost', () => {
+        stopRAFLoop();
+        contextLossFallbackTimer = setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      });
+
+      canvas.addEventListener('webglcontextrestored', () => {
+        clearTimeout(contextLossFallbackTimer);
+        sceneReady = false;
+        envCaptured = false;
+        initScene();
+        setupEnvMap();
+        setupLighting();
+        initFluidSim();
+        initRenderTargets();
+        const noiseTex = createNoiseTexture();
+        const tiles = generateQuadTree(isMobile);
+        buildTiles(tiles, noiseTex);
+        // buildCornerLinks(tiles);
+        if (loadedFont) buildGlassText(loadedFont);
+        buildBehindText();
+        initBloom(window.innerWidth, window.innerHeight);
+        sceneReady = true;
+        startRAFLoop();
+      });
+    }
+
+    // ─── Resize handler ───────────────────────────────────────────────────────
+    window.addEventListener('resize', () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const aspect = w / h;
+
+      camera.aspect = aspect;
+      camera.fov = isMobile ? 65 : (aspect < 0.8 ? 55 : 40);
+      camera.updateProjectionMatrix();
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxDPR));
+      renderer.setSize(w, h);
+
+      // Update render targets
+      const dpr = Math.min(window.devicePixelRatio, maxDPR);
+      const rw = Math.floor(w * dpr);
+      const rh = Math.floor(h * dpr);
+
+      if (backgroundRT) { backgroundRT.dispose(); backgroundRT = new THREE.WebGLRenderTarget(rw, rh, { type: THREE.HalfFloatType, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter }); }
+      if (sceneRT) { sceneRT.dispose(); sceneRT = new THREE.WebGLRenderTarget(rw, rh, { type: THREE.HalfFloatType, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter }); }
+
+      // Rebuild bloom at new size
+      if (bloomMaterials.extract) initBloom(w, h);
+
+      // Update glass resolution
+      if (glassMaterial) {
+        glassMaterial.uniforms.uResolution.value.set(w * dpr, h * dpr);
+      }
+    });
+
+    // ─── Mouse / Touch events ─────────────────────────────────────────────────
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    window.addEventListener('click', () => {
+      hoverVelY += 0.03;
+    });
+
+    // Touch handlers: canvas-scoped passive listeners (no preventDefault — mobile scroll must work)
+    const canvasEl = document.getElementById('canvas');
+    canvasEl.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      mouseX = touch.clientX;
+      mouseY = touch.clientY;
+    }, { passive: true });
+
+    canvasEl.addEventListener('touchend', () => {
+      hoverVelY += 0.03;
+    }, { passive: true });
+
+    // ─── Loading screen ───────────────────────────────────────────────────────
+
+    const GLYPHS = '01!@#$%^&*<>{}[]|\\/?~_+=';
+
+    function runGlitchReveal() {
+      const chars = document.querySelectorAll('.loader-char');
+      const stagger = 150;
+      const cycleDuration = 800;
+      const cycleInterval = 50;
+
+      return new Promise(resolve => {
+        let completed = 0;
+
+        chars.forEach((el, i) => {
+          const target = el.dataset.char;
+          if (target === ' ') {
+            el.innerHTML = '&nbsp;';
+            completed++;
+            if (completed === chars.length) resolve();
+            return;
+          }
+
+          setTimeout(() => {
+            const interval = setInterval(() => {
+              el.textContent = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+            }, cycleInterval);
+
+            setTimeout(() => {
+              clearInterval(interval);
+              el.textContent = target;
+              completed++;
+              if (completed === chars.length) resolve();
+            }, cycleDuration);
+          }, i * stagger);
+        });
+      });
+    }
+
+    function initLoadingScreen(tier) {
+      const loader = document.getElementById('loader');
+
+      if (tier >= 2) {
+        loader.classList.add('has-scanline', 'has-grain');
+      }
+
+      const revealDone = runGlitchReveal();
+
+      progressTween = gsap.to('.loader-progress-bar', {
+        width: '90%',
+        duration: 4.5,
+        ease: 'power1.out',
+      });
+
+      window._progressTween = progressTween;
+
+      return revealDone;
+    }
+
+    function transition() {
+      const loader = document.getElementById('loader');
+      if (!loader) return;
+
+      if (window._progressTween) {
+        window._progressTween.kill();
+        window._progressTween = null;
+      }
+
+      const bar = document.querySelector('.loader-progress-bar');
+      if (bar) bar.style.width = '100%';
+
+      loader.classList.add('dissolving');
+
+      // Smooth fade out
+      loader.style.transition = 'opacity 0.8s ease-out';
+      loader.style.opacity = '0';
+
+      setTimeout(() => {
+        if (loader.parentNode) loader.parentNode.removeChild(loader);
+      }, 900);
+
+      // Animate 3D text: start zoomed in, dezoom to final position
+      if (glassGroup) {
+        const finalZ = 3;
+        const finalScaleVal = 1;
+
+        // Start zoomed in
+        glassGroup.position.z = finalZ + 2;
+        glassGroup.scale.setScalar(1.6);
+
+        // Animate to final position
+        const startTime = performance.now();
+        const duration = 2400; // ms
+
+        function easeOutCubic(t) {
+          return 1 - Math.pow(1 - t, 3);
+        }
+
+        function animateEntry() {
+          const t = Math.min((performance.now() - startTime) / duration, 1);
+          const e = easeOutCubic(t);
+
+          glassGroup.position.z = (finalZ + 2) + (finalZ - (finalZ + 2)) * e;
+          glassGroup.scale.setScalar(1.6 + (finalScaleVal - 1.6) * e);
+
+          if (t < 1) requestAnimationFrame(animateEntry);
+          else entranceComplete = true;
+        }
+        requestAnimationFrame(animateEntry);
+      }
+
+    }
+
+    // ─── Projects Showcase ──────────────────────────────────────────────────
+    const VIMEO_PAID = false; // Tom: set to true if Vimeo Starter+ plan
+
+    const PROJECTS = [
+      { id: '76979871', title: 'Projet 1', role: 'Direction \u00b7 Montage', client: 'Client A' },
+      { id: '76979871', title: 'Projet 2', role: 'Motion Design', client: 'Client B' },
+      { id: '76979871', title: 'Projet 3', role: 'Montage \u00b7 Etalonnage', client: 'Client C' },
+      { id: '76979871', title: 'Projet 4', role: 'Direction Artistique', client: 'Client D' },
+      { id: '76979871', title: 'Projet 5', role: 'Motion Design \u00b7 Compositing', client: 'Client E' },
+      { id: '76979871', title: 'Projet 6', role: 'Montage', client: 'Client F' },
+      { id: '76979871', title: 'Projet 7', role: 'Direction \u00b7 Motion Design', client: 'Client G' },
+      { id: '76979871', title: 'Projet 8', role: 'Etalonnage \u00b7 Montage', client: 'Client H' },
+      { id: '76979871', title: 'Projet 9', role: 'Direction Artistique \u00b7 Montage', client: 'Client I' },
+    ];
+
+    function initProjectsShowcase() {
+      const grid = document.getElementById('projects-grid');
+      if (!grid) return;
+
+      // Generate card HTML for all 9 projects (synchronous — DOM first, thumbnails async)
+      grid.innerHTML = PROJECTS.map((proj, i) => `
+        <div class="project-card" data-vimeo-id="${proj.id}" data-index="${i}" tabindex="0" role="button" aria-label="${proj.title}">
+          <img class="project-thumb" src="" alt="${proj.title}" loading="lazy">
+          <div class="project-overlay">
+            <div class="project-overlay-title">${proj.title}</div>
+            <div class="project-overlay-role">${proj.role}</div>
+          </div>
+        </div>
+      `).join('');
+
+      // Fetch thumbnails via oEmbed in parallel (non-blocking, graceful fallback)
+      fetchThumbnails();
+
+      // Set up IntersectionObserver for lazy-load readiness
+      setupCardObserver();
+      setupCardInteractions();   // Hover preview, click, keyboard, mobile double-tap
+      setupLightboxListeners();  // X button, backdrop click, Escape key
+    }
+
+    async function fetchThumbnails() {
+      const requests = PROJECTS.map(p =>
+        fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${p.id}&width=640`)
+          .then(r => r.json())
+          .then(data => ({ id: p.id, url: data.thumbnail_url }))
+          .catch(() => ({ id: p.id, url: null }))
+      );
+      const results = await Promise.all(requests);
+      results.forEach(({ id, url }) => {
+        if (!url) return;
+        // Set src on ALL cards with this vimeo ID (handles duplicates in placeholder data)
+        document.querySelectorAll(`[data-vimeo-id="${id}"] .project-thumb`).forEach(img => {
+          img.src = url;
+        });
+      });
+    }
+
+    function setupCardObserver() {
+      const cardObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.dataset.nearViewport = 'true';
+            cardObserver.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '200px' });
+
+      document.querySelectorAll('.project-card').forEach(card => cardObserver.observe(card));
+    }
+
+    // ─── Projects Interaction ───────────────────────────────────────────────────
+    let activePlayer = null;
+    let hoverTimeouts = new Map(); // debounce per card
+
+    function buildPreviewSrc(vimeoId) {
+      const base = `https://player.vimeo.com/video/${vimeoId}`;
+      if (VIMEO_PAID) return `${base}?background=1`;
+      return `${base}?autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0`;
+    }
+
+    function setupCardInteractions() {
+      const cards = document.querySelectorAll('.project-card');
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      cards.forEach(card => {
+        // ── Desktop hover: inject muted preview iframe after 150ms debounce ──
+        card.addEventListener('mouseenter', () => {
+          if (isTouchDevice) return; // skip on touch devices
+          if (prefersReducedMotion) return; // no preview on reduced motion
+
+          const timeout = setTimeout(() => {
+            // Don't inject if already has preview
+            if (card.querySelector('.project-preview')) return;
+            const iframe = document.createElement('iframe');
+            iframe.src = buildPreviewSrc(card.dataset.vimeoId);
+            iframe.className = 'project-preview';
+            iframe.allow = 'autoplay; fullscreen; picture-in-picture; playsinline';
+            iframe.setAttribute('frameborder', '0');
+            iframe.loading = 'lazy';
+            card.appendChild(iframe);
+          }, 150);
+          hoverTimeouts.set(card, timeout);
+        });
+
+        card.addEventListener('mouseleave', () => {
+          // Clear debounce timer
+          const timeout = hoverTimeouts.get(card);
+          if (timeout) {
+            clearTimeout(timeout);
+            hoverTimeouts.delete(card);
+          }
+          // Remove preview iframe
+          const iframe = card.querySelector('.project-preview');
+          if (iframe) iframe.remove();
+        });
+
+        // ── Desktop click: open lightbox ──
+        card.addEventListener('click', (e) => {
+          if (isTouchDevice) return; // handled by touchstart
+          openLightbox(card.dataset.vimeoId, parseInt(card.dataset.index));
+        });
+
+        // ── Keyboard: Enter/Space opens lightbox ──
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openLightbox(card.dataset.vimeoId, parseInt(card.dataset.index));
+          }
+        });
+
+        // ── Mobile double-tap: first tap reveals overlay, second tap opens lightbox (D-15) ──
+        card.addEventListener('touchstart', (e) => {
+          if (!isTouchDevice) return;
+          if (!card.classList.contains('touch-revealed')) {
+            e.preventDefault();
+            // Close any other revealed cards
+            document.querySelectorAll('.project-card.touch-revealed')
+              .forEach(c => c.classList.remove('touch-revealed'));
+            card.classList.add('touch-revealed');
+
+            // Inject preview iframe on touch-reveal too
+            if (!prefersReducedMotion) {
+              if (!card.querySelector('.project-preview')) {
+                const iframe = document.createElement('iframe');
+                iframe.src = buildPreviewSrc(card.dataset.vimeoId);
+                iframe.className = 'project-preview';
+                iframe.allow = 'autoplay; fullscreen; picture-in-picture; playsinline';
+                iframe.setAttribute('frameborder', '0');
+                iframe.loading = 'lazy';
+                card.appendChild(iframe);
+              }
+            }
+          } else {
+            // Second tap — open lightbox
+            openLightbox(card.dataset.vimeoId, parseInt(card.dataset.index));
+          }
+        }, { passive: false });
+      });
+
+      // Tap outside any card removes touch-revealed state
+      document.addEventListener('touchstart', (e) => {
+        if (!e.target.closest('.project-card')) {
+          document.querySelectorAll('.project-card.touch-revealed').forEach(c => {
+            c.classList.remove('touch-revealed');
+            const iframe = c.querySelector('.project-preview');
+            if (iframe) iframe.remove();
+          });
+        }
+      }, { passive: true });
+    }
+
+    async function openLightbox(vimeoId, projectIndex) {
+      const proj = PROJECTS[projectIndex];
+      if (!proj) return;
+
+      // Remove any hover preview iframe from the clicked card (prevents audio bleed — anti-pattern #1)
+      const clickedCard = document.querySelector(`[data-index="${projectIndex}"]`);
+      if (clickedCard) {
+        const previewIframe = clickedCard.querySelector('.project-preview');
+        if (previewIframe) previewIframe.remove();
+      }
+
+      const wrap = document.getElementById('lightbox-player-wrap');
+      wrap.innerHTML = ''; // Clear any previous player
+
+      // Create Vimeo player via SDK
+      activePlayer = new Player(wrap, {
+        id: parseInt(vimeoId),
+        responsive: true,
+        playsinline: true,
+      });
+
+      // Populate metadata (D-11: title + role + client below player, D-18: client only in lightbox)
+      document.getElementById('lightbox-meta').innerHTML = `
+        <p class="lightbox-title">${proj.title}</p>
+        <p class="lightbox-role">${proj.role}</p>
+        <p class="lightbox-client">${proj.client}</p>
+      `;
+
+      // Show lightbox (remove hidden first, then add is-open on next frame for CSS transition)
+      const lightbox = document.getElementById('lightbox');
+      lightbox.removeAttribute('hidden');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          lightbox.classList.add('is-open');
+        });
+      });
+
+      // Lock body scroll
+      document.body.style.overflow = 'hidden';
+
+      // Move focus to close button for a11y
+      document.getElementById('lightbox-close').focus();
+
+      // Store which card opened the lightbox for focus return
+      lightbox._triggerCard = clickedCard;
+    }
+
+    async function closeLightbox() {
+      // Pause and destroy player (always before removing DOM — anti-pattern #3)
+      if (activePlayer) {
+        try {
+          await activePlayer.pause();
+        } catch (_) { /* iframe may already be gone */ }
+        try {
+          activePlayer.destroy();
+        } catch (_) { /* safe cleanup */ }
+        activePlayer = null;
+      }
+
+      // Clear player wrap
+      document.getElementById('lightbox-player-wrap').innerHTML = '';
+      document.getElementById('lightbox-meta').innerHTML = '';
+
+      const lightbox = document.getElementById('lightbox');
+      lightbox.classList.remove('is-open');
+
+      // Wait for fade-out transition, then hide
+      setTimeout(() => {
+        lightbox.setAttribute('hidden', '');
+      }, 350);
+
+      // Restore body scroll (anti-pattern #4: always restore)
+      document.body.style.overflow = '';
+
+      // Return focus to triggering card
+      if (lightbox._triggerCard) {
+        lightbox._triggerCard.focus();
+        lightbox._triggerCard = null;
+      }
+    }
+
+    function setupLightboxListeners() {
+      // Close button (D-12)
+      document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+
+      // Backdrop click (D-12)
+      document.getElementById('lightbox-backdrop').addEventListener('click', closeLightbox);
+
+      // Escape key (a11y — Claude's discretion, per UI-SPEC accessibility contract)
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          const lightbox = document.getElementById('lightbox');
+          if (lightbox && lightbox.classList.contains('is-open')) {
+            closeLightbox();
+          }
+        }
+      });
+    }
+
+    // ─── Contact Form ─────────────────────────────────────────────────────────
+    function initContactForm() {
+      const form = document.getElementById('contact-form');
+      if (!form) return;
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const feedback = document.getElementById('form-feedback');
+        const submitBtn = form.querySelector('.contact-submit');
+
+        // Clear previous feedback (Pitfall 4)
+        feedback.textContent = '';
+        feedback.className = 'form-feedback';
+
+        // Disable button during submission
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Envoi...';
+
+        try {
+          const response = await fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'Accept': 'application/json' }
+          });
+
+          if (response.ok) {
+            feedback.textContent = 'Message envoy\u00e9 ! Je vous r\u00e9ponds rapidement.';
+            feedback.className = 'form-feedback form-feedback--success';
+            form.reset();
+          } else {
+            const json = await response.json().catch(() => ({}));
+            const msg = json.errors?.map(err => err.message).join(', ') || 'Une erreur est survenue.';
+            feedback.textContent = msg;
+            feedback.className = 'form-feedback form-feedback--error';
+          }
+        } catch {
+          feedback.textContent = 'Erreur r\u00e9seau. Veuillez r\u00e9essayer.';
+          feedback.className = 'form-feedback form-feedback--error';
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Envoyer';
+        }
+      });
+    }
+
+    // ─── Scroll Integration ──────────────────────────────────────────────────
+    function initScrollIntegration() {
+      const backToTopBtn = document.getElementById('back-to-top');
+
+      // Track A: CSS-driven (canvas parallax + fade, CTA fade)
+      const heroTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '#hero',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        }
+      });
+
+      // Hold zone: ~8% of scroll = brief pause before transition starts
+      heroTl.to({}, { duration: 0.08 });
+
+      // Canvas parallax: translateY -50vh (0.5x scroll speed)
+      heroTl.to('#canvas', { y: '-50vh', ease: 'none', duration: 0.92 }, 0.08);
+
+      // Canvas fade to invisible
+      heroTl.to('#canvas', { opacity: 0, ease: 'power2.in', duration: 0.92 }, 0.08);
+
+      // CTA button fade out by 30% of scroll
+      heroTl.to('#cta-btn', { opacity: 0, pointerEvents: 'none', ease: 'power1.out', duration: 0.22 }, 0.08);
+
+      // Track B: Three.js mutations via onUpdate
+      ScrollTrigger.create({
+        trigger: '#hero',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true,
+        onUpdate: (self) => {
+          const progress = self.progress;
+
+          // Glass text Z recession: 3 -> -2 (5 units back), gated on entrance complete
+          if (glassGroup && entranceComplete) {
+            glassGroup.position.z = 3 - progress * 5;
+          }
+
+          // Tile spread uniform
+          if (tilesMesh) {
+            tilesMesh.material.uniforms.uScrollProgress.value = progress;
+          }
+
+          // RAF optimization: stop when canvas invisible
+          if (progress > 0.95 && rafId !== null) {
+            stopRAFLoop();
+          } else if (progress <= 0.95 && rafId === null && !document.hidden) {
+            startRAFLoop();
+          }
+
+          // Back-to-top button visibility — appears after hero scroll-out
+          if (progress > 0.95) {
+            backToTopBtn.classList.add('is-visible');
+          } else {
+            backToTopBtn.classList.remove('is-visible');
+          }
+        }
+      });
+
+      // Future phases: call ScrollTrigger.refresh() after adding section content
+
+      // CTA button click — smooth scroll to first content section
+      document.getElementById('cta-btn').addEventListener('click', () => {
+        const firstSection = document.querySelector('.content-section');
+        if (firstSection) firstSection.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      // Back-to-top button click — smooth scroll to page top
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // Initialize projects grid (must happen before section observer)
+      initProjectsShowcase();
+      initContactForm();
+
+      // Content section entrance animations (IntersectionObserver, play once)
+      const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            sectionObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.25 });
+
+      document.querySelectorAll('.content-section').forEach(el => {
+        sectionObserver.observe(el);
+      });
+
+      // Recalculate ScrollTrigger positions after projects content is injected
+      if (typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.refresh();
+      }
+    }
+
+    // ─── Bootstrap ────────────────────────────────────────────────────────────
+    async function main() {
+      gpuTier = await detectTier();
+      initRenderer();
+      registerContextHandlers();
+      initScene();
+      setupEnvMap();
+      setupLighting();
+      initFluidSim();
+      initRenderTargets();
+
+      // Start RAF loop early (needed for compileAsync)
+      startRAFLoop();
+
+      // Initialize scroll integration (ScrollTrigger + CTA + section observers)
+      initScrollIntegration();
+
+      console.log('[Hero] GPU tier:', gpuTier, '| Three.js r' + THREE.REVISION, '| mobile:', isMobile);
+
+      // Start loading screen
+      const revealDone = initLoadingScreen(gpuTier);
+
+      // Wait for Inter font to be loaded before canvas rendering
+      await document.fonts.ready;
+
+      // Build scene in parallel with loading screen
+      const noiseTex = createNoiseTexture();
+
+      // Quad-tree tiles
+      const tiles = generateQuadTree(isMobile);
+      buildTiles(tiles, noiseTex);
+      // buildCornerLinks(tiles);
+
+      // "Tom Bernys" text behind glass
+      buildBehindText();
+
+      // Load font + build glass text
+      const font = await new FontLoader().loadAsync('https://cdn.jsdelivr.net/npm/three@0.175.0/examples/fonts/helvetiker_bold.typeface.json');
+      loadedFont = font;
+      buildGlassText(font);
+
+      // Init bloom
+      initBloom(window.innerWidth, window.innerHeight);
+
+      // Compile shaders
+      await renderer.compileAsync(scene, camera);
+
+      sceneReady = true;
+
+      // Wait for loader reveal + fallback
+      const fallback = new Promise(r => setTimeout(r, 5000));
+      await Promise.race([
+        Promise.all([revealDone]),
+        fallback
+      ]);
+
+      transition();
+    }
+
+    main();
+  </script>
+
+</body>
+</html>
