@@ -274,18 +274,35 @@
       perspective: 1000px;
     }
 
-    /* Tilt 3D — smooth reset on mouseleave */
-    .project-card.tilt-reset {
-      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
-    }
-
     .project-card {
       position: relative;
       aspect-ratio: 16 / 9;
       overflow: hidden;
-      border-radius: 0;
+      border-radius: 2px;
       cursor: pointer;
       background: #000000;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    /* Glass relief — reflet lumineux qui suit la souris */
+    .project-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at var(--glow-x, 50%) var(--glow-y, 30%),
+        rgba(255,255,255,0.18) 0%,
+        rgba(255,255,255,0.06) 35%,
+        transparent 70%
+      );
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .project-card:hover::after {
+      opacity: 1;
     }
 
     .project-thumb {
@@ -2836,24 +2853,47 @@
           }
         }, { passive: false });
 
-        // ── 3D tilt effect (desktop only) ──
+        // ── 3D tilt — lerp RAF pour une réponse fluide ──
         if (!isTouchDevice && !prefersReducedMotion) {
+          const tilt = { x: 0, y: 0, tx: 0, ty: 0, raf: null, active: false };
+
+          function tiltAnimate() {
+            tilt.x += (tilt.tx - tilt.x) * 0.1;
+            tilt.y += (tilt.ty - tilt.y) * 0.1;
+            const rotY =  tilt.x * 7;
+            const rotX = -tilt.y * 5;
+            const glowX = ((tilt.x + 1) / 2 * 100).toFixed(1);
+            const glowY = ((tilt.y + 1) / 2 * 100).toFixed(1);
+            card.style.transform = `perspective(700px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.03)`;
+            card.style.setProperty('--glow-x', glowX + '%');
+            card.style.setProperty('--glow-y', glowY + '%');
+            if (tilt.active || Math.abs(tilt.tx - tilt.x) > 0.001 || Math.abs(tilt.ty - tilt.y) > 0.001) {
+              tilt.raf = requestAnimationFrame(tiltAnimate);
+            } else {
+              // Repos atteint — on efface le transform pour laisser CSS reprendre
+              card.style.transform = '';
+              card.style.removeProperty('--glow-x');
+              card.style.removeProperty('--glow-y');
+              tilt.raf = null;
+            }
+          }
+
+          card.addEventListener('mouseenter', () => {
+            tilt.active = true;
+            if (!tilt.raf) tilt.raf = requestAnimationFrame(tiltAnimate);
+          });
+
           card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
-            const dx = (e.clientX - rect.left - rect.width  / 2) / (rect.width  / 2);
-            const dy = (e.clientY - rect.top  - rect.height / 2) / (rect.height / 2);
-            const rotY =  dx * 6;   // ±6°
-            const rotX = -dy * 4;   // ±4°
-            card.style.transform = `perspective(700px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.03)`;
+            tilt.tx = (e.clientX - rect.left - rect.width  / 2) / (rect.width  / 2);
+            tilt.ty = (e.clientY - rect.top  - rect.height / 2) / (rect.height / 2);
           });
 
           card.addEventListener('mouseleave', () => {
-            card.classList.add('tilt-reset');
-            card.style.transform = 'perspective(700px) rotateX(0deg) rotateY(0deg) scale(1)';
-            card.addEventListener('transitionend', () => {
-              card.classList.remove('tilt-reset');
-              card.style.transform = '';
-            }, { once: true });
+            tilt.active = false;
+            tilt.tx = 0;
+            tilt.ty = 0;
+            if (!tilt.raf) tilt.raf = requestAnimationFrame(tiltAnimate);
           });
         }
       });
