@@ -2551,9 +2551,17 @@
     }
 
     // ─── Resize handler ───────────────────────────────────────────────────────
+    let _lastResizeW = window.innerWidth;
     window.addEventListener('resize', () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
+
+      // iOS Safari: address bar hide/show only changes height, not width.
+      // Ignore these height-only resizes to prevent Three.js zoom glitch.
+      const widthChanged = w !== _lastResizeW;
+      _lastResizeW = w;
+      if (!widthChanged && window.matchMedia('(max-width: 767px)').matches) return;
+
       const aspect = w / h;
 
       camera.aspect = aspect;
