@@ -101,7 +101,8 @@
 
     /* Hero: fill the viewport, center the visible content */
     #hero {
-      min-height: 100vh;
+      min-height: 100vh; /* fallback */
+      min-height: calc(var(--vh, 1vh) * 100);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -750,10 +751,9 @@
   /* --- Responsive: mobile (<768px) --- */
   @media (max-width: 767px) {
 
-    /* Hero: 100svh = small viewport (stable — ne change pas quand l'address bar
-       se cache sur iOS Safari, évite le zoom/reflow au micro-scroll) */
+    /* Hero: --vh verrouillé au chargement (iOS Safari address-bar fix) */
     #hero {
-      min-height: 100svh;
+      min-height: calc(var(--vh, 1vh) * 100);
     }
 
     /* Projects grid: 1 column, full-width 16:9 cards (D-01, D-02, D-03) */
@@ -995,6 +995,14 @@
     // ─── Scroll integration state ────────────────────────────────────────────
     // entranceComplete gates scroll-driven Z writes against the entry animation
     let entranceComplete = false;
+
+    // ─── iOS Safari viewport fix ─────────────────────────────────────────────
+    // Capture innerHeight ONCE at load (with browser UI visible = true visible area).
+    // Never update on resize → hero stays stable when address bar hides.
+    (function lockViewportHeight() {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    })();
 
     gsap.registerPlugin(ScrollTrigger);
     // Prevent mobile address-bar resize from triggering ScrollTrigger glitches
