@@ -750,10 +750,10 @@
   /* --- Responsive: mobile (<768px) --- */
   @media (max-width: 767px) {
 
-    /* Hero: use dynamic viewport height so CTA button is always visible
-       (fixes iOS Safari 100vh bug where URL bar hides the bottom of the hero) */
+    /* Hero: 100svh = small viewport (stable — ne change pas quand l'address bar
+       se cache sur iOS Safari, évite le zoom/reflow au micro-scroll) */
     #hero {
-      min-height: 100dvh;
+      min-height: 100svh;
     }
 
     /* Projects grid: 1 column, full-width 16:9 cards (D-01, D-02, D-03) */
@@ -802,16 +802,16 @@
       right: 10px;
     }
 
-    /* CTA button: centered, above hero gradient overlay */
+    /* CTA button: centered without transform (float animation would override it) */
     .cta-btn {
-      left: 50%;
-      right: auto;
-      transform: translateX(-50%);
+      left: 0;
+      right: 0;
+      width: fit-content;
+      margin: 0 auto;
       bottom: 2.5rem;
       white-space: nowrap;
       z-index: 10;
       justify-content: center;
-      animation: float 3.5s ease-in-out infinite;
     }
 
     /* Back-to-top: smaller on mobile */
