@@ -233,19 +233,22 @@
       transform: translateY(0);
     }
 
-    /* Cards: hidden by default, revealed with stagger */
+    /* Cards: émergent du fond de l'écran en 3D */
     .project-card {
       opacity: 0;
-      transform: translateY(40px) scale(0.96);
-      transition: opacity 0.55s ease-out, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: perspective(900px) translateZ(-220px) scale(0.72);
+      transition: opacity 0.7s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    #projects.is-visible .project-card { opacity: 1; transform: translateY(0) scale(1); }
-    #projects.is-visible .project-card:nth-child(1) { transition-delay: 0.15s; }
-    #projects.is-visible .project-card:nth-child(2) { transition-delay: 0.25s; }
-    #projects.is-visible .project-card:nth-child(3) { transition-delay: 0.35s; }
-    #projects.is-visible .project-card:nth-child(4) { transition-delay: 0.45s; }
-    #projects.is-visible .project-card:nth-child(5) { transition-delay: 0.55s; }
-    #projects.is-visible .project-card:nth-child(6) { transition-delay: 0.65s; }
+    #projects.is-visible .project-card { opacity: 1; transform: perspective(900px) translateZ(0) scale(1); }
+    #projects.is-visible .project-card:nth-child(1) { transition-delay: 0.08s; }
+    #projects.is-visible .project-card:nth-child(2) { transition-delay: 0.18s; }
+    #projects.is-visible .project-card:nth-child(3) { transition-delay: 0.28s; }
+    #projects.is-visible .project-card:nth-child(4) { transition-delay: 0.38s; }
+    #projects.is-visible .project-card:nth-child(5) { transition-delay: 0.48s; }
+    #projects.is-visible .project-card:nth-child(6) { transition-delay: 0.58s; }
+    #projects.is-visible .project-card:nth-child(7) { transition-delay: 0.68s; }
+    #projects.is-visible .project-card:nth-child(8) { transition-delay: 0.78s; }
+    #projects.is-visible .project-card:nth-child(9) { transition-delay: 0.88s; }
 
     /* ─── Projects Section ─────────────────────────────────────────── */
     #projects {
@@ -271,7 +274,8 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
       padding: 0;
-      perspective: 1000px;
+      perspective: 1200px;
+      perspective-origin: 50% 50%;
     }
 
     .project-card {
