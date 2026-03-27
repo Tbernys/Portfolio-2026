@@ -677,6 +677,12 @@
   /* --- Responsive: mobile (<768px) --- */
   @media (max-width: 767px) {
 
+    /* Hero: use dynamic viewport height so CTA button is always visible
+       (fixes iOS Safari 100vh bug where URL bar hides the bottom of the hero) */
+    #hero {
+      min-height: 100dvh;
+    }
+
     /* Projects grid: 1 column, full-width 16:9 cards (D-01, D-02, D-03) */
     .projects-grid {
       grid-template-columns: 1fr;
