@@ -1,10 +1,10 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.0
-milestone_name: milestone
-status: Milestone complete
+milestone_name: MVP
+status: v1.0 milestone archived — ready for next milestone
 stopped_at: Completed 07-02-PLAN.md — Phase 7 responsive-and-launch complete
-last_updated: "2026-03-27T12:21:53.712Z"
+last_updated: "2026-03-27T12:35:12.804Z"
 progress:
   total_phases: 7
   completed_phases: 7
@@ -19,7 +19,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Visitors instantly see the quality of Tom's work through an immersive visual experience and embedded video reels
-**Current focus:** Phase 07 — responsive-and-launch (COMPLETE)
+**Current focus:** v1.0 archived — planning next milestone with `/gsd:new-milestone`
 
 ## Current Position
 
