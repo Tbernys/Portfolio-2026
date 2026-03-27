@@ -512,20 +512,62 @@
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
-      gap: 3rem;
-      padding: 2rem 0;
+      gap: 2rem 4rem;
+      padding: 2.5rem 0 1rem;
     }
 
     .logo-placeholder {
       font-family: 'Inter', sans-serif;
-      font-size: 0.875rem;
-      letter-spacing: 0.12em;
+      font-size: 1rem;
+      font-weight: 300;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--color-accent);
-      opacity: 0.6;
-      border: 1px solid rgba(212, 197, 178, 0.2);
-      padding: 0.5rem 1.2rem;
-      border-radius: 2px;
+      opacity: 0.45;
+      transition: opacity 0.3s ease;
+      cursor: default;
+    }
+
+    .logo-placeholder:hover {
+      opacity: 1;
+    }
+
+    .contact-intro {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-weight: 300;
+      color: rgba(245, 240, 235, 0.7);
+      margin-bottom: 2.5rem;
+      line-height: 1.5;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .contact-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .contact-mailto-btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: rgba(245, 240, 235, 0.45);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(212, 197, 178, 0.2);
+      padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .contact-mailto-btn:hover {
+      color: var(--color-accent);
+      border-color: var(--color-accent);
     }
 
     /* ─── Contact Section ──────────────────────────────────────────── */
@@ -605,24 +647,7 @@
       color: #e67272;
     }
 
-    .contact-mailto {
-      text-align: center;
-      margin-top: 2rem;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.875rem;
-      color: rgba(245, 240, 235, 0.5);
-    }
-
-    .contact-mailto a {
-      color: var(--color-accent);
-      text-decoration: none;
-      border-bottom: 1px solid rgba(212, 197, 178, 0.3);
-      transition: border-color 0.2s;
-    }
-
-    .contact-mailto a:hover {
-      border-color: var(--color-accent);
-    }
+    /* .contact-mailto removed — replaced by .contact-mailto-btn inline with submit */
 
     /* Content background — near-black with CRT-cohesive film grain (only below hero) */
     .content-bg {
@@ -830,15 +855,27 @@
       -webkit-backdrop-filter: none;
     }
 
-    /* Contact form: full width submit on small screens */
+    /* Contact form: single column on mobile */
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .contact-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
     .contact-submit {
-      align-self: stretch;
       text-align: center;
     }
 
-    /* Contact mailto: tighter spacing */
-    .contact-mailto {
-      margin-top: 1rem;
+    .contact-mailto-btn {
+      text-align: center;
+    }
+
+    /* Clients: tighter gap on mobile */
+    .logo-row {
+      gap: 1.5rem 2.5rem;
     }
   }
 
@@ -892,14 +929,13 @@
 
     <section id="clients" class="content-section" data-lang="fr" aria-label="Clients">
       <div class="section-inner">
-        <h2 class="section-title sr-only">Clients</h2>
+        <h2 class="section-title">Ils m'ont fait confiance</h2>
         <div class="logo-row">
-          <span class="logo-placeholder">Nike</span>
-          <span class="logo-placeholder">Canal+</span>
-          <span class="logo-placeholder">Dior</span>
-          <span class="logo-placeholder">Red Bull</span>
-          <span class="logo-placeholder">Ubisoft</span>
-          <span class="logo-placeholder">Netflix</span>
+          <span class="logo-placeholder">CNRS</span>
+          <span class="logo-placeholder">Andros</span>
+          <span class="logo-placeholder">Panini</span>
+          <span class="logo-placeholder">Arkema</span>
+          <span class="logo-placeholder">EDF</span>
         </div>
       </div>
     </section>
@@ -907,25 +943,28 @@
     <section id="contact" class="content-section" data-lang="fr" aria-label="Contact">
       <div class="section-inner">
         <h2 class="section-title">Contact</h2>
+        <p class="contact-intro">Un projet, une idée ?<br>Parlons-en.</p>
         <form id="contact-form" class="contact-form" action="https://formspree.io/f/REPLACE_WITH_FORM_ID" method="POST">
-          <div class="form-field">
-            <label for="contact-name" class="sr-only">Nom</label>
-            <input type="text" id="contact-name" name="name" placeholder="Nom" required>
-          </div>
-          <div class="form-field">
-            <label for="contact-email" class="sr-only">Email</label>
-            <input type="email" id="contact-email" name="email" placeholder="Email" required>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="contact-name" class="sr-only">Nom</label>
+              <input type="text" id="contact-name" name="name" placeholder="Nom" required>
+            </div>
+            <div class="form-field">
+              <label for="contact-email" class="sr-only">Email</label>
+              <input type="email" id="contact-email" name="email" placeholder="Email" required>
+            </div>
           </div>
           <div class="form-field">
             <label for="contact-message" class="sr-only">Message</label>
             <textarea id="contact-message" name="message" placeholder="Message" rows="5" required></textarea>
           </div>
           <div id="form-feedback" class="form-feedback" aria-live="polite"></div>
-          <button type="submit" class="contact-submit">Envoyer</button>
+          <div class="contact-actions">
+            <button type="submit" class="contact-submit">Envoyer</button>
+            <a href="mailto:contact@tombernys.com" class="contact-mailto-btn">contact@tombernys.com</a>
+          </div>
         </form>
-        <p class="contact-mailto">
-          Ou directement : <a href="mailto:contact@tombernys.com">contact@tombernys.com</a>
-        </p>
       </div>
     </section>
   </main>
