@@ -802,12 +802,16 @@
       right: 10px;
     }
 
-    /* CTA button: centered full-width (per Claude discretion) */
+    /* CTA button: centered, above hero gradient overlay */
     .cta-btn {
-      left: 1rem;
-      right: 1rem;
-      bottom: 1.5rem;
+      left: 50%;
+      right: auto;
+      transform: translateX(-50%);
+      bottom: 2.5rem;
+      white-space: nowrap;
+      z-index: 10;
       justify-content: center;
+      animation: float 3.5s ease-in-out infinite;
     }
 
     /* Back-to-top: smaller on mobile */
@@ -993,6 +997,8 @@
     let entranceComplete = false;
 
     gsap.registerPlugin(ScrollTrigger);
+    // Prevent mobile address-bar resize from triggering ScrollTrigger glitches
+    ScrollTrigger.config({ ignoreMobileResize: true });
 
     // ─── Noise texture (256x256 random RGBA) ────────────────────────────────
     function createNoiseTexture() {
@@ -3075,8 +3081,10 @@
       // Hold zone: ~8% of scroll = brief pause before transition starts
       heroTl.to({}, { duration: 0.08 });
 
-      // Canvas parallax: translateY -50vh (0.5x scroll speed)
-      heroTl.to('#canvas', { y: '-50vh', ease: 'none', duration: 0.92 }, 0.08);
+      // Canvas parallax: translateY -50vh (desktop only — mobile skip to avoid zoom glitch)
+      if (!window.matchMedia('(max-width: 767px)').matches) {
+        heroTl.to('#canvas', { y: '-50vh', ease: 'none', duration: 0.92 }, 0.08);
+      }
 
       // Canvas fade to invisible
       heroTl.to('#canvas', { opacity: 0, ease: 'power2.in', duration: 0.92 }, 0.08);
