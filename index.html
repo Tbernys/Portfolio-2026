@@ -124,12 +124,17 @@
       z-index: 2;
     }
 
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-10px); }
+    }
+
     /* CTA button — glassmorphism style */
     .cta-btn {
       position: absolute;
       bottom: 22%;
       left: 12%;
-      padding: 0.75rem 1.5rem;
+      padding: 1rem 2rem;
       background: rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
@@ -137,14 +142,15 @@
       border-radius: 2rem;
       color: var(--color-text);
       font-family: 'Inter', sans-serif;
-      font-size: 0.875rem;
+      font-size: 1rem;
       letter-spacing: 0.03em;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
       pointer-events: auto;
       transition: background 0.2s, border-color 0.2s;
+      animation: float 3.5s ease-in-out infinite;
     }
 
     .cta-btn:hover {
