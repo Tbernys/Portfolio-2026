@@ -802,15 +802,17 @@
       right: 10px;
     }
 
-    /* CTA button: centered without transform (float animation would override it) */
+    /* CTA button: position fixed sur mobile — toujours visible
+       peu importe la hauteur du hero ou l'address bar iOS */
     .cta-btn {
+      position: fixed;
       left: 0;
       right: 0;
       width: fit-content;
       margin: 0 auto;
-      bottom: 2.5rem;
+      bottom: 2rem;
       white-space: nowrap;
-      z-index: 10;
+      z-index: 100;
       justify-content: center;
     }
 
