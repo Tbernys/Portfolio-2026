@@ -271,6 +271,12 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
       padding: 0;
+      perspective: 1000px;
+    }
+
+    /* Tilt 3D — smooth reset on mouseleave */
+    .project-card.tilt-reset {
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
 
     .project-card {
@@ -2829,6 +2835,27 @@
             openLightbox(card.dataset.vimeoId, parseInt(card.dataset.index));
           }
         }, { passive: false });
+
+        // ── 3D tilt effect (desktop only) ──
+        if (!isTouchDevice && !prefersReducedMotion) {
+          card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const dx = (e.clientX - rect.left - rect.width  / 2) / (rect.width  / 2);
+            const dy = (e.clientY - rect.top  - rect.height / 2) / (rect.height / 2);
+            const rotY =  dx * 6;   // ±6°
+            const rotX = -dy * 4;   // ±4°
+            card.style.transform = `perspective(700px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.03)`;
+          });
+
+          card.addEventListener('mouseleave', () => {
+            card.classList.add('tilt-reset');
+            card.style.transform = 'perspective(700px) rotateX(0deg) rotateY(0deg) scale(1)';
+            card.addEventListener('transitionend', () => {
+              card.classList.remove('tilt-reset');
+              card.style.transform = '';
+            }, { once: true });
+          });
+        }
       });
 
       // Tap outside any card removes touch-revealed state
