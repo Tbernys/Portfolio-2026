@@ -25,8 +25,8 @@ Visitors instantly see the quality of Tom's work through an immersive visual exp
 - [ ] Project showcase section with 6-10 embedded Vimeo players
 - [x] Client/brand logos section — Validated in Phase 6: Content Sections (placeholder logos, real assets pending)
 - [x] Contact CTA section (email, form) — Validated in Phase 6: Content Sections (Formspree FORM_ID pending)
-- [ ] Fully responsive — desktop and mobile optimized
-- [ ] Static site — single HTML file, no framework, vanilla JS + Three.js via CDN
+- [x] Fully responsive — desktop and mobile optimized — Validated in Phase 7: Responsive & Launch (single @media block, WebGL mobile tuning)
+- [x] Static site — single HTML file, no framework, vanilla JS + Three.js via CDN — Validated in Phase 7: Responsive & Launch (deployed on Vercel + GitHub Pages)
 
 ### Out of Scope
 
