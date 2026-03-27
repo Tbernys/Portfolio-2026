@@ -111,6 +111,19 @@
       position: relative;
     }
 
+    /* Fade douce vers le bas — transition hero → sections */
+    #hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 180px;
+      background: linear-gradient(to bottom, transparent, #000000);
+      pointer-events: none;
+      z-index: 2;
+    }
+
     /* CTA button — glassmorphism style */
     .cta-btn {
       position: absolute;
