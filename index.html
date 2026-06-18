@@ -1486,6 +1486,7 @@
       varying vec4 vRand;
 
       uniform float uScrollProgress;
+      uniform float uCylHeight;
 
       #define PI 3.14159265359
       #define RADIUS 7.0
@@ -1523,7 +1524,7 @@
 
         // Cylinder mapping: camera inside at z=RADIUS (per PROMPT spec)
         float cx = sin(theta) * (RADIUS - p.z);
-        float cy = (vertUvY - 0.5) * 12.0;
+        float cy = (vertUvY - 0.5) * uCylHeight;
         float cz = RADIUS - cos(theta) * (RADIUS - p.z) - 4.0;
 
         // Normal transform for cylinder
@@ -1733,6 +1734,8 @@
           uNoise: { value: noiseTex },
           uMouseUv: { value: new THREE.Vector2(0.5, 0.5) },
           uScrollProgress: { value: 0 },
+          // Taller tile cylinder on mobile so the tall portrait FOV doesn't expose black at top/bottom
+          uCylHeight: { value: isMobile ? 16.0 : 12.0 },
         },
         side: THREE.DoubleSide,
       });
