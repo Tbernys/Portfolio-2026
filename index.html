@@ -2904,18 +2904,35 @@
           }
         });
 
-        // ── Mobile double-tap: first tap reveals overlay, second tap opens lightbox (D-15) ──
+        // ── Mobile double-tap (D-15): distinguish a real tap from a scroll so the
+        //    page never gets scroll-locked. touchstart/move stay passive (scroll
+        //    unblocked); only a genuine tap acts, on touchend. ──
+        let tapStartX = 0, tapStartY = 0, tapMoved = false;
         card.addEventListener('touchstart', (e) => {
           if (!isTouchDevice) return;
+          const t = e.touches[0];
+          tapStartX = t.clientX; tapStartY = t.clientY; tapMoved = false;
+        }, { passive: true });
+
+        card.addEventListener('touchmove', (e) => {
+          if (!isTouchDevice) return;
+          const t = e.touches[0];
+          if (Math.abs(t.clientX - tapStartX) > 8 || Math.abs(t.clientY - tapStartY) > 8) {
+            tapMoved = true; // it's a scroll, not a tap
+          }
+        }, { passive: true });
+
+        card.addEventListener('touchend', (e) => {
+          if (!isTouchDevice) return;
+          if (tapMoved) return; // was a scroll — let the page scroll normally
+          // Genuine tap: preventDefault suppresses the synthetic click + sticky :hover
+          e.preventDefault();
           if (!card.classList.contains('touch-revealed')) {
-            e.preventDefault();
-            // Close any other revealed cards
             document.querySelectorAll('.project-card.touch-revealed')
               .forEach(c => c.classList.remove('touch-revealed'));
-            card.classList.add('touch-revealed');
+            card.classList.add('touch-revealed'); // first tap → reveal info
           } else {
-            // Second tap — open lightbox
-            openLightbox(card.dataset.vimeoId, parseInt(card.dataset.index));
+            openLightbox(card.dataset.vimeoId, parseInt(card.dataset.index)); // second tap → open
           }
         }, { passive: false });
       });
@@ -3006,6 +3023,10 @@
 
       // Restore body scroll (anti-pattern #4: always restore)
       document.body.style.overflow = '';
+
+      // Clear any revealed cards so none stay "open" after quitting a video
+      document.querySelectorAll('.project-card.touch-revealed')
+        .forEach(c => c.classList.remove('touch-revealed'));
 
       // Return focus to triggering card
       if (lightbox._triggerCard) {
