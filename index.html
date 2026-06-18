@@ -28,18 +28,18 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23F5F0EB'/><text x='50' y='72' font-family='sans-serif' font-size='52' font-weight='700' text-anchor='middle' fill='%23000000'>TB</text></svg>">
 
   <!-- SEO -->
-  <meta name="description" content="Tom Bernys — Monteur Vidéo &amp; Motion Designer freelance. Direction artistique, post-production et motion design.">
+  <meta name="description" content="Tom Bernys — Vidéaste &amp; Motion Designer freelance. Direction artistique, post-production et motion design.">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Tom Bernys | Portfolio">
-  <meta property="og:description" content="Tom Bernys — Monteur Vidéo &amp; Motion Designer freelance. Direction artistique, post-production et motion design.">
+  <meta property="og:description" content="Tom Bernys — Vidéaste &amp; Motion Designer freelance. Direction artistique, post-production et motion design.">
   <meta property="og:image" content="https://portfolio-2026-three-pi.vercel.app/og-image.jpg">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Tom Bernys | Portfolio">
-  <meta name="twitter:description" content="Tom Bernys — Monteur Vidéo &amp; Motion Designer freelance. Direction artistique, post-production et motion design.">
+  <meta name="twitter:description" content="Tom Bernys — Vidéaste &amp; Motion Designer freelance. Direction artistique, post-production et motion design.">
   <meta name="twitter:image" content="https://portfolio-2026-three-pi.vercel.app/og-image.jpg">
 
   <style>
@@ -101,7 +101,8 @@
 
     /* Hero: fill the viewport, center the visible content */
     #hero {
-      min-height: 100vh;
+      min-height: 100vh; /* fallback */
+      min-height: calc(var(--vh, 1vh) * 100);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -111,12 +112,30 @@
       position: relative;
     }
 
+    /* Fade douce vers le bas — transition hero → sections */
+    #hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 280px;
+      background: linear-gradient(to bottom, transparent, #000000);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-10px); }
+    }
+
     /* CTA button — glassmorphism style */
     .cta-btn {
       position: absolute;
-      bottom: 2.5rem;
-      left: 2rem;
-      padding: 0.75rem 1.5rem;
+      bottom: 22%;
+      left: 12%;
+      padding: 1rem 2rem;
       background: rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
@@ -124,14 +143,15 @@
       border-radius: 2rem;
       color: var(--color-text);
       font-family: 'Inter', sans-serif;
-      font-size: 0.875rem;
+      font-size: 1rem;
       letter-spacing: 0.03em;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
       pointer-events: auto;
       transition: background 0.2s, border-color 0.2s;
+      animation: float 3.5s ease-in-out infinite;
     }
 
     .cta-btn:hover {
@@ -195,18 +215,48 @@
       transform: translateY(0);
     }
 
-    /* First section (video grid) — more pronounced spring entrance */
+    /* Projects section: override section-level fade — cards animate individually */
     #projects {
-      transform: translateY(80px);
-      transition: opacity 1.0s ease-out, transform 1.0s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity: 1;
+      transform: none;
+      transition: none;
     }
+
+    /* Section title: slides up first */
+    #projects .section-title {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      transition-delay: 0.05s;
+    }
+    #projects.is-visible .section-title {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Cards: entrée 2D douce (transform se termine sur none — pas de couche 3D résiduelle) */
+    .project-card {
+      opacity: 0;
+      transform: translateY(28px) scale(0.94);
+      transition: opacity 0.7s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #projects.is-visible .project-card { opacity: 1; transform: none; }
+    #projects.is-visible .project-card:nth-child(1) { transition-delay: 0.08s; }
+    #projects.is-visible .project-card:nth-child(2) { transition-delay: 0.18s; }
+    #projects.is-visible .project-card:nth-child(3) { transition-delay: 0.28s; }
+    #projects.is-visible .project-card:nth-child(4) { transition-delay: 0.38s; }
+    #projects.is-visible .project-card:nth-child(5) { transition-delay: 0.48s; }
+    #projects.is-visible .project-card:nth-child(6) { transition-delay: 0.58s; }
+    #projects.is-visible .project-card:nth-child(7) { transition-delay: 0.68s; }
+    #projects.is-visible .project-card:nth-child(8) { transition-delay: 0.78s; }
+    #projects.is-visible .project-card:nth-child(9) { transition-delay: 0.88s; }
 
     /* ─── Projects Section ─────────────────────────────────────────── */
     #projects {
       display: block;
       min-height: unset;
       padding: 48px 0 64px;
-      background: #050508;
+      background: #000000;
     }
 
     .section-title {
@@ -224,16 +274,20 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      padding: 0;
+      padding: 0 24px;
+      perspective: 1200px;
+      perspective-origin: 50% 50%;
     }
 
     .project-card {
       position: relative;
       aspect-ratio: 16 / 9;
       overflow: hidden;
-      border-radius: 0;
+      border-radius: 2px;
       cursor: pointer;
-      background: #0a0a0d;
+      background: #000000;
+      backface-visibility: hidden;
+      isolation: isolate;
     }
 
     .project-thumb {
@@ -244,6 +298,24 @@
       object-fit: cover;
       display: block;
       transition: opacity 0.3s ease;
+    }
+
+    /* Vertical thumbnails: show full image (contain) over a blurred fill */
+    .project-card.is-vertical .project-thumb {
+      object-fit: contain;
+      z-index: 2;
+    }
+    .project-thumb-blur {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.15) translateZ(0);
+      backface-visibility: hidden;
+      filter: blur(24px) brightness(0.45);
+      z-index: 1;
+      pointer-events: none;
     }
 
     .project-preview {
@@ -259,10 +331,9 @@
     .project-overlay {
       position: absolute;
       inset: 0;
+      z-index: 3; /* above thumb (incl. vertical thumb z-index:2) */
       padding: 16px;
       background: rgba(5, 5, 8, 0.72);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -272,10 +343,14 @@
       pointer-events: none;
     }
 
+    /* backdrop-filter only when revealed — avoids continuous backdrop sampling
+       (and scroll-edge flicker) on the always-present, invisible overlays */
     .project-card:hover .project-overlay,
     .project-card.touch-revealed .project-overlay {
       transform: translateY(0);
       opacity: 1;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
     }
 
     .project-overlay-title {
@@ -288,13 +363,28 @@
       width: 100%;
     }
 
+    .project-overlay-head {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .project-overlay-client {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(0.85rem, 2vw, 1.05rem);
+      font-weight: 500;
+      color: rgba(245, 240, 235, 0.75);
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+    }
+
     .project-overlay-role {
       font-family: 'Inter', sans-serif;
-      font-size: clamp(0.6rem, 1.4vw, 0.75rem);
-      font-weight: 400;
+      font-size: clamp(0.85rem, 2vw, 1.1rem);
+      font-weight: 600;
       color: var(--color-accent);
       line-height: 1.4;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
     }
 
@@ -423,7 +513,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #050508;
+      background: #000000;
       padding: 6rem 2rem;
     }
 
@@ -438,20 +528,78 @@
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
-      gap: 3rem;
-      padding: 2rem 0;
+      gap: 2rem 4rem;
+      padding: 2.5rem 0 1rem;
     }
 
     .logo-placeholder {
       font-family: 'Inter', sans-serif;
-      font-size: 0.875rem;
-      letter-spacing: 0.12em;
+      font-size: 1rem;
+      font-weight: 300;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--color-accent);
-      opacity: 0.6;
-      border: 1px solid rgba(212, 197, 178, 0.2);
-      padding: 0.5rem 1.2rem;
-      border-radius: 2px;
+      opacity: 0.45;
+      transition: opacity 0.3s ease;
+      cursor: default;
+    }
+
+    .logo-placeholder:hover {
+      opacity: 1;
+    }
+
+    .contact-intro {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-weight: 300;
+      color: rgba(245, 240, 235, 0.7);
+      margin-bottom: 2.5rem;
+      line-height: 1.5;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .contact-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .contact-mailto-btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: rgba(245, 240, 235, 0.45);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(212, 197, 178, 0.2);
+      padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .contact-mailto-btn:hover {
+      color: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+
+    /* Contact: centered title + email (sole contact method) */
+    #contact .section-inner {
+      text-align: center;
+    }
+    #contact .section-title {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    #contact .contact-actions {
+      justify-content: center;
+    }
+    #contact .contact-mailto-btn {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: rgba(245, 240, 235, 0.7);
     }
 
     /* ─── Contact Section ──────────────────────────────────────────── */
@@ -531,24 +679,7 @@
       color: #e67272;
     }
 
-    .contact-mailto {
-      text-align: center;
-      margin-top: 2rem;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.875rem;
-      color: rgba(245, 240, 235, 0.5);
-    }
-
-    .contact-mailto a {
-      color: var(--color-accent);
-      text-decoration: none;
-      border-bottom: 1px solid rgba(212, 197, 178, 0.3);
-      transition: border-color 0.2s;
-    }
-
-    .contact-mailto a:hover {
-      border-color: var(--color-accent);
-    }
+    /* .contact-mailto removed — replaced by .contact-mailto-btn inline with submit */
 
     /* Content background — near-black with CRT-cohesive film grain (only below hero) */
     .content-bg {
@@ -558,7 +689,7 @@
     .content-bg::before {
       content: '';
       position: fixed;
-      inset: 0;
+      inset: -8%; /* larger than viewport so the ±4% grain translate never exposes the edges (no side flicker) */
       pointer-events: none;
       z-index: 2;
       opacity: 0.04;
@@ -607,7 +738,7 @@
     #loader.has-grain::before {
       content: '';
       position: absolute;
-      inset: 0;
+      inset: -8%; /* larger than loader so the ±4% grain translate never exposes the edges */
       pointer-events: none;
       opacity: 0.07;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -677,10 +808,16 @@
   /* --- Responsive: mobile (<768px) --- */
   @media (max-width: 767px) {
 
+    /* Hero: --vh verrouillé au chargement (iOS Safari address-bar fix) */
+    #hero {
+      min-height: calc(var(--vh, 1vh) * 100);
+    }
+
     /* Projects grid: 1 column, full-width 16:9 cards (D-01, D-02, D-03) */
     .projects-grid {
       grid-template-columns: 1fr;
-      gap: 4px;
+      gap: 12px;
+      padding: 0 16px;
     }
 
     /* Section titles: tighter horizontal padding */
@@ -723,11 +860,17 @@
       right: 10px;
     }
 
-    /* CTA button: centered full-width (per Claude discretion) */
+    /* CTA button: position fixed sur mobile — toujours visible
+       peu importe la hauteur du hero ou l'address bar iOS */
     .cta-btn {
-      left: 1rem;
-      right: 1rem;
-      bottom: 1.5rem;
+      position: fixed;
+      left: 0;
+      right: 0;
+      width: fit-content;
+      margin: 0 auto;
+      bottom: 2rem;
+      white-space: nowrap;
+      z-index: 100;
       justify-content: center;
     }
 
@@ -739,21 +882,36 @@
       right: 1rem;
     }
 
-    /* Project overlay: remove backdrop-blur to save GPU (per research pitfall 3) */
-    .project-overlay {
+    /* Project overlay: remove backdrop-blur entirely on mobile to save GPU
+       and avoid scroll-edge flicker (per research pitfall 3) */
+    .project-overlay,
+    .project-card:hover .project-overlay,
+    .project-card.touch-revealed .project-overlay {
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
     }
 
-    /* Contact form: full width submit on small screens */
+    /* Contact form: single column on mobile */
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .contact-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
     .contact-submit {
-      align-self: stretch;
       text-align: center;
     }
 
-    /* Contact mailto: tighter spacing */
-    .contact-mailto {
-      margin-top: 1rem;
+    .contact-mailto-btn {
+      text-align: center;
+    }
+
+    /* Clients: tighter gap on mobile */
+    .logo-row {
+      gap: 1.5rem 2.5rem;
     }
   }
 
@@ -783,14 +941,14 @@
   <main lang="fr" class="content-bg">
     <section id="hero" data-lang="fr" aria-label="Hero">
       <h1>Tom Bernys</h1>
-      <p class="subtitle">Monteur Vidéo &amp; Motion Designer</p>
+      <p class="subtitle">Vidéaste &amp; Motion Designer</p>
       <button class="cta-btn" id="cta-btn" aria-label="Voir mon travail">
         Voir mon travail <span class="arrow">&#8595;</span>
       </button>
     </section>
 
     <section id="projects" class="content-section" data-lang="fr" aria-label="Projets">
-      <h2 class="section-title">Projets</h2>
+      <h2 class="section-title sr-only">Projets</h2>
       <div class="projects-grid" id="projects-grid">
         <!-- 9 .project-card elements generated by JS -->
       </div>
@@ -805,42 +963,12 @@
       <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
     </div>
 
-    <section id="clients" class="content-section" data-lang="fr" aria-label="Clients">
-      <div class="section-inner">
-        <h2 class="section-title sr-only">Clients</h2>
-        <div class="logo-row">
-          <span class="logo-placeholder">Nike</span>
-          <span class="logo-placeholder">Canal+</span>
-          <span class="logo-placeholder">Dior</span>
-          <span class="logo-placeholder">Red Bull</span>
-          <span class="logo-placeholder">Ubisoft</span>
-          <span class="logo-placeholder">Netflix</span>
-        </div>
-      </div>
-    </section>
-
     <section id="contact" class="content-section" data-lang="fr" aria-label="Contact">
       <div class="section-inner">
         <h2 class="section-title">Contact</h2>
-        <form id="contact-form" class="contact-form" action="https://formspree.io/f/REPLACE_WITH_FORM_ID" method="POST">
-          <div class="form-field">
-            <label for="contact-name" class="sr-only">Nom</label>
-            <input type="text" id="contact-name" name="name" placeholder="Nom" required>
-          </div>
-          <div class="form-field">
-            <label for="contact-email" class="sr-only">Email</label>
-            <input type="email" id="contact-email" name="email" placeholder="Email" required>
-          </div>
-          <div class="form-field">
-            <label for="contact-message" class="sr-only">Message</label>
-            <textarea id="contact-message" name="message" placeholder="Message" rows="5" required></textarea>
-          </div>
-          <div id="form-feedback" class="form-feedback" aria-live="polite"></div>
-          <button type="submit" class="contact-submit">Envoyer</button>
-        </form>
-        <p class="contact-mailto">
-          Ou directement : <a href="mailto:contact@tombernys.com">contact@tombernys.com</a>
-        </p>
+        <div class="contact-actions">
+          <a href="mailto:tombertindenys@gmail.com" class="contact-mailto-btn">tombertindenys@gmail.com</a>
+        </div>
       </div>
     </section>
   </main>
@@ -913,7 +1041,17 @@
     // entranceComplete gates scroll-driven Z writes against the entry animation
     let entranceComplete = false;
 
+    // ─── iOS Safari viewport fix ─────────────────────────────────────────────
+    // Capture innerHeight ONCE at load (with browser UI visible = true visible area).
+    // Never update on resize → hero stays stable when address bar hides.
+    (function lockViewportHeight() {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    })();
+
     gsap.registerPlugin(ScrollTrigger);
+    // Prevent mobile address-bar resize from triggering ScrollTrigger glitches
+    ScrollTrigger.config({ ignoreMobileResize: true });
 
     // ─── Noise texture (256x256 random RGBA) ────────────────────────────────
     function createNoiseTexture() {
@@ -1419,7 +1557,7 @@
 
         // Side faces: dark + fluid emission
         if (vIsSide > 0.5) {
-          vec3 sideColor = vec3(0.04, 0.03, 0.08) + vec3(0.08, 0.04, 0.16) * fluidsLen * 0.8;
+          vec3 sideColor = vec3(0.0, 0.0, 0.0) + vec3(0.08, 0.04, 0.16) * fluidsLen * 0.8;
           gl_FragColor = vec4(sideColor, 1.0);
           return;
         }
@@ -2189,7 +2327,7 @@
       geometry.center();
 
       // Subtitle
-      const subGeometry = new TextGeometry('Monteur Video & Motion Designer', {
+      const subGeometry = new TextGeometry('Videaste & Motion Designer', {
         font,
         size: 0.55,
         depth: 0.3,
@@ -2458,9 +2596,17 @@
     }
 
     // ─── Resize handler ───────────────────────────────────────────────────────
+    let _lastResizeW = window.innerWidth;
     window.addEventListener('resize', () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
+
+      // iOS Safari: address bar hide/show only changes height, not width.
+      // Ignore these height-only resizes to prevent Three.js zoom glitch.
+      const widthChanged = w !== _lastResizeW;
+      _lastResizeW = w;
+      if (!widthChanged && window.matchMedia('(max-width: 767px)').matches) return;
+
       const aspect = w / h;
 
       camera.aspect = aspect;
@@ -2624,15 +2770,15 @@
     const VIMEO_PAID = false; // Tom: set to true if Vimeo Starter+ plan
 
     const PROJECTS = [
-      { id: '76979871', title: 'Projet 1', role: 'Direction \u00b7 Montage', client: 'Client A' },
-      { id: '76979871', title: 'Projet 2', role: 'Motion Design', client: 'Client B' },
-      { id: '76979871', title: 'Projet 3', role: 'Montage \u00b7 Etalonnage', client: 'Client C' },
-      { id: '76979871', title: 'Projet 4', role: 'Direction Artistique', client: 'Client D' },
-      { id: '76979871', title: 'Projet 5', role: 'Motion Design \u00b7 Compositing', client: 'Client E' },
-      { id: '76979871', title: 'Projet 6', role: 'Montage', client: 'Client F' },
-      { id: '76979871', title: 'Projet 7', role: 'Direction \u00b7 Motion Design', client: 'Client G' },
-      { id: '76979871', title: 'Projet 8', role: 'Etalonnage \u00b7 Montage', client: 'Client H' },
-      { id: '76979871', title: 'Projet 9', role: 'Direction Artistique \u00b7 Montage', client: 'Client I' },
+      { id: '1186226529', title: 'Les athl\u00e8tes Arkema', role: 'Montage \u00b7 Motion design', client: 'Arkema' },
+      { id: '1202331392', hash: '05c45a24cb', title: 'Game of Thrones Legends', role: 'Assistant réalisateur · Montage', client: 'Zynga' },
+      { id: '1202328641', title: 'Tour de France', role: 'Montage', client: 'Intermarch\u00e9' },
+      { id: '1202332180', hash: '8f0312f32f', title: 'Coupe du Monde 2026', role: 'Motion design', client: 'Coca-Cola × Panini' },
+      { id: '1202314978', title: 'Championnat d\u2019Europe', role: 'Motion design', client: 'Arkema' },
+      { id: '1202326084', title: 'Tour d’Italie de Juliette Labous', role: 'Montage', client: 'Bostik' },
+      { id: '1202333032', hash: '4440862aa4', title: 'Game of Thrones Legends 2', role: 'Assistant r\u00e9alisateur \u00b7 Montage', client: 'Zynga' },
+      { id: '1186215550', title: 'Pr\u00e9sentation Andros Sport', role: 'Motion design', client: 'Andros' },
+      { id: '1186211881', title: 'Aftermovie Congr\u00e8s des experts-comptables 2025', role: 'Captation vid\u00e9o \u00b7 Montage', client: 'Staff & Go' },
     ];
 
     function initProjectsShowcase() {
@@ -2644,7 +2790,10 @@
         <div class="project-card" data-vimeo-id="${proj.id}" data-index="${i}" tabindex="0" role="button" aria-label="${proj.title}">
           <img class="project-thumb" src="" alt="${proj.title}" loading="lazy">
           <div class="project-overlay">
-            <div class="project-overlay-title">${proj.title}</div>
+            <div class="project-overlay-head">
+              <div class="project-overlay-title">${proj.title}</div>
+              <div class="project-overlay-client">${proj.client}</div>
+            </div>
             <div class="project-overlay-role">${proj.role}</div>
           </div>
         </div>
@@ -2660,18 +2809,33 @@
     }
 
     async function fetchThumbnails() {
-      const requests = PROJECTS.map(p =>
-        fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${p.id}&width=640`)
+      const requests = PROJECTS.map(p => {
+        const pageUrl = `https://vimeo.com/${p.id}${p.hash ? '/' + p.hash : ''}`;
+        return fetch(`https://vimeo.com/api/oembed.json?url=${encodeURIComponent(pageUrl)}&width=640`)
           .then(r => r.json())
-          .then(data => ({ id: p.id, url: data.thumbnail_url }))
-          .catch(() => ({ id: p.id, url: null }))
-      );
+          .then(data => ({ id: p.id, url: data.thumbnail_url, w: data.width, h: data.height }))
+          .catch(() => ({ id: p.id, url: null }));
+      });
       const results = await Promise.all(requests);
-      results.forEach(({ id, url }) => {
+      results.forEach(({ id, url, w, h }) => {
         if (!url) return;
-        // Set src on ALL cards with this vimeo ID (handles duplicates in placeholder data)
-        document.querySelectorAll(`[data-vimeo-id="${id}"] .project-thumb`).forEach(img => {
-          img.src = url;
+        const isVertical = w && h && h > w;
+        document.querySelectorAll(`[data-vimeo-id="${id}"]`).forEach(card => {
+          const thumb = card.querySelector('.project-thumb');
+          if (thumb) thumb.src = url;
+          // Vertical thumbnails: show full image (contain) over a blurred fill
+          if (isVertical) {
+            card.classList.add('is-vertical');
+            let blur = card.querySelector('.project-thumb-blur');
+            if (!blur) {
+              blur = document.createElement('img');
+              blur.className = 'project-thumb-blur';
+              blur.setAttribute('aria-hidden', 'true');
+              blur.loading = 'lazy';
+              card.insertBefore(blur, card.firstChild);
+            }
+            blur.src = url;
+          }
         });
       });
     }
@@ -2705,37 +2869,6 @@
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       cards.forEach(card => {
-        // ── Desktop hover: inject muted preview iframe after 150ms debounce ──
-        card.addEventListener('mouseenter', () => {
-          if (isTouchDevice) return; // skip on touch devices
-          if (prefersReducedMotion) return; // no preview on reduced motion
-
-          const timeout = setTimeout(() => {
-            // Don't inject if already has preview
-            if (card.querySelector('.project-preview')) return;
-            const iframe = document.createElement('iframe');
-            iframe.src = buildPreviewSrc(card.dataset.vimeoId);
-            iframe.className = 'project-preview';
-            iframe.allow = 'autoplay; fullscreen; picture-in-picture; playsinline';
-            iframe.setAttribute('frameborder', '0');
-            iframe.loading = 'lazy';
-            card.appendChild(iframe);
-          }, 150);
-          hoverTimeouts.set(card, timeout);
-        });
-
-        card.addEventListener('mouseleave', () => {
-          // Clear debounce timer
-          const timeout = hoverTimeouts.get(card);
-          if (timeout) {
-            clearTimeout(timeout);
-            hoverTimeouts.delete(card);
-          }
-          // Remove preview iframe
-          const iframe = card.querySelector('.project-preview');
-          if (iframe) iframe.remove();
-        });
-
         // ── Desktop click: open lightbox ──
         card.addEventListener('click', (e) => {
           if (isTouchDevice) return; // handled by touchstart
@@ -2759,19 +2892,6 @@
             document.querySelectorAll('.project-card.touch-revealed')
               .forEach(c => c.classList.remove('touch-revealed'));
             card.classList.add('touch-revealed');
-
-            // Inject preview iframe on touch-reveal too
-            if (!prefersReducedMotion) {
-              if (!card.querySelector('.project-preview')) {
-                const iframe = document.createElement('iframe');
-                iframe.src = buildPreviewSrc(card.dataset.vimeoId);
-                iframe.className = 'project-preview';
-                iframe.allow = 'autoplay; fullscreen; picture-in-picture; playsinline';
-                iframe.setAttribute('frameborder', '0');
-                iframe.loading = 'lazy';
-                card.appendChild(iframe);
-              }
-            }
           } else {
             // Second tap — open lightbox
             openLightbox(card.dataset.vimeoId, parseInt(card.dataset.index));
@@ -2805,12 +2925,11 @@
       const wrap = document.getElementById('lightbox-player-wrap');
       wrap.innerHTML = ''; // Clear any previous player
 
-      // Create Vimeo player via SDK
-      activePlayer = new Player(wrap, {
-        id: parseInt(vimeoId),
-        responsive: true,
-        playsinline: true,
-      });
+      // Create Vimeo player via SDK (use full url for private/hashed videos)
+      const playerOpts = { responsive: true, playsinline: true };
+      if (proj.hash) playerOpts.url = `https://vimeo.com/${proj.id}/${proj.hash}`;
+      else playerOpts.id = parseInt(proj.id);
+      activePlayer = new Player(wrap, playerOpts);
 
       // Populate metadata (D-11: title + role + client below player, D-18: client only in lightbox)
       document.getElementById('lightbox-meta').innerHTML = `
@@ -2952,8 +3071,10 @@
       // Hold zone: ~8% of scroll = brief pause before transition starts
       heroTl.to({}, { duration: 0.08 });
 
-      // Canvas parallax: translateY -50vh (0.5x scroll speed)
-      heroTl.to('#canvas', { y: '-50vh', ease: 'none', duration: 0.92 }, 0.08);
+      // Canvas parallax: translateY -50vh (desktop only — mobile skip to avoid zoom glitch)
+      if (!window.matchMedia('(max-width: 767px)').matches) {
+        heroTl.to('#canvas', { y: '-50vh', ease: 'none', duration: 0.92 }, 0.08);
+      }
 
       // Canvas fade to invisible
       heroTl.to('#canvas', { opacity: 0, ease: 'power2.in', duration: 0.92 }, 0.08);
@@ -3021,7 +3142,7 @@
             sectionObserver.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.25 });
+      }, { threshold: 0.1 });
 
       document.querySelectorAll('.content-section').forEach(el => {
         sectionObserver.observe(el);
