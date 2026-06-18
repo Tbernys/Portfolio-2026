@@ -28,18 +28,18 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23F5F0EB'/><text x='50' y='72' font-family='sans-serif' font-size='52' font-weight='700' text-anchor='middle' fill='%23000000'>TB</text></svg>">
 
   <!-- SEO -->
-  <meta name="description" content="Tom Bernys — Monteur Vidéo &amp; Motion Designer freelance. Direction artistique, post-production et motion design.">
+  <meta name="description" content="Tom Bernys — Vidéaste &amp; Motion Designer freelance. Direction artistique, post-production et motion design.">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Tom Bernys | Portfolio">
-  <meta property="og:description" content="Tom Bernys — Monteur Vidéo &amp; Motion Designer freelance. Direction artistique, post-production et motion design.">
+  <meta property="og:description" content="Tom Bernys — Vidéaste &amp; Motion Designer freelance. Direction artistique, post-production et motion design.">
   <meta property="og:image" content="https://portfolio-2026-three-pi.vercel.app/og-image.jpg">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Tom Bernys | Portfolio">
-  <meta name="twitter:description" content="Tom Bernys — Monteur Vidéo &amp; Motion Designer freelance. Direction artistique, post-production et motion design.">
+  <meta name="twitter:description" content="Tom Bernys — Vidéaste &amp; Motion Designer freelance. Direction artistique, post-production et motion design.">
   <meta name="twitter:image" content="https://portfolio-2026-three-pi.vercel.app/og-image.jpg">
 
   <style>
@@ -234,13 +234,13 @@
       transform: translateY(0);
     }
 
-    /* Cards: émergent du fond de l'écran en 3D */
+    /* Cards: entrée 2D douce (transform se termine sur none — pas de couche 3D résiduelle) */
     .project-card {
       opacity: 0;
-      transform: perspective(900px) translateZ(-220px) scale(0.72);
+      transform: translateY(28px) scale(0.94);
       transition: opacity 0.7s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    #projects.is-visible .project-card { opacity: 1; transform: perspective(900px) translateZ(0) scale(1); }
+    #projects.is-visible .project-card { opacity: 1; transform: none; }
     #projects.is-visible .project-card:nth-child(1) { transition-delay: 0.08s; }
     #projects.is-visible .project-card:nth-child(2) { transition-delay: 0.18s; }
     #projects.is-visible .project-card:nth-child(3) { transition-delay: 0.28s; }
@@ -274,7 +274,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      padding: 0;
+      padding: 0 24px;
       perspective: 1200px;
       perspective-origin: 50% 50%;
     }
@@ -286,28 +286,8 @@
       border-radius: 2px;
       cursor: pointer;
       background: #000000;
-      transform-style: preserve-3d;
-      will-change: transform;
-    }
-
-    /* Glass relief — reflet lumineux qui suit la souris */
-    .project-card::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(
-        circle at var(--glow-x, 50%) var(--glow-y, 30%),
-        rgba(255,255,255,0.18) 0%,
-        rgba(255,255,255,0.06) 35%,
-        transparent 70%
-      );
-      pointer-events: none;
-      z-index: 5;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    .project-card:hover::after {
-      opacity: 1;
+      backface-visibility: hidden;
+      isolation: isolate;
     }
 
     .project-thumb {
@@ -318,6 +298,24 @@
       object-fit: cover;
       display: block;
       transition: opacity 0.3s ease;
+    }
+
+    /* Vertical thumbnails: show full image (contain) over a blurred fill */
+    .project-card.is-vertical .project-thumb {
+      object-fit: contain;
+      z-index: 2;
+    }
+    .project-thumb-blur {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.15) translateZ(0);
+      backface-visibility: hidden;
+      filter: blur(24px) brightness(0.45);
+      z-index: 1;
+      pointer-events: none;
     }
 
     .project-preview {
@@ -333,10 +331,9 @@
     .project-overlay {
       position: absolute;
       inset: 0;
+      z-index: 3; /* above thumb (incl. vertical thumb z-index:2) */
       padding: 16px;
       background: rgba(5, 5, 8, 0.72);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -346,10 +343,14 @@
       pointer-events: none;
     }
 
+    /* backdrop-filter only when revealed — avoids continuous backdrop sampling
+       (and scroll-edge flicker) on the always-present, invisible overlays */
     .project-card:hover .project-overlay,
     .project-card.touch-revealed .project-overlay {
       transform: translateY(0);
       opacity: 1;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
     }
 
     .project-overlay-title {
@@ -362,13 +363,28 @@
       width: 100%;
     }
 
+    .project-overlay-head {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .project-overlay-client {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(0.85rem, 2vw, 1.05rem);
+      font-weight: 500;
+      color: rgba(245, 240, 235, 0.75);
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+    }
+
     .project-overlay-role {
       font-family: 'Inter', sans-serif;
-      font-size: clamp(0.6rem, 1.4vw, 0.75rem);
-      font-weight: 400;
+      font-size: clamp(0.85rem, 2vw, 1.1rem);
+      font-weight: 600;
       color: var(--color-accent);
       line-height: 1.4;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
     }
 
@@ -570,6 +586,22 @@
       border-color: var(--color-accent);
     }
 
+    /* Contact: centered title + email (sole contact method) */
+    #contact .section-inner {
+      text-align: center;
+    }
+    #contact .section-title {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    #contact .contact-actions {
+      justify-content: center;
+    }
+    #contact .contact-mailto-btn {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: rgba(245, 240, 235, 0.7);
+    }
+
     /* ─── Contact Section ──────────────────────────────────────────── */
     .contact-form {
       max-width: 500px;
@@ -657,7 +689,7 @@
     .content-bg::before {
       content: '';
       position: fixed;
-      inset: 0;
+      inset: -8%; /* larger than viewport so the ±4% grain translate never exposes the edges (no side flicker) */
       pointer-events: none;
       z-index: 2;
       opacity: 0.04;
@@ -706,7 +738,7 @@
     #loader.has-grain::before {
       content: '';
       position: absolute;
-      inset: 0;
+      inset: -8%; /* larger than loader so the ±4% grain translate never exposes the edges */
       pointer-events: none;
       opacity: 0.07;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -784,7 +816,8 @@
     /* Projects grid: 1 column, full-width 16:9 cards (D-01, D-02, D-03) */
     .projects-grid {
       grid-template-columns: 1fr;
-      gap: 4px;
+      gap: 12px;
+      padding: 0 16px;
     }
 
     /* Section titles: tighter horizontal padding */
@@ -849,8 +882,11 @@
       right: 1rem;
     }
 
-    /* Project overlay: remove backdrop-blur to save GPU (per research pitfall 3) */
-    .project-overlay {
+    /* Project overlay: remove backdrop-blur entirely on mobile to save GPU
+       and avoid scroll-edge flicker (per research pitfall 3) */
+    .project-overlay,
+    .project-card:hover .project-overlay,
+    .project-card.touch-revealed .project-overlay {
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
     }
@@ -905,7 +941,7 @@
   <main lang="fr" class="content-bg">
     <section id="hero" data-lang="fr" aria-label="Hero">
       <h1>Tom Bernys</h1>
-      <p class="subtitle">Monteur Vidéo &amp; Motion Designer</p>
+      <p class="subtitle">Vidéaste &amp; Motion Designer</p>
       <button class="cta-btn" id="cta-btn" aria-label="Voir mon travail">
         Voir mon travail <span class="arrow">&#8595;</span>
       </button>
@@ -927,43 +963,12 @@
       <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
     </div>
 
-    <section id="clients" class="content-section" data-lang="fr" aria-label="Clients">
-      <div class="section-inner">
-        <h2 class="section-title sr-only">Clients</h2>
-        <div class="logo-row">
-          <span class="logo-placeholder">CNRS</span>
-          <span class="logo-placeholder">Andros</span>
-          <span class="logo-placeholder">Panini</span>
-          <span class="logo-placeholder">Arkema</span>
-          <span class="logo-placeholder">EDF</span>
-        </div>
-      </div>
-    </section>
-
     <section id="contact" class="content-section" data-lang="fr" aria-label="Contact">
       <div class="section-inner">
         <h2 class="section-title">Contact</h2>
-        <form id="contact-form" class="contact-form" action="https://formspree.io/f/REPLACE_WITH_FORM_ID" method="POST">
-          <div class="form-row">
-            <div class="form-field">
-              <label for="contact-name" class="sr-only">Nom</label>
-              <input type="text" id="contact-name" name="name" placeholder="Nom" required>
-            </div>
-            <div class="form-field">
-              <label for="contact-email" class="sr-only">Email</label>
-              <input type="email" id="contact-email" name="email" placeholder="Email" required>
-            </div>
-          </div>
-          <div class="form-field">
-            <label for="contact-message" class="sr-only">Message</label>
-            <textarea id="contact-message" name="message" placeholder="Message" rows="5" required></textarea>
-          </div>
-          <div id="form-feedback" class="form-feedback" aria-live="polite"></div>
-          <div class="contact-actions">
-            <button type="submit" class="contact-submit">Envoyer</button>
-            <a href="mailto:contact@tombernys.com" class="contact-mailto-btn">contact@tombernys.com</a>
-          </div>
-        </form>
+        <div class="contact-actions">
+          <a href="mailto:tombertindenys@gmail.com" class="contact-mailto-btn">tombertindenys@gmail.com</a>
+        </div>
       </div>
     </section>
   </main>
@@ -2322,7 +2327,7 @@
       geometry.center();
 
       // Subtitle
-      const subGeometry = new TextGeometry('Monteur Video & Motion Designer', {
+      const subGeometry = new TextGeometry('Videaste & Motion Designer', {
         font,
         size: 0.55,
         depth: 0.3,
@@ -2765,15 +2770,15 @@
     const VIMEO_PAID = false; // Tom: set to true if Vimeo Starter+ plan
 
     const PROJECTS = [
-      { id: '76979871', title: 'Projet 1', role: 'Direction \u00b7 Montage', client: 'Client A' },
-      { id: '76979871', title: 'Projet 2', role: 'Motion Design', client: 'Client B' },
-      { id: '76979871', title: 'Projet 3', role: 'Montage \u00b7 Etalonnage', client: 'Client C' },
-      { id: '76979871', title: 'Projet 4', role: 'Direction Artistique', client: 'Client D' },
-      { id: '76979871', title: 'Projet 5', role: 'Motion Design \u00b7 Compositing', client: 'Client E' },
-      { id: '76979871', title: 'Projet 6', role: 'Montage', client: 'Client F' },
-      { id: '76979871', title: 'Projet 7', role: 'Direction \u00b7 Motion Design', client: 'Client G' },
-      { id: '76979871', title: 'Projet 8', role: 'Etalonnage \u00b7 Montage', client: 'Client H' },
-      { id: '76979871', title: 'Projet 9', role: 'Direction Artistique \u00b7 Montage', client: 'Client I' },
+      { id: '1186226529', title: 'Les athl\u00e8tes Arkema', role: 'Montage \u00b7 Motion design', client: 'Arkema' },
+      { id: '1202331392', hash: '05c45a24cb', title: 'Game of Thrones Legends', role: 'Assistant réalisateur · Montage', client: 'Zynga' },
+      { id: '1202328641', title: 'Tour de France', role: 'Montage', client: 'Intermarch\u00e9' },
+      { id: '1202332180', hash: '8f0312f32f', title: 'Coupe du Monde 2026', role: 'Motion design', client: 'Coca-Cola × Panini' },
+      { id: '1202314978', title: 'Championnat d\u2019Europe', role: 'Motion design', client: 'Arkema' },
+      { id: '1202326084', title: 'Tour d’Italie de Juliette Labous', role: 'Montage', client: 'Bostik' },
+      { id: '1202333032', hash: '4440862aa4', title: 'Game of Thrones Legends 2', role: 'Assistant r\u00e9alisateur \u00b7 Montage', client: 'Zynga' },
+      { id: '1186215550', title: 'Pr\u00e9sentation Andros Sport', role: 'Motion design', client: 'Andros' },
+      { id: '1186211881', title: 'Aftermovie Congr\u00e8s des experts-comptables 2025', role: 'Captation vid\u00e9o \u00b7 Montage', client: 'Staff & Go' },
     ];
 
     function initProjectsShowcase() {
@@ -2785,7 +2790,10 @@
         <div class="project-card" data-vimeo-id="${proj.id}" data-index="${i}" tabindex="0" role="button" aria-label="${proj.title}">
           <img class="project-thumb" src="" alt="${proj.title}" loading="lazy">
           <div class="project-overlay">
-            <div class="project-overlay-title">${proj.title}</div>
+            <div class="project-overlay-head">
+              <div class="project-overlay-title">${proj.title}</div>
+              <div class="project-overlay-client">${proj.client}</div>
+            </div>
             <div class="project-overlay-role">${proj.role}</div>
           </div>
         </div>
@@ -2801,18 +2809,33 @@
     }
 
     async function fetchThumbnails() {
-      const requests = PROJECTS.map(p =>
-        fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${p.id}&width=640`)
+      const requests = PROJECTS.map(p => {
+        const pageUrl = `https://vimeo.com/${p.id}${p.hash ? '/' + p.hash : ''}`;
+        return fetch(`https://vimeo.com/api/oembed.json?url=${encodeURIComponent(pageUrl)}&width=640`)
           .then(r => r.json())
-          .then(data => ({ id: p.id, url: data.thumbnail_url }))
-          .catch(() => ({ id: p.id, url: null }))
-      );
+          .then(data => ({ id: p.id, url: data.thumbnail_url, w: data.width, h: data.height }))
+          .catch(() => ({ id: p.id, url: null }));
+      });
       const results = await Promise.all(requests);
-      results.forEach(({ id, url }) => {
+      results.forEach(({ id, url, w, h }) => {
         if (!url) return;
-        // Set src on ALL cards with this vimeo ID (handles duplicates in placeholder data)
-        document.querySelectorAll(`[data-vimeo-id="${id}"] .project-thumb`).forEach(img => {
-          img.src = url;
+        const isVertical = w && h && h > w;
+        document.querySelectorAll(`[data-vimeo-id="${id}"]`).forEach(card => {
+          const thumb = card.querySelector('.project-thumb');
+          if (thumb) thumb.src = url;
+          // Vertical thumbnails: show full image (contain) over a blurred fill
+          if (isVertical) {
+            card.classList.add('is-vertical');
+            let blur = card.querySelector('.project-thumb-blur');
+            if (!blur) {
+              blur = document.createElement('img');
+              blur.className = 'project-thumb-blur';
+              blur.setAttribute('aria-hidden', 'true');
+              blur.loading = 'lazy';
+              card.insertBefore(blur, card.firstChild);
+            }
+            blur.src = url;
+          }
         });
       });
     }
@@ -2846,37 +2869,6 @@
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       cards.forEach(card => {
-        // ── Desktop hover: inject muted preview iframe after 150ms debounce ──
-        card.addEventListener('mouseenter', () => {
-          if (isTouchDevice) return; // skip on touch devices
-          if (prefersReducedMotion) return; // no preview on reduced motion
-
-          const timeout = setTimeout(() => {
-            // Don't inject if already has preview
-            if (card.querySelector('.project-preview')) return;
-            const iframe = document.createElement('iframe');
-            iframe.src = buildPreviewSrc(card.dataset.vimeoId);
-            iframe.className = 'project-preview';
-            iframe.allow = 'autoplay; fullscreen; picture-in-picture; playsinline';
-            iframe.setAttribute('frameborder', '0');
-            iframe.loading = 'lazy';
-            card.appendChild(iframe);
-          }, 150);
-          hoverTimeouts.set(card, timeout);
-        });
-
-        card.addEventListener('mouseleave', () => {
-          // Clear debounce timer
-          const timeout = hoverTimeouts.get(card);
-          if (timeout) {
-            clearTimeout(timeout);
-            hoverTimeouts.delete(card);
-          }
-          // Remove preview iframe
-          const iframe = card.querySelector('.project-preview');
-          if (iframe) iframe.remove();
-        });
-
         // ── Desktop click: open lightbox ──
         card.addEventListener('click', (e) => {
           if (isTouchDevice) return; // handled by touchstart
@@ -2900,68 +2892,11 @@
             document.querySelectorAll('.project-card.touch-revealed')
               .forEach(c => c.classList.remove('touch-revealed'));
             card.classList.add('touch-revealed');
-
-            // Inject preview iframe on touch-reveal too
-            if (!prefersReducedMotion) {
-              if (!card.querySelector('.project-preview')) {
-                const iframe = document.createElement('iframe');
-                iframe.src = buildPreviewSrc(card.dataset.vimeoId);
-                iframe.className = 'project-preview';
-                iframe.allow = 'autoplay; fullscreen; picture-in-picture; playsinline';
-                iframe.setAttribute('frameborder', '0');
-                iframe.loading = 'lazy';
-                card.appendChild(iframe);
-              }
-            }
           } else {
             // Second tap — open lightbox
             openLightbox(card.dataset.vimeoId, parseInt(card.dataset.index));
           }
         }, { passive: false });
-
-        // ── 3D tilt — lerp RAF pour une réponse fluide ──
-        if (!isTouchDevice && !prefersReducedMotion) {
-          const tilt = { x: 0, y: 0, tx: 0, ty: 0, raf: null, active: false };
-
-          function tiltAnimate() {
-            tilt.x += (tilt.tx - tilt.x) * 0.1;
-            tilt.y += (tilt.ty - tilt.y) * 0.1;
-            const rotY =  tilt.x * 7;
-            const rotX = -tilt.y * 5;
-            const glowX = ((tilt.x + 1) / 2 * 100).toFixed(1);
-            const glowY = ((tilt.y + 1) / 2 * 100).toFixed(1);
-            card.style.transform = `perspective(700px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.03)`;
-            card.style.setProperty('--glow-x', glowX + '%');
-            card.style.setProperty('--glow-y', glowY + '%');
-            if (tilt.active || Math.abs(tilt.tx - tilt.x) > 0.001 || Math.abs(tilt.ty - tilt.y) > 0.001) {
-              tilt.raf = requestAnimationFrame(tiltAnimate);
-            } else {
-              // Repos atteint — on efface le transform pour laisser CSS reprendre
-              card.style.transform = '';
-              card.style.removeProperty('--glow-x');
-              card.style.removeProperty('--glow-y');
-              tilt.raf = null;
-            }
-          }
-
-          card.addEventListener('mouseenter', () => {
-            tilt.active = true;
-            if (!tilt.raf) tilt.raf = requestAnimationFrame(tiltAnimate);
-          });
-
-          card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            tilt.tx = (e.clientX - rect.left - rect.width  / 2) / (rect.width  / 2);
-            tilt.ty = (e.clientY - rect.top  - rect.height / 2) / (rect.height / 2);
-          });
-
-          card.addEventListener('mouseleave', () => {
-            tilt.active = false;
-            tilt.tx = 0;
-            tilt.ty = 0;
-            if (!tilt.raf) tilt.raf = requestAnimationFrame(tiltAnimate);
-          });
-        }
       });
 
       // Tap outside any card removes touch-revealed state
@@ -2990,12 +2925,11 @@
       const wrap = document.getElementById('lightbox-player-wrap');
       wrap.innerHTML = ''; // Clear any previous player
 
-      // Create Vimeo player via SDK
-      activePlayer = new Player(wrap, {
-        id: parseInt(vimeoId),
-        responsive: true,
-        playsinline: true,
-      });
+      // Create Vimeo player via SDK (use full url for private/hashed videos)
+      const playerOpts = { responsive: true, playsinline: true };
+      if (proj.hash) playerOpts.url = `https://vimeo.com/${proj.id}/${proj.hash}`;
+      else playerOpts.id = parseInt(proj.id);
+      activePlayer = new Player(wrap, playerOpts);
 
       // Populate metadata (D-11: title + role + client below player, D-18: client only in lightbox)
       document.getElementById('lightbox-meta').innerHTML = `
