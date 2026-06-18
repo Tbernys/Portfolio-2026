@@ -623,6 +623,26 @@
       color: rgba(245, 240, 235, 0.7);
     }
 
+    .contact-social {
+      margin-top: 1.75rem;
+    }
+    .contact-social-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      color: rgba(245, 240, 235, 0.55);
+      transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+    }
+    .contact-social-link:hover,
+    .contact-social-link:focus-visible {
+      color: var(--color-accent);
+      background: rgba(212, 197, 178, 0.08);
+      transform: translateY(-2px);
+    }
+
     /* ─── Contact Section ──────────────────────────────────────────── */
     .contact-form {
       max-width: 500px;
@@ -989,6 +1009,13 @@
         <h2 class="section-title">Contact</h2>
         <div class="contact-actions">
           <a href="mailto:tombertindenys@gmail.com" class="contact-mailto-btn">tombertindenys@gmail.com</a>
+        </div>
+        <div class="contact-social">
+          <a href="https://www.linkedin.com/in/tombernys" class="contact-social-link" target="_blank" rel="noopener noreferrer" aria-label="Profil LinkedIn de Tom Bernys">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+              <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.63-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/>
+            </svg>
+          </a>
         </div>
       </div>
     </section>
