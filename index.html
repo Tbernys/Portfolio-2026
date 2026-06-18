@@ -343,14 +343,22 @@
       pointer-events: none;
     }
 
-    /* backdrop-filter only when revealed — avoids continuous backdrop sampling
-       (and scroll-edge flicker) on the always-present, invisible overlays */
-    .project-card:hover .project-overlay,
+    /* Tap-revealed (touch): explicit first tap shows the overlay, second tap opens */
     .project-card.touch-revealed .project-overlay {
       transform: translateY(0);
       opacity: 1;
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+    }
+
+    /* Hover reveal only on devices with a real pointer (mouse) — prevents the
+       overlay from opening "by itself" on touch screens via sticky :hover.
+       backdrop-filter only here (revealed) to avoid scroll-edge flicker. */
+    @media (hover: hover) {
+      .project-card:hover .project-overlay {
+        transform: translateY(0);
+        opacity: 1;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+      }
     }
 
     .project-overlay-title {
@@ -432,6 +440,19 @@
       width: 100%;
       height: 100%;
       border: none;
+    }
+
+    /* Desktop only: vertical videos get a compact, phone-sized player
+       (responsive Vimeo otherwise makes them far too tall). Mobile unchanged. */
+    @media (min-width: 768px) {
+      .lightbox.is-vertical .lightbox-inner {
+        width: auto;
+      }
+      .lightbox.is-vertical .lightbox-player-wrap {
+        aspect-ratio: auto;
+        width: min(42vh, 90vw);
+        margin: 0 auto;
+      }
     }
 
     .lightbox-meta {
@@ -2940,6 +2961,8 @@
 
       // Show lightbox (remove hidden first, then add is-open on next frame for CSS transition)
       const lightbox = document.getElementById('lightbox');
+      // Tag vertical videos so the player can be sized down on desktop
+      lightbox.classList.toggle('is-vertical', !!(clickedCard && clickedCard.classList.contains('is-vertical')));
       lightbox.removeAttribute('hidden');
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
